@@ -1223,6 +1223,393 @@ RC can manually override any level by tapping the bar and dragging, or using +/-
 
 ---
 
+## TC-12 · robotics.html — Light Theme + UX Demo Redesign
+
+**Goal:** Two things in one pass:
+1. Full light theme CSS (matches the rest of the app — bright, kid-friendly)
+2. UX overhaul — add a guided "First Mission" intro so Cassian knows what to do the moment he lands
+
+**Who:** Cassian, age 6, gifted in math/patterns, attention in 8–12 min bursts. He needs a clear starting point or he bounces.
+
+---
+
+### Part 1 — Light Theme CSS
+
+Inject this block **before the closing `</style>` tag** (around line 155). Do not touch any JS.
+
+```css
+/* ── LIGHT THEME ── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+body {
+  background: linear-gradient(160deg, #F0FFF8 0%, #F5F0FF 55%, #FFF8F0 100%) !important;
+  color: #1E1B4B !important;
+  font-family: 'Nunito', system-ui, sans-serif !important;
+}
+body::before { display: none !important; }
+
+.hero-title {
+  -webkit-text-fill-color: unset !important;
+  background: none !important;
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+.hero-sub { color: #9CA3AF !important; }
+
+.section-title { color: #9CA3AF !important; }
+.section-title::after { background: rgba(0,0,0,.08) !important; }
+
+/* Glass cards → white cards */
+.glass {
+  background: white !important;
+  border-color: rgba(0,0,0,.07) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,.07) !important;
+}
+
+/* Parts */
+.part-card {
+  background: white !important;
+  border-color: rgba(0,0,0,.08) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06) !important;
+}
+.part-card.active, .part-card:hover {
+  box-shadow: 0 6px 20px rgba(5,150,105,.15) !important;
+  border-color: var(--c) !important;
+}
+.part-name { color: #1E1B4B !important; }
+.part-short { color: #9CA3AF !important; }
+.part-detail {
+  background: #F9FAFB !important;
+  border-color: rgba(0,0,0,.07) !important;
+}
+.detail-desc { color: #4B5563 !important; }
+.spec-pill {
+  background: #F3F4F6 !important;
+  border-color: rgba(0,0,0,.08) !important;
+  color: #4B5563 !important;
+}
+.detail-tip {
+  background: rgba(5,150,105,.07) !important;
+  border-color: rgba(5,150,105,.2) !important;
+  color: #065F46 !important;
+}
+
+/* Calculators */
+.calc-card {
+  background: white !important;
+  border-color: rgba(0,0,0,.07) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06) !important;
+}
+.calc-title { color: #1E1B4B !important; }
+.calc-sub { color: #9CA3AF !important; }
+label { color: #6B7280 !important; }
+input[type=number] {
+  background: #F9FAFB !important;
+  border-color: rgba(0,0,0,.1) !important;
+  color: #1E1B4B !important;
+}
+input[type=number]:focus { border-color: #059669 !important; }
+input[type=range] { accent-color: #059669 !important; }
+.result-box {
+  background: rgba(5,150,105,.07) !important;
+  border-color: rgba(5,150,105,.2) !important;
+}
+.result-label { color: rgba(5,150,105,.8) !important; }
+.result-val { color: #059669 !important; }
+.result-sub { color: #9CA3AF !important; }
+
+/* Challenges */
+.challenge {
+  background: white !important;
+  border-color: rgba(0,0,0,.07) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06) !important;
+}
+.challenge:hover { border-color: rgba(0,0,0,.14) !important; }
+.ch-q { color: #1E1B4B !important; }
+.hint-btn {
+  background: #F3F4F6 !important;
+  border-color: rgba(0,0,0,.08) !important;
+  color: #6B7280 !important;
+}
+.hint-btn:hover { background: #E5E7EB !important; color: #1E1B4B !important; }
+.hint-text {
+  background: rgba(251,191,36,.08) !important;
+  border-color: rgba(251,191,36,.3) !important;
+  color: #92400E !important;
+}
+.answer-text {
+  background: rgba(5,150,105,.07) !important;
+  border-color: rgba(5,150,105,.25) !important;
+  color: #065F46 !important;
+}
+
+/* Wiring */
+.wire-tab {
+  background: #F3F4F6 !important;
+  border-color: rgba(0,0,0,.08) !important;
+  color: #6B7280 !important;
+}
+.wire-tab.active {
+  background: rgba(5,150,105,.12) !important;
+  border-color: rgba(5,150,105,.4) !important;
+  color: #059669 !important;
+}
+.wire-desc { color: #4B5563 !important; }
+.pin {
+  background: #F9FAFB !important;
+  border-color: rgba(0,0,0,.07) !important;
+}
+.pin-name { color: #1E1B4B !important; }
+.pin-desc { color: #9CA3AF !important; }
+
+/* Notes */
+.notes-area {
+  background: #F9FAFB !important;
+  border-color: rgba(0,0,0,.1) !important;
+  color: #1E1B4B !important;
+}
+.notes-area:focus { border-color: rgba(5,150,105,.4) !important; }
+.notes-area::placeholder { color: #9CA3AF !important; }
+.notes-saved { color: #059669 !important; }
+.notes-clear { color: #9CA3AF !important; }
+.notes-clear:hover { color: #EF4444 !important; }
+
+/* Nav */
+.app-nav {
+  background: white !important;
+  border-top: 2px solid #ECFDF5 !important;
+  box-shadow: 0 -4px 20px rgba(5,150,105,.06) !important;
+  backdrop-filter: none !important;
+}
+.nav-btn { color: #9CA3AF !important; }
+.nav-btn.active, .nav-btn:hover { color: #059669 !important; }
+```
+
+---
+
+### Part 2 — UX: "First Mission" Guided Intro
+
+**The problem:** Cassian (age 6) lands on a page full of components with no idea where to start. He needs a clear first instruction. After he's seen the page once, the intro stays out of the way.
+
+**The solution:** A dismissable "Mission Card" at the very top, shown only on first visit (tracked in localStorage key `robotics_seen`). It has 3 tap-through steps that highlight each section in sequence, then disappears.
+
+#### Add this HTML immediately after `<div class="page">` (before the HERO div):
+
+```html
+<!-- FIRST MISSION (shown once, dismissed after 3 steps) -->
+<div id="missionCard" class="mission-card" style="display:none">
+  <div class="mission-inner">
+    <span class="mission-emoji" id="missionEmoji">🚀</span>
+    <div class="mission-body">
+      <div class="mission-step-label" id="missionLabel">MISSION 1 of 3</div>
+      <div class="mission-text" id="missionText">Welcome to Robotics Lab! Tap any <strong>part card</strong> below to learn what it does. Start with the Servo! 👇</div>
+    </div>
+    <button class="mission-next" id="missionBtn" onclick="advanceMission()">Next →</button>
+  </div>
+  <div class="mission-dots">
+    <span class="mdot active" id="md0"></span>
+    <span class="mdot" id="md1"></span>
+    <span class="mdot" id="md2"></span>
+  </div>
+</div>
+```
+
+#### Add these CSS rules inside the `<style>` block (before `</style>`):
+
+```css
+/* FIRST MISSION CARD */
+.mission-card {
+  background: linear-gradient(135deg, rgba(5,150,105,.1), rgba(99,102,241,.08));
+  border: 2px solid rgba(5,150,105,.3);
+  border-radius: 20px;
+  padding: 18px 16px 12px;
+  margin-bottom: 20px;
+  animation: slideDown .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideDown {
+  from { opacity:0; transform:translateY(-12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.mission-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.mission-emoji {
+  font-size: 36px;
+  flex-shrink: 0;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-5px); }
+}
+.mission-body { flex: 1; }
+.mission-step-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #059669;
+  margin-bottom: 4px;
+}
+.mission-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E1B4B;
+  line-height: 1.5;
+}
+.mission-next {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #059669, #10B981);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-family: 'Nunito', system-ui, sans-serif;
+  white-space: nowrap;
+  transition: transform .15s;
+}
+.mission-next:active { transform: scale(.95); }
+.mission-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.mdot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(5,150,105,.2);
+  transition: background .2s;
+}
+.mdot.active { background: #059669; }
+
+/* Pulse highlight for guided sections */
+.section-highlight {
+  animation: sectionPulse 1s ease-in-out 3;
+}
+@keyframes sectionPulse {
+  0%,100% { box-shadow: none; }
+  50%      { box-shadow: 0 0 0 4px rgba(5,150,105,.35); border-radius: 20px; }
+}
+```
+
+#### Add this JS (inside the `<script>` block, before the closing `</script>`):
+
+```javascript
+/* ── FIRST MISSION GUIDE ── */
+const MISSION_KEY = 'robotics_seen';
+const MISSIONS = [
+  {
+    emoji: '🔄',
+    label: 'MISSION 1 of 3',
+    text: 'Tap any <strong>part card</strong> to learn what it does. Try the <strong>Servo Motor</strong> first! 👇',
+    btnText: 'Got it! →',
+    highlight: 'partsScroll'
+  },
+  {
+    emoji: '🧮',
+    label: 'MISSION 2 of 3',
+    text: 'Drag the <strong>Servo Angle</strong> slider and watch the arm move! Try the Gear Ratio calculator too. ⚙️',
+    btnText: 'Cool! →',
+    highlight: 'calc-grid'
+  },
+  {
+    emoji: '🏆',
+    label: 'MISSION 3 of 3',
+    text: 'Can you solve a <strong>Build Challenge</strong>? Tap "Hint" if you need help. You\'ve got this! 💪',
+    btnText: 'Let\'s go! 🚀',
+    highlight: 'challengesGrid'
+  }
+];
+
+let missionStep = 0;
+
+function initMission() {
+  if (localStorage.getItem(MISSION_KEY)) return; // already seen
+  const card = document.getElementById('missionCard');
+  card.style.display = 'block';
+  renderMissionStep();
+}
+
+function renderMissionStep() {
+  const m = MISSIONS[missionStep];
+  document.getElementById('missionEmoji').textContent = m.emoji;
+  document.getElementById('missionLabel').textContent = m.label;
+  document.getElementById('missionText').innerHTML = m.text;
+  document.getElementById('missionBtn').textContent = m.btnText;
+  // dots
+  document.querySelectorAll('.mdot').forEach((d,i) => d.classList.toggle('active', i === missionStep));
+}
+
+function advanceMission() {
+  // Highlight the relevant section
+  const m = MISSIONS[missionStep];
+  const el = document.getElementById(m.highlight) ||
+             document.querySelector('.' + m.highlight);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('section-highlight');
+    setTimeout(() => el.classList.remove('section-highlight'), 3000);
+  }
+
+  missionStep++;
+  if (missionStep >= MISSIONS.length) {
+    // Done — dismiss forever
+    localStorage.setItem(MISSION_KEY, '1');
+    const card = document.getElementById('missionCard');
+    card.style.transition = 'opacity .4s, transform .4s';
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(-8px)';
+    setTimeout(() => card.style.display = 'none', 400);
+    return;
+  }
+  renderMissionStep();
+}
+
+// Call at init (after buildParts/buildChallenges/etc.)
+initMission();
+```
+
+**Important:** Add `initMission();` call at the very end of the existing init line, so it reads:
+```javascript
+buildParts(); buildChallenges(); buildWiring(); updateServo(); updateGear(); loadNotes(); initMission();
+```
+
+---
+
+### Part 3 — Bump service worker cache
+
+In `sw.js`, change `cassian-v11` → `cassian-v12`. Also confirm `robotics.html` is in the ASSETS list — add it if missing.
+
+---
+
+### Part 4 — Fix nav + apple-touch-icon
+
+The `<head>` in robotics.html is missing:
+```html
+<link rel="apple-touch-icon" href="/icon-192.png">
+```
+It's already there. But the bottom nav currently shows `world.html` in the 🌍 slot. **No change needed** — nav is correct for this page (it's not in the main 5-slot nav; that's fine).
+
+---
+
+### Completion check
+
+- [ ] Light theme renders — bright green/white/purple gradient, no dark background
+- [ ] Mission card appears on first load, disappears after 3 taps
+- [ ] Mission card does NOT appear on second visit (localStorage flag set)
+- [ ] Tapping "Next →" scrolls to the highlighted section and pulses it
+- [ ] Parts scroll cards are white with green accent on tap
+- [ ] Calculators, challenges, wiring all render on light background
+- [ ] Nav bar is white with green active state
+- [ ] sw.js cache bumped to cassian-v12
+
+---
+
 ## Priority Order for Claude Code
 
 1. **TC-09** (CLAUDE.md — do this first, gives Claude Code context for everything else)
@@ -1236,3 +1623,4 @@ RC can manually override any level by tapping the bar and dragging, or using +/-
 9. **TC-04** (games adaptive difficulty — now uses TC-11 profile)
 10. **TC-05** (Apple redesign)
 11. **TC-08** (books.html)
+12. **TC-12** (robotics.html — light theme + guided demo)
