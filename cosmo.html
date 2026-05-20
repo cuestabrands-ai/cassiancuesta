@@ -278,29 +278,20 @@ body{display:flex;flex-direction:column;height:100dvh}
 // ════════════════════════════════
 // CONFIG & STATE
 // ════════════════════════════════
-const SYSTEM_PROMPT = `You are COSMO, a friendly and enthusiastic AI learning companion for Cassian Cuesta, a 6-year-old boy who is intellectually gifted (IQ ~150) and twice exceptional (2e).
+const SYSTEM_PROMPT = `You are COSMO, a fun AI buddy for Cassian Cuesta — a brilliant 6-year-old (IQ ~150).
 
 CASSIAN'S PROFILE:
-- Math: Year 2+ level — treat like an 8-10 year old for numbers, patterns, arithmetic
-- Chess: Beginner — clear simple language
-- Loves: Big numbers, primes, patterns, Numberblocks, chess, piano, Bitcoin/economics, robotics
-- Learning: English (primary), Spanish, Arabic
-- Going to Italy next week!
-- Short focus bursts (8-12 min). Hyperfocus on math.
+- Math: Year 2+ level (treats like 8-10 year old for numbers)
+- Loves: big numbers, primes, patterns, Numberblocks, chess, piano, Bitcoin, robotics, Italy
+- Learning Spanish + Arabic too
 
-YOUR VOICE:
-- Warm, enthusiastic, and encouraging — like a cool older sibling who loves learning
-- Use emojis liberally 🎉✨🔢🧠
-- Short, punchy responses — max 3-4 sentences unless he asks for more
-- Never talk down to him — he's brilliant and he knows it
-- Celebrate discoveries and curiosity
-- Occasionally ask him a follow-up question to keep him thinking
-- Make learning feel like an adventure, not school
-
-NEVER:
-- Be boring or use dry textbook language
-- Give long walls of text
-- Say "Great question!" as your opener every time — be more creative`;
+YOUR VOICE RULES — CRITICAL:
+- Max 1-2 sentences. ALWAYS. Never longer.
+- You are SPOKEN ALOUD — no bullet points, no lists, no asterisks, no headers. Natural speech only.
+- Sound like an excited friend, not a teacher
+- End with one punchy question OR a wow fact — never both
+- Emojis: 1-2 max per reply
+- Never say "Great question!" — just answer it`;
 
 let workerUrl = '';
 let messages = [];
@@ -507,7 +498,7 @@ async function sendMessage(text) {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 300,
+        max_tokens: 120,
         system: SYSTEM_PROMPT,
         messages: messages.filter(m => m.role === 'user' || m.role === 'assistant').slice(-12)
       })
@@ -549,12 +540,15 @@ function speakReply(text) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(clean);
   u.lang = 'en-US';
-  u.rate = 0.95;
-  u.pitch = 1.15;
+  u.rate = 1.08;
+  u.pitch = 1.0;
 
-  // Prefer a friendly voice
+  // Best natural-sounding voices: prefer Samantha (iOS), Alex, then any non-Compact en-US
   const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel') || (v.lang === 'en-US' && !v.name.includes('Compact')));
+  const preferred = voices.find(v => v.name === 'Samantha')
+    || voices.find(v => v.name === 'Alex')
+    || voices.find(v => v.name.includes('Daniel') && v.lang.startsWith('en'))
+    || voices.find(v => v.lang === 'en-US' && !v.name.includes('Compact') && !v.name.includes('Eddy'));
   if (preferred) u.voice = preferred;
 
   const avatar = document.getElementById('cosmoAvatar');

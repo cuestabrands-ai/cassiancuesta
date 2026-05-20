@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Robotics Lab 🤖 — Cassian's Super App</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#070712;font-family:'Nunito',system-ui,sans-serif;color:white}
+body{display:flex;flex-direction:column;min-height:100dvh}
+.page-wrap{flex:1;padding:20px 16px 110px;max-width:700px;margin:0 auto;width:100%}
+
+/* Hero */
+.hero{text-align:center;margin-bottom:28px}
+.hero-emoji{font-size:60px;display:block;line-height:1;margin-bottom:10px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero h1{font-size:32px;font-weight:900;background:linear-gradient(90deg,#00d4ff,#8b5cf6,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.hero p{color:rgba(255,255,255,.5);font-size:14px;font-weight:700}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin:24px 0 12px}
+
+/* How Robots Work — 3-part cards */
+.parts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.part-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:16px 10px;text-align:center;transition:transform .2s}
+.part-card:active{transform:scale(.96)}
+.part-icon{font-size:36px;margin-bottom:8px;display:block}
+.part-name{font-size:13px;font-weight:900;color:white;margin-bottom:4px}
+.part-desc{font-size:11px;font-weight:700;color:rgba(255,255,255,.45);line-height:1.4}
+.part-card.sensors{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07)}
+.part-card.brain{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.07)}
+.part-card.motors{border-color:rgba(255,107,157,.4);background:rgba(255,107,157,.07)}
+
+/* Robot types */
+.types-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.types-scroll::-webkit-scrollbar{display:none}
+.type-card{flex-shrink:0;width:130px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s}
+.type-card:active{transform:scale(.94)}
+.type-card.active{border-color:rgba(0,212,255,.6);background:rgba(0,212,255,.1)}
+.type-emoji{font-size:36px;margin-bottom:6px;display:block}
+.type-name{font-size:13px;font-weight:900;color:white;margin-bottom:3px}
+.type-tag{font-size:10px;font-weight:700;color:rgba(255,255,255,.4)}
+
+/* Type detail panel */
+.type-detail{background:rgba(255,255,255,.05);border:2px solid rgba(0,212,255,.25);border-radius:20px;padding:18px;margin-top:12px;display:none}
+.type-detail.show{display:block}
+.type-detail-title{font-size:18px;font-weight:900;color:#00d4ff;margin-bottom:8px}
+.type-detail-text{font-size:14px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:10px}
+.robot-example{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border-radius:50px;padding:8px 14px;font-size:13px;font-weight:800;color:white;margin:4px 4px 0 0}
+
+/* Program Your Robot game */
+.game-section{background:rgba(255,255,255,.04);border:2px solid rgba(139,92,246,.25);border-radius:24px;padding:20px;margin-top:8px}
+.game-title{font-size:18px;font-weight:900;color:#A29BFE;margin-bottom:6px}
+.game-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:16px}
+.game-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-width:250px;margin:0 auto 16px;aspect-ratio:1}
+.cell{background:rgba(255,255,255,.05);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .2s}
+.cell.robot{background:rgba(139,92,246,.4);border:2px solid #A29BFE}
+.cell.trail{background:rgba(0,212,255,.2)}
+.cell.goal{background:rgba(255,215,0,.25);border:2px solid rgba(255,215,0,.6)}
+.cell.wall{background:rgba(255,100,100,.2)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
+.ctrl-btn{width:60px;height:60px;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.4);border-radius:16px;color:white;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Nunito',sans-serif}
+.ctrl-btn:active{transform:scale(.9);background:rgba(139,92,246,.5)}
+.ctrl-btn.go{background:linear-gradient(135deg,#00d4ff,#0080aa);border-color:#00d4ff;font-size:15px;font-weight:900;width:auto;padding:0 20px}
+.ctrl-btn.reset{background:rgba(255,100,100,.2);border-color:rgba(255,100,100,.4);font-size:14px;font-weight:900;width:auto;padding:0 16px}
+.queue-display{min-height:44px;background:rgba(255,255,255,.04);border-radius:12px;padding:8px 12px;font-size:22px;letter-spacing:4px;text-align:center;margin-bottom:8px;color:rgba(255,255,255,.7)}
+.game-msg{text-align:center;font-size:14px;font-weight:900;min-height:20px;color:#00d4ff}
+
+/* Fun facts */
+.facts-grid{display:grid;gap:10px}
+.fact-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:flex-start}
+.fact-emoji{font-size:28px;flex-shrink:0;line-height:1}
+.fact-text{font-size:14px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
+.fact-text strong{color:white}
+
+/* Famous robots */
+.robots-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.robot-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.robot-card:active{transform:scale(.97)}
+.robot-face{font-size:40px;display:block;text-align:center;margin-bottom:8px}
+.robot-card-name{font-size:14px;font-weight:900;color:white;text-align:center;margin-bottom:2px}
+.robot-card-job{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px}
+.robot-card-fact{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);line-height:1.4;display:none}
+.robot-card.flipped .robot-card-fact{display:block}
+.robot-card.flipped .robot-face,.robot-card.flipped .robot-card-name,.robot-card.flipped .robot-card-job{display:none}
+.flip-hint{font-size:10px;font-weight:700;color:rgba(255,255,255,.25);text-align:center;margin-top:4px}
+
+/* Bottom nav */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,18,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:100}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn:hover,.nav-btn.active{color:#A29BFE}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="hero-emoji">🦾</span>
+    <h1>Robotics Lab</h1>
+    <p>Build it. Program it. Watch it move! 🚀</p>
+  </div>
+
+  <!-- How Robots Work -->
+  <div class="section-label">⚙️ How Every Robot Works</div>
+  <div class="parts-grid">
+    <div class="part-card sensors">
+      <span class="part-icon">👁️</span>
+      <div class="part-name">Sensors</div>
+      <div class="part-desc">Eyes & ears — they feel the world</div>
+    </div>
+    <div class="part-card brain">
+      <span class="part-icon">🧠</span>
+      <div class="part-name">Computer</div>
+      <div class="part-desc">The brain — makes all decisions</div>
+    </div>
+    <div class="part-card motors">
+      <span class="part-icon">💪</span>
+      <div class="part-name">Actuators</div>
+      <div class="part-desc">Muscles — make things move</div>
+    </div>
+  </div>
+  <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.35);text-align:center;margin-top:8px">Every robot ever built has these 3 things! 🤯</p>
+
+  <!-- Robot Types -->
+  <div class="section-label">🌟 Types of Robots</div>
+  <div class="types-scroll" id="typesScroll">
+    <div class="type-card active" onclick="showType(0,this)">
+      <span class="type-emoji">🏭</span>
+      <div class="type-name">Factory</div>
+      <div class="type-tag">Industrial</div>
+    </div>
+    <div class="type-card" onclick="showType(1,this)">
+      <span class="type-emoji">🚀</span>
+      <div class="type-name">Space</div>
+      <div class="type-tag">Explorer</div>
+    </div>
+    <div class="type-card" onclick="showType(2,this)">
+      <span class="type-emoji">🏠</span>
+      <div class="type-name">Home</div>
+      <div class="type-tag">Helper</div>
+    </div>
+    <div class="type-card" onclick="showType(3,this)">
+      <span class="type-emoji">🏥</span>
+      <div class="type-name">Medical</div>
+      <div class="type-tag">Doctor bot</div>
+    </div>
+    <div class="type-card" onclick="showType(4,this)">
+      <span class="type-emoji">🐕</span>
+      <div class="type-name">Animal</div>
+      <div class="type-tag">Bio-inspired</div>
+    </div>
+    <div class="type-card" onclick="showType(5,this)">
+      <span class="type-emoji">🌊</span>
+      <div class="type-name">Ocean</div>
+      <div class="type-tag">Deep sea</div>
+    </div>
+  </div>
+  <div class="type-detail show" id="typeDetail"></div>
+
+  <!-- Program Your Robot Game -->
+  <div class="section-label">🕹️ Program Your Robot</div>
+  <div class="game-section">
+    <div class="game-title">🤖 Guide the Robot to the Star!</div>
+    <div class="game-sub">Tap directions to build your program, then press GO!</div>
+    <div class="game-grid" id="gameGrid"></div>
+    <div class="queue-display" id="queueDisplay">—</div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="addCmd('⬆️')" title="Forward">⬆️</button>
+      <button class="ctrl-btn" onclick="addCmd('⬇️')" title="Back">⬇️</button>
+      <button class="ctrl-btn" onclick="addCmd('⬅️')" title="Left">⬅️</button>
+      <button class="ctrl-btn" onclick="addCmd('➡️')" title="Right">➡️</button>
+      <button class="ctrl-btn go" onclick="runProgram()">▶ GO</button>
+      <button class="ctrl-btn reset" onclick="resetGame()">↺ Reset</button>
+    </div>
+    <div class="game-msg" id="gameMsg"></div>
+  </div>
+
+  <!-- Famous Robots -->
+  <div class="section-label">🌍 Famous Robots — Tap to Learn</div>
+  <div class="robots-grid">
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🐕</span>
+      <div class="robot-card-name">Spot</div>
+      <div class="robot-card-job">Boston Dynamics</div>
+      <div class="robot-card-fact">Spot can walk, climb stairs, open doors, and even dance! Scientists send it into dangerous buildings so humans stay safe. 🦾</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🚗</span>
+      <div class="robot-card-name">Curiosity</div>
+      <div class="robot-card-job">Mars Rover, NASA</div>
+      <div class="robot-card-fact">Curiosity has been driving around Mars since 2012 — that's over 4 billion km from home! It uses lasers to vaporize rocks and study them. 🔬</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🧹</span>
+      <div class="robot-card-name">Roomba</div>
+      <div class="robot-card-job">iRobot — Home cleaner</div>
+      <div class="robot-card-fact">Roomba maps your entire house using sensors and remembers it! It knows where the sofa is and won't bump into it twice. Smart and lazy! 😂</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🏃</span>
+      <div class="robot-card-name">Atlas</div>
+      <div class="robot-card-job">Boston Dynamics</div>
+      <div class="robot-card-fact">Atlas can run, jump, do backflips, and even parkour! It's the world's most athletic robot. Engineers call it "the most dynamic humanoid robot ever built." 🤸</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🦾</span>
+      <div class="robot-card-name">Da Vinci</div>
+      <div class="robot-card-job">Surgical Robot</div>
+      <div class="robot-card-fact">Da Vinci helps doctors perform surgery through tiny holes — its arms are steadier than human hands. It has saved over 10 million patients! 🏥</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+    <div class="robot-card" onclick="this.classList.toggle('flipped')">
+      <span class="robot-face">🤿</span>
+      <div class="robot-card-name">Aquanaut</div>
+      <div class="robot-card-job">Ocean Explorer</div>
+      <div class="robot-card-fact">Aquanaut transforms from a submarine into a robot with arms! It dives 3km deep to fix underwater pipelines where humans can't go. 🌊</div>
+      <div class="flip-hint">Tap to flip</div>
+    </div>
+  </div>
+
+  <!-- Fun Facts -->
+  <div class="section-label">🤯 Mind-Blowing Robot Facts</div>
+  <div class="facts-grid">
+    <div class="fact-card">
+      <span class="fact-emoji">🦾</span>
+      <div class="fact-text">The word <strong>"robot"</strong> comes from a Czech word meaning <strong>"forced labour"</strong> — it was invented in a play in 1920!</div>
+    </div>
+    <div class="fact-card">
+      <span class="fact-emoji">🏭</span>
+      <div class="fact-text">There are over <strong>3 million robots</strong> working in factories around the world right now — and that number doubles every 5 years.</div>
+    </div>
+    <div class="fact-card">
+      <span class="fact-emoji">🧠</span>
+      <div class="fact-text">The most advanced AI robots can now <strong>learn from watching videos</strong> — just like you learn by watching YouTube!</div>
+    </div>
+    <div class="fact-card">
+      <span class="fact-emoji">🐟</span>
+      <div class="fact-text">Scientists built a <strong>robotic fish</strong> that swims with real fish — and the real fish follow it as their leader! 🐠</div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+// ── Robot Types Data ──
+const TYPES = [
+  {
+    title:'🏭 Factory Robots',
+    text:'Factory robots weld cars, pack boxes, and paint things perfectly — 24 hours a day without getting tired! They work 10× faster than humans and make products for Apple, Tesla, and Amazon.',
+    examples:['🚗 Tesla car welder','📦 Amazon warehouse bot','💊 Medicine packager']
+  },
+  {
+    title:'🚀 Space Robots',
+    text:'Space robots explore places that would kill a human — like Mars (-80°C!) or the Sun. They beam back photos and science data across hundreds of millions of kilometres.',
+    examples:['🔭 Hubble Space Telescope','🚗 Curiosity Rover','🛰️ ISS robotic arm']
+  },
+  {
+    title:'🏠 Home Robots',
+    text:'Home robots do the chores you hate — vacuuming, mopping, even mowing the lawn! The latest ones can recognise your pets, avoid cables, and remember your furniture layout.',
+    examples:['🧹 Roomba vacuum','🌿 Lawnmowing robot','🍳 Moley cooking robot']
+  },
+  {
+    title:'🏥 Medical Robots',
+    text:'Medical robots help doctors perform surgery with incredible precision — their hands never shake! Some robots can deliver medicine in hospitals and others help people walk again after injuries.',
+    examples:['🦾 Da Vinci surgical bot','💊 Pharmacy robot','🦿 Exoskeleton walker']
+  },
+  {
+    title:'🐕 Animal-Inspired Robots',
+    text:'Bio-inspired robots copy how animals move — dogs run on 4 legs, snakes slither, birds fly, fish swim. Animals solved movement over millions of years, so robots borrow their tricks!',
+    examples:['🐕 Boston Dynamics Spot','🐍 Snake rescue bot','🦅 Ornithopter drone']
+  },
+  {
+    title:'🌊 Ocean Robots',
+    text:'The ocean is more mysterious than outer space — and robots are exploring it! Deep-sea robots find shipwrecks, fix underwater cables, and discover creatures never seen before.',
+    examples:['🤿 Aquanaut transformer','🦑 Soft robotic fish','🗺️ Ocean mapping AUV']
+  }
+];
+
+function showType(idx, el) {
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const t = TYPES[idx];
+  const detail = document.getElementById('typeDetail');
+  detail.classList.add('show');
+  detail.innerHTML = `
+    <div class="type-detail-title">${t.title}</div>
+    <div class="type-detail-text">${t.text}</div>
+    <div>${t.examples.map(e => `<span class="robot-example">${e}</span>`).join('')}</div>
+  `;
+}
+
+// Init first type
+showType(0, document.querySelector('.type-card'));
+
+// ── Robot Programming Game ──
+const COLS = 6, ROWS = 6;
+let robotPos = {r:5, c:0};
+let goalPos = {r:0, c:5};
+let cmdQueue = [];
+let isRunning = false;
+
+function renderGrid() {
+  const g = document.getElementById('gameGrid');
+  g.innerHTML = '';
+  for (let r=0;r<ROWS;r++) {
+    for (let c=0;c<COLS;c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      if (r===robotPos.r && c===robotPos.c) { cell.classList.add('robot'); cell.textContent='🤖'; }
+      else if (r===goalPos.r && c===goalPos.c) { cell.classList.add('goal'); cell.textContent='⭐'; }
+      g.appendChild(cell);
+    }
+  }
+}
+
+function addCmd(dir) {
+  if (isRunning) return;
+  if (cmdQueue.length >= 10) { showMsg('Max 10 steps! Hit GO or Reset first.'); return; }
+  cmdQueue.push(dir);
+  document.getElementById('queueDisplay').textContent = cmdQueue.join(' ') || '—';
+  showMsg('');
+}
+
+async function runProgram() {
+  if (isRunning || cmdQueue.length===0) { showMsg(cmdQueue.length===0?'Add some moves first!':''); return; }
+  isRunning = true;
+  let pos = {...robotPos};
+  for (let i=0;i<cmdQueue.length;i++) {
+    const cmd = cmdQueue[i];
+    let nr = pos.r, nc = pos.c;
+    if (cmd==='⬆️') nr--;
+    else if (cmd==='⬇️') nr++;
+    else if (cmd==='⬅️') nc--;
+    else if (cmd==='➡️') nc++;
+    if (nr<0||nr>=ROWS||nc<0||nc>=COLS) { showMsg('🤖 Oops! Robot hit a wall! Adjust your program.'); isRunning=false; return; }
+    pos = {r:nr, c:nc};
+    robotPos = {...pos};
+    renderGrid();
+    if (pos.r===goalPos.r && pos.c===goalPos.c) {
+      showMsg('🎉 You did it! Robot reached the star! Amazing programming!');
+      newGoal(); isRunning=false; cmdQueue=[]; document.getElementById('queueDisplay').textContent='—'; return;
+    }
+    await sleep(380);
+  }
+  showMsg('Almost! Try adjusting your moves and GO again 🤔');
+  isRunning = false;
+}
+
+function newGoal() {
+  setTimeout(() => {
+    robotPos = {r:5, c:0};
+    goalPos = {r: Math.floor(Math.random()*ROWS), c: Math.floor(Math.random()*COLS)};
+    if (goalPos.r===5 && goalPos.c===0) goalPos = {r:0, c:5};
+    renderGrid();
+    showMsg('New challenge! Program your robot to reach the ⭐');
+  }, 1800);
+}
+
+function resetGame() {
+  isRunning = false;
+  cmdQueue = [];
+  robotPos = {r:5, c:0};
+  document.getElementById('queueDisplay').textContent='—';
+  renderGrid();
+  showMsg('');
+}
+
+function showMsg(m) { document.getElementById('gameMsg').textContent = m; }
+function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+renderGrid();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
