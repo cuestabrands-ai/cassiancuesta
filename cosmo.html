@@ -4,247 +4,244 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Cassian">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>COSMO 🤖 — Cassian's AI Tutor</title>
 <link rel="manifest" href="/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#06060F;font-family:system-ui,-apple-system,'Nunito',sans-serif;color:#F1F5F9;overflow:hidden}
-body{display:flex;flex-direction:column;height:100dvh;position:relative}
+html,body{height:100%;background:#F8F9FF;font-family:'Nunito',system-ui,sans-serif;color:#1E1B4B;overflow:hidden}
+body{display:flex;flex-direction:column;height:100dvh}
 
-/* ── Star field ── */
-.star{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s)}
-@keyframes twinkle{0%,100%{opacity:var(--lo,.2);transform:scale(1)}50%{opacity:var(--hi,.9);transform:scale(1.4)}}
+/* ════ MAIN APP ════ */
+#mainApp{flex:1;display:flex;flex-direction:column;min-height:0}
 
-/* ── Nebula ── */
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 50% at 20% 30%,rgba(6,182,212,.06) 0%,transparent 70%),
-             radial-gradient(ellipse 60% 60% at 80% 70%,rgba(168,85,247,.06) 0%,transparent 70%)}
-
-/* ── Header ── */
+/* ════ HEADER ════ */
 .cosmo-header{
-  position:relative;z-index:10;
-  background:rgba(4,4,12,.85);backdrop-filter:blur(28px);
-  padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));
-  border-bottom:1px solid rgba(6,182,212,.18);
+  background:white;
+  padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));
+  border-bottom:1px solid #ECEDF2;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
 }
 .header-left{display:flex;align-items:center;gap:12px}
 .cosmo-avatar-small{
-  width:48px;height:48px;border-radius:50%;
-  background:linear-gradient(135deg,#06B6D4,#8B5CF6);
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,#6366F1,#8B5CF6);
   display:flex;align-items:center;justify-content:center;
-  font-size:26px;
-  box-shadow:0 0 24px rgba(6,182,212,.45);
-  animation:pulse-glow 2s ease-in-out infinite;
-  flex-shrink:0;
+  font-size:24px;
+  box-shadow:0 2px 12px rgba(99,102,241,.3);
+  animation:pulse-glow 2.5s ease-in-out infinite;
 }
-@keyframes pulse-glow{0%,100%{box-shadow:0 0 16px rgba(6,182,212,.4)}50%{box-shadow:0 0 32px rgba(168,85,247,.7)}}
-.cosmo-name{font-size:22px;font-weight:900;background:linear-gradient(90deg,#06B6D4,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.cosmo-status{font-size:12px;color:rgba(241,245,249,.55);font-weight:700}
-.settings-btn{width:40px;height:40px;background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);border-radius:50%;color:#06B6D4;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
-.settings-btn:hover{background:rgba(6,182,212,.2)}
-
-/* ── Main app container ── */
-#mainApp{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;z-index:5}
-
-/* ── Offline banner ── */
-.offline-banner{
-  margin:8px 12px 0;padding:10px 14px;
-  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);
-  border-radius:12px;font-size:14px;color:#FBBF24;text-align:center;
-  font-weight:700;flex-shrink:0;display:none;
+@keyframes pulse-glow{0%,100%{box-shadow:0 2px 12px rgba(99,102,241,.25)}50%{box-shadow:0 2px 22px rgba(139,92,246,.55)}}
+.cosmo-name{font-size:19px;font-weight:900;color:#1E1B4B}
+.cosmo-status{font-size:11px;color:#9CA3AF;font-weight:700}
+.settings-btn{
+  width:38px;height:38px;background:transparent;border:none;
+  border-radius:50%;color:#9CA3AF;font-size:18px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
 }
-.offline-banner.show{display:block}
+.settings-btn:active{background:#F3F4F6}
 
-/* ── Messages ── */
+/* ════ EMPTY STATE — Claude / ChatGPT style ════ */
+#emptyState{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:20px 20px 10px;gap:4px;text-align:center;
+}
+.empty-avatar{font-size:68px;animation:float 3.2s ease-in-out infinite;line-height:1;margin-bottom:8px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.empty-title{font-size:26px;font-weight:900;color:#1E1B4B;margin-bottom:4px}
+.empty-sub{font-size:15px;color:#6B7280;font-weight:700;margin-bottom:20px;line-height:1.4}
+
+.suggestion-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  width:100%;max-width:400px;
+}
+.suggestion-card{
+  background:white;border:1.5px solid #E5E7EB;
+  border-radius:16px;padding:14px 12px;
+  text-align:left;font-family:'Nunito',sans-serif;
+  cursor:pointer;transition:all .15s;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.suggestion-card:active{background:#F5F3FF;border-color:rgba(99,102,241,.4);transform:scale(.97)}
+.sc-emoji{font-size:22px;display:block;margin-bottom:6px}
+.sc-text{font-size:13px;font-weight:800;color:#374151;line-height:1.35;display:block}
+
+/* ════ MESSAGES ════ */
 .messages-area{
-  flex:1;overflow-y:auto;padding:16px 12px;
-  display:flex;flex-direction:column;gap:14px;
+  flex:1;overflow-y:auto;padding:16px 14px 8px;
+  display:none;flex-direction:column;gap:12px;
   scroll-behavior:smooth;
 }
+.messages-area.active{display:flex}
 .messages-area::-webkit-scrollbar{width:3px}
-.messages-area::-webkit-scrollbar-thumb{background:rgba(6,182,212,.2);border-radius:2px}
+.messages-area::-webkit-scrollbar-thumb{background:rgba(99,102,241,.15);border-radius:2px}
 
-.msg-row{display:flex;gap:10px;align-items:flex-end;max-width:92%}
-.msg-row.cassian{align-self:flex-end;flex-direction:row-reverse}
-.msg-row.cosmo{align-self:flex-start}
+.msg-row{display:flex;gap:10px;align-items:flex-end}
+.msg-row.cosmo{align-self:flex-start;max-width:86%}
+.msg-row.cassian{align-self:flex-end;flex-direction:row-reverse;max-width:86%}
 
-.msg-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.cosmo .msg-avatar{background:linear-gradient(135deg,#06B6D4,#8B5CF6)}
-.cassian .msg-avatar{background:linear-gradient(135deg,#A855F7,#6D28D9)}
+.msg-avatar{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.cosmo .msg-avatar{background:linear-gradient(135deg,#6366F1,#8B5CF6)}
+.cassian .msg-avatar{background:linear-gradient(135deg,#06B6D4,#0891B2)}
 
 .msg-bubble{
-  padding:14px 18px;border-radius:22px;
-  font-size:17px;line-height:1.5;font-weight:700;
+  padding:12px 16px;border-radius:20px;
+  font-size:16px;line-height:1.55;font-weight:700;
   max-width:100%;word-break:break-word;
 }
 .cosmo .msg-bubble{
-  background:rgba(255,255,255,.06);border:1px solid rgba(6,182,212,.2);
-  border-bottom-left-radius:6px;color:#F1F5F9;
-  backdrop-filter:blur(12px);
+  background:white;color:#1E1B4B;
+  border-bottom-left-radius:5px;
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
 }
 .cassian .msg-bubble{
-  background:linear-gradient(135deg,#06B6D4,#0891B2);
-  border-bottom-right-radius:6px;color:white;
-  box-shadow:0 2px 16px rgba(6,182,212,.25);
+  background:linear-gradient(135deg,#6366F1,#8B5CF6);
+  color:white;border-bottom-right-radius:5px;
+  box-shadow:0 2px 10px rgba(99,102,241,.25);
 }
 
-/* ── Thinking dots ── */
+/* Thinking dots */
 .thinking-row{display:flex;gap:10px;align-items:flex-end;align-self:flex-start}
 .thinking-bubble{
-  padding:14px 20px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(6,182,212,.2);
-  border-radius:22px;border-bottom-left-radius:6px;
+  padding:13px 18px;background:white;
+  border-radius:20px;border-bottom-left-radius:5px;
   display:flex;align-items:center;gap:6px;
-  backdrop-filter:blur(12px);
+  box-shadow:0 1px 6px rgba(0,0,0,.07);
 }
-.dot{width:10px;height:10px;background:#06B6D4;border-radius:50%;animation:bounce-dot .8s ease-in-out infinite}
-.dot:nth-child(2){animation-delay:.15s}
-.dot:nth-child(3){animation-delay:.3s}
-@keyframes bounce-dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-8px);opacity:1}}
+.dot{width:9px;height:9px;background:#6366F1;border-radius:50%;animation:bounce-dot .8s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.16s}
+.dot:nth-child(3){animation-delay:.32s}
+@keyframes bounce-dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-7px);opacity:1}}
 
-/* ── Quick chips ── */
-.quick-row{padding:10px 12px 6px;display:flex;gap:10px;overflow-x:auto;flex-shrink:0}
-.quick-row::-webkit-scrollbar{display:none}
-.chip{
-  white-space:nowrap;padding:12px 20px;
-  background:rgba(6,182,212,.08);border:1.5px solid rgba(6,182,212,.25);
-  border-radius:50px;font-size:15px;font-weight:800;color:#06B6D4;
-  cursor:pointer;transition:all .15s;flex-shrink:0;font-family:inherit;
-}
-.chip:active{background:rgba(6,182,212,.18);transform:scale(0.95)}
-
-/* ── Input area ── */
+/* ════ INPUT AREA ════ */
 .input-area{
-  padding:10px 16px;padding-bottom:calc(90px + env(safe-area-inset-bottom));
-  background:rgba(4,4,12,.85);backdrop-filter:blur(28px);
-  border-top:1px solid rgba(6,182,212,.12);
-  flex-shrink:0;display:flex;flex-direction:column;gap:8px;
+  padding:10px 14px;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom));
+  background:white;border-top:1px solid #ECEDF2;
+  flex-shrink:0;display:flex;flex-direction:column;gap:6px;
 }
-.text-row{display:flex;gap:8px;width:100%;align-items:flex-end}
+.voice-status{
+  font-size:12px;font-weight:800;color:#6366F1;
+  min-height:16px;text-align:center;
+}
+.text-row{
+  display:flex;gap:6px;width:100%;align-items:flex-end;
+  background:#F3F4F6;border-radius:26px;
+  padding:6px 6px 6px 16px;
+  border:1.5px solid transparent;
+  transition:border-color .2s,background .2s;
+}
+.text-row:focus-within{border-color:rgba(99,102,241,.4);background:white}
 .chat-input{
-  flex:1;padding:14px 18px;
-  background:rgba(255,255,255,.06);border:1.5px solid rgba(6,182,212,.2);
-  border-radius:26px;color:#F1F5F9;font-size:17px;font-family:inherit;
-  outline:none;transition:border-color .2s;resize:none;min-height:52px;max-height:120px;
-  font-weight:700;
+  flex:1;background:transparent;border:none;
+  color:#1E1B4B;font-size:16px;font-family:'Nunito',sans-serif;
+  outline:none;resize:none;min-height:36px;max-height:110px;
+  font-weight:700;padding:4px 0;line-height:1.45;
 }
-.chat-input:focus{border-color:#06B6D4;background:rgba(6,182,212,.06)}
-.chat-input::placeholder{color:rgba(241,245,249,.3)}
+.chat-input::placeholder{color:#9CA3AF;font-weight:700}
 .mic-btn{
-  width:48px;height:48px;border-radius:50%;
-  background:rgba(6,182,212,.1);border:1.5px solid rgba(6,182,212,.25);
-  color:#06B6D4;font-size:22px;
+  width:40px;height:40px;border-radius:50%;
+  background:transparent;border:none;
+  color:#9CA3AF;font-size:20px;
   cursor:pointer;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   transition:all .15s;
 }
-.mic-btn:active{transform:scale(0.9)}
+.mic-btn:active{background:rgba(99,102,241,.08);color:#6366F1}
 .mic-btn.listening{
-  background:linear-gradient(135deg,#EF4444,#DC2626);
-  border-color:transparent;color:white;
+  color:white;background:#EF4444;
   animation:mic-pulse 1s ease-in-out infinite;
 }
-@keyframes mic-pulse{0%,100%{box-shadow:0 2px 18px rgba(239,68,68,.35);transform:scale(1)}50%{box-shadow:0 2px 30px rgba(239,68,68,.75);transform:scale(1.06)}}
+@keyframes mic-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 .send-btn{
-  width:52px;height:52px;background:linear-gradient(135deg,#06B6D4,#8B5CF6);
-  border:none;border-radius:50%;color:white;font-size:22px;
-  cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  transition:transform .1s;box-shadow:0 2px 16px rgba(6,182,212,.3);
+  width:40px;height:40px;
+  background:linear-gradient(135deg,#6366F1,#8B5CF6);
+  border:none;border-radius:50%;color:white;font-size:18px;
+  cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .1s;
+  box-shadow:0 2px 8px rgba(99,102,241,.3);
 }
-.send-btn:active{transform:scale(0.9)}
-.send-btn:disabled{opacity:.4;cursor:not-allowed}
-.voice-status{font-size:13px;font-weight:800;color:#06B6D4;min-height:18px;text-align:center}
+.send-btn:active{transform:scale(0.88)}
+.send-btn:disabled{opacity:.35;cursor:not-allowed}
 
-/* ── Speaking animation ── */
-.cosmo-avatar-small.speaking{animation:speaking-pulse .4s ease-in-out infinite}
-@keyframes speaking-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+/* Speaking animation */
+.cosmo-avatar-small.speaking{animation:speaking-pulse .5s ease-in-out infinite}
+@keyframes speaking-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-/* ── Float ── */
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+/* Offline banner */
+.offline-banner{
+  margin:8px 12px 0;padding:10px 14px;
+  background:#FFFBEB;border:1.5px solid #FCD34D;
+  border-radius:12px;font-size:13px;color:#92400E;
+  text-align:center;font-weight:700;flex-shrink:0;display:none;
+}
+.offline-banner.show{display:block}
 
-/* ── Bottom nav ── */
+/* Settings modal inputs */
+.setup-input{
+  width:100%;padding:15px 16px;
+  background:#F9FAFB;border:1.5px solid #E5E7EB;
+  border-radius:14px;color:#1E1B4B;font-size:15px;
+  font-family:'Nunito',sans-serif;outline:none;transition:border-color .2s;
+}
+.setup-input:focus{border-color:#6366F1;background:white}
+.setup-input::placeholder{color:#9CA3AF}
+.setup-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,#6366F1,#8B5CF6);
+  border:none;border-radius:14px;color:white;
+  font-size:17px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  box-shadow:0 4px 14px rgba(99,102,241,.35);
+}
+.setup-btn:active{transform:scale(0.97)}
+
+/* Bottom nav */
 .app-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:rgba(4,4,12,.92);backdrop-filter:blur(28px);
+  position:fixed;bottom:0;left:0;right:0;background:white;
   display:flex;justify-content:space-around;align-items:center;
-  padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));
-  border-top:1px solid rgba(255,255,255,.07);
+  padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  border-top:1px solid #ECEDF2;z-index:100;
 }
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:rgba(241,245,249,.4);transition:all .2s;padding:5px 10px;border-radius:12px}
-.nav-btn.active,.nav-btn:hover{color:#06B6D4}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  text-decoration:none;color:#9CA3AF;transition:all .2s;
+  padding:5px 10px;border-radius:12px;
+}
+.nav-btn.active{color:#6366F1}
 .nav-icon{font-size:22px;line-height:1}
 .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
-
-/* ── Settings modal ── */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:24px}
-.modal-overlay.open{display:flex}
-.modal-box{
-  background:rgba(10,10,28,.95);border:1px solid rgba(6,182,212,.25);
-  border-radius:24px;padding:28px 24px;width:100%;max-width:400px;
-  display:flex;flex-direction:column;gap:16px;text-align:center;
-  box-shadow:0 8px 40px rgba(6,182,212,.15);
-}
-.modal-robot{font-size:56px;animation:float 3s ease-in-out infinite}
-.modal-title{font-size:22px;font-weight:900;background:linear-gradient(90deg,#06B6D4,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.modal-sub{font-size:14px;color:rgba(241,245,249,.6);font-weight:700;line-height:1.6}
-.modal-input{
-  width:100%;padding:16px 18px;
-  background:rgba(255,255,255,.06);border:1.5px solid rgba(6,182,212,.25);
-  border-radius:14px;color:#F1F5F9;font-size:16px;font-family:inherit;
-  outline:none;transition:border-color .2s;text-align:left;
-}
-.modal-input:focus{border-color:#06B6D4}
-.modal-input::placeholder{color:rgba(241,245,249,.3)}
-.modal-btn{
-  width:100%;padding:16px;
-  background:linear-gradient(135deg,#06B6D4,#8B5CF6);
-  border:none;border-radius:14px;color:white;
-  font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;
-  box-shadow:0 4px 20px rgba(6,182,212,.3);transition:transform .1s;
-}
-.modal-btn:active{transform:scale(0.97)}
-.modal-note{font-size:11px;color:rgba(241,245,249,.35);font-weight:700}
-.modal-cancel{background:none;border:none;color:rgba(241,245,249,.4);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;padding:4px}
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script>
 <body>
 
-<!-- Stars injected by JS -->
-<script>
-(function(){
-  const colors=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
-  for(let i=0;i<140;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const sz=Math.random()*2.5+1;
-    const col=colors[Math.floor(Math.random()*colors.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};--dur:${(Math.random()*3+2).toFixed(1)}s;--delay:${(Math.random()*4).toFixed(1)}s;--lo:${(Math.random()*.2+.1).toFixed(2)};--hi:${(Math.random()*.5+.5).toFixed(2)}`;
-    document.body.appendChild(s);
-  }
-})();
-</script>
-
-<!-- Settings Modal -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal-box">
-    <div class="modal-robot">🤖</div>
-    <div class="modal-title">COSMO Setup</div>
-    <div class="modal-sub">Paste your Cloudflare Worker URL so COSMO can think!</div>
-    <input class="modal-input" type="url" id="workerUrlInput" placeholder="https://your-worker.workers.dev" autocomplete="off" autocapitalize="none">
-    <button class="modal-btn" onclick="saveWorkerUrl()">Save & Connect 🚀</button>
-    <div class="modal-note">🔒 Your API key stays private — never stored here</div>
-    <button class="modal-cancel" onclick="closeSettings()">Cancel</button>
+<!-- ── Settings Modal ── -->
+<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:white;border-radius:24px;padding:28px 22px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:14px;text-align:center">
+    <div style="font-size:44px">🤖</div>
+    <div style="font-size:20px;font-weight:900;color:#1E1B4B">COSMO Setup</div>
+    <div style="font-size:13px;color:#6B7280;font-weight:700;line-height:1.6">Paste your Cloudflare Worker URL so COSMO can think!</div>
+    <input class="setup-input" type="url" id="workerUrlInput" placeholder="https://your-worker.workers.dev" autocomplete="off" autocapitalize="none">
+    <button class="setup-btn" onclick="saveWorkerUrl()">Save & Connect 🚀</button>
+    <div style="font-size:11px;color:#9CA3AF;font-weight:700">🔒 Your API key stays private — never stored here</div>
+    <button onclick="closeSettings()" style="background:none;border:none;color:#9CA3AF;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;padding:4px">Cancel</button>
   </div>
 </div>
 
-<!-- Main App -->
-<div id="mainApp" style="display:flex;flex-direction:column;flex:1;min-height:0">
+<!-- ── Main App ── -->
+<div id="mainApp" style="display:flex">
+
   <div class="cosmo-header">
     <div class="header-left">
       <div class="cosmo-avatar-small" id="cosmoAvatar">🤖</div>
@@ -253,34 +250,58 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
         <div class="cosmo-status" id="cosmoStatus">Ready to learn! ✨</div>
       </div>
     </div>
-    <button class="settings-btn" onclick="openSettings()" title="Change Worker URL">⚙️</button>
+    <button class="settings-btn" onclick="openSettings()">⚙️</button>
   </div>
 
-  <div class="offline-banner" id="offlineBanner">⚡ COSMO is offline — tap ⚙️ to connect.</div>
+  <div class="offline-banner" id="offlineBanner">⚡ No connection — tap ⚙️ to set up COSMO.</div>
 
+  <!-- Empty state: shown until first message -->
+  <div id="emptyState">
+    <div class="empty-avatar">🤖</div>
+    <div class="empty-title">Hey Cassian! 👋</div>
+    <div class="empty-sub">Ask me anything —<br>I love big questions!</div>
+    <div class="suggestion-grid">
+      <button class="suggestion-card" onclick="sendChip('What\'s a cool math fact?')">
+        <span class="sc-emoji">🔢</span>
+        <span class="sc-text">Cool math fact!</span>
+      </button>
+      <button class="suggestion-card" onclick="sendChip('Give me a chess tip!')">
+        <span class="sc-emoji">♟️</span>
+        <span class="sc-text">Chess tip!</span>
+      </button>
+      <button class="suggestion-card" onclick="sendChip('What\'s the biggest number?')">
+        <span class="sc-emoji">🤯</span>
+        <span class="sc-text">Biggest number?</span>
+      </button>
+      <button class="suggestion-card" onclick="sendChip('Tell me a funny joke!')">
+        <span class="sc-emoji">😂</span>
+        <span class="sc-text">Funny joke!</span>
+      </button>
+      <button class="suggestion-card" onclick="sendChip('Tell me about prime numbers!')">
+        <span class="sc-emoji">🌟</span>
+        <span class="sc-text">Prime numbers!</span>
+      </button>
+      <button class="suggestion-card" onclick="sendChip('How do robots move?')">
+        <span class="sc-emoji">🤖</span>
+        <span class="sc-text">How robots move!</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages: hidden until Cassian sends first message -->
   <div class="messages-area" id="messagesArea"></div>
-
-  <div class="quick-row" id="quickRow">
-    <button class="chip" onclick="sendChip('What\'s a cool math fact? 🔢')">Cool math fact! 🔢</button>
-    <button class="chip" onclick="sendChip('Tell me about Italy! 🇮🇹')">Italy facts! 🇮🇹</button>
-    <button class="chip" onclick="sendChip('Give me a chess tip! ♟️')">Chess tip! ♟️</button>
-    <button class="chip" onclick="sendChip('What\'s the biggest number? 🤯')">Biggest number? 🤯</button>
-    <button class="chip" onclick="sendChip('Tell me a fun joke! 😂')">Funny joke! 😂</button>
-    <button class="chip" onclick="sendChip('What are prime numbers? 🌟')">Prime numbers! 🌟</button>
-    <button class="chip" onclick="sendChip('How do robots move? 🤖')">How robots move! 🤖</button>
-    <button class="chip" onclick="sendChip('What is Bitcoin? ₿')">What is Bitcoin? ₿</button>
-  </div>
 
   <div class="input-area">
     <div class="voice-status" id="voiceStatus"></div>
     <div class="text-row" id="textRow">
-      <textarea class="chat-input" id="chatInput" placeholder="Ask COSMO anything! 🤖" rows="1"
+      <textarea class="chat-input" id="chatInput" placeholder="Ask COSMO anything..." rows="1"
         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendText()}"
         oninput="autoResize(this)"></textarea>
       <button class="mic-btn" id="micBtn" onclick="toggleVoice()">🎙️</button>
       <button class="send-btn" id="sendBtn" onclick="sendText()">➤</button>
     </div>
   </div>
+
 </div>
 
 <nav class="app-nav">
@@ -316,8 +337,10 @@ let messages = [];
 let isListening = false;
 let isSpeaking = false;
 let recognition = null;
+let keyboardMode = false;
 let thinkingEl = null;
 let demoMode = false;
+let chatStarted = false;
 
 // ════════════════════════════════
 // INIT
@@ -330,13 +353,18 @@ function init() {
 }
 
 function startApp() {
-  const welcome = `Hey Cassian! I'm COSMO, your learning buddy! 🤖⭐\n\nAsk me ANYTHING — math, chess, Italy, space, animals, robots! 🌍\n\nTap a button below, or type your question, or use the mic 🎙️`;
-  addMessageDisplay('cosmo', welcome);
   setupVoiceRecognition();
+  // Empty state shows by default — no bubble on load
+}
+
+function startDemoMode() {
+  demoMode = true;
+  closeSettings();
+  startApp();
 }
 
 // ════════════════════════════════
-// DEMO MODE — offline math responses
+// DEMO MODE — offline smart responses
 // ════════════════════════════════
 function isPrimeNum(n) {
   if (n < 2) return false;
@@ -352,6 +380,7 @@ function getDemoFactors(n) {
 }
 function getDemoReply(text) {
   const t = text.toLowerCase().trim();
+
   const arith = text.match(/(\d+(?:\.\d+)?)\s*([+\-×x*÷\/])\s*(\d+(?:\.\d+)?)/);
   if (arith) {
     const [, a, op, b] = arith;
@@ -363,23 +392,34 @@ function getDemoReply(text) {
     else if (op === '÷' || op === '/') { result = n2 ? +(n1/n2).toFixed(4) : 'infinity'; opWord = 'divided by'; }
     if (result !== undefined) return `${a} ${opWord} ${b} = ${result}! 🔢`;
   }
+
   const timesQ = text.match(/(\d+)\s*(?:times|×|multiplied\s*by)\s*(\d+)/i);
   if (timesQ) return `${timesQ[1]} times ${timesQ[2]} = ${+timesQ[1] * +timesQ[2]}! 💪`;
+
   const numQ = text.match(/(?:about|what(?:'?s|\s+is)|tell\s+me|explain|is)\s+(\d+)/i);
   if (numQ) {
     const n = parseInt(numQ[1]);
     const facts = [];
     if (isPrimeNum(n)) facts.push(`${n} is prime — only 1 and ${n} divide it!`);
-    else { const fs = getDemoFactors(n); facts.push(`Factors of ${n}: ${fs.join(', ')}.`); }
+    else {
+      const fs = getDemoFactors(n);
+      facts.push(`Factors of ${n}: ${fs.join(', ')}.`);
+    }
     const sq = Math.sqrt(n);
     if (sq === Math.floor(sq)) facts.push(`${sq} × ${sq} = ${n} — a perfect square!`);
     facts.push(n % 2 === 0 ? `${n} is even.` : `${n} is odd.`);
     return facts.join(' ') + ' 🔢';
   }
+
   if (t.includes('fibonacci')) return `Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55… each number is the sum of the two before it! 🌀`;
-  if (t.includes('prime')) return `Prime numbers can only be divided by 1 and themselves — like 2, 3, 5, 7, 11, 13… they go on forever! 🔴`;
+  if (t.includes('prime')) return `Prime numbers can only be divided by 1 and themselves — like 2, 3, 5, 7, 11, 13, 17, 19, 23… they go on forever! 🔴`;
+
   const countQ = text.match(/count\s+to\s+(\d+)/i);
-  if (countQ) { const n = Math.min(parseInt(countQ[1]), 20); return Array.from({length:n},(_,i)=>i+1).join(', ') + '! 🎉'; }
+  if (countQ) {
+    const n = Math.min(parseInt(countQ[1]), 20);
+    return Array.from({length:n},(_,i)=>i+1).join(', ') + '! 🎉';
+  }
+
   const defaults = [
     "I'm in sleep mode 💤 but I can do math! Try asking '12 × 8' or 'tell me about 17'!",
     "Ooh, that's deep! Ask dad to tap ⚙️ and wake me up fully. For now, try a math question! 🔢",
@@ -390,12 +430,15 @@ function getDemoReply(text) {
 
 function openSettings() {
   document.getElementById('workerUrlInput').value = workerUrl || '';
-  document.getElementById('settingsModal').classList.add('open');
+  const m = document.getElementById('settingsModal');
+  m.style.display = 'flex';
   setTimeout(() => document.getElementById('workerUrlInput').focus(), 100);
 }
+
 function closeSettings() {
-  document.getElementById('settingsModal').classList.remove('open');
+  document.getElementById('settingsModal').style.display = 'none';
 }
+
 function saveWorkerUrl() {
   const url = document.getElementById('workerUrlInput').value.trim();
   if (!url) return;
@@ -409,16 +452,34 @@ function saveWorkerUrl() {
   addMessageDisplay('cosmo', `I'm connected! Now I can answer ANYTHING! 🤖⭐`);
 }
 
+function resetWorker() {
+  localStorage.removeItem('cosmo_worker_url');
+  workerUrl = '';
+  messages = [];
+  openSettings();
+}
+
 // ════════════════════════════════
 // MESSAGES
 // ════════════════════════════════
+
+function showChatArea() {
+  if (!chatStarted) {
+    chatStarted = true;
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('messagesArea').classList.add('active');
+  }
+}
+
 function addMessage(role, text) {
+  showChatArea();
   addMessageDisplay(role, text);
   messages.push({role: role === 'cosmo' ? 'assistant' : 'user', content: text});
   if (messages.length > 40) messages = messages.slice(-40);
 }
 
 function addMessageDisplay(role, text) {
+  showChatArea();
   const area = document.getElementById('messagesArea');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
@@ -442,17 +503,22 @@ function setAvatarMood(emoji) {
 
 function showThinking() {
   setAvatarMood('🧠');
+  showChatArea();
   const area = document.getElementById('messagesArea');
   thinkingEl = document.createElement('div');
   thinkingEl.className = 'thinking-row';
-  thinkingEl.innerHTML = `<div class="msg-avatar" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6)">🧠</div><div class="thinking-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  thinkingEl.innerHTML = `<div class="msg-avatar" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">🧠</div><div class="thinking-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
   area.appendChild(thinkingEl);
   area.scrollTop = area.scrollHeight;
 }
 
 function hideThinkingAndResetAvatar() {
-  if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
+  hideThinking();
   setAvatarMood('🤖');
+}
+
+function hideThinking() {
+  if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
 }
 
 // ════════════════════════════════
@@ -462,7 +528,7 @@ function setupVoiceRecognition() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec) {
     document.getElementById('micBtn').style.display = 'none';
-    document.getElementById('voiceStatus').textContent = '⌨️ Type your question below!';
+    document.getElementById('voiceStatus').textContent = '⌨️ Type your question!';
     return;
   }
   recognition = new SpeechRec();
@@ -479,23 +545,31 @@ function setupVoiceRecognition() {
     setAvatarMood('👂');
     setStatus('Listening... 👂');
   };
+
   recognition.onresult = (e) => {
     let transcript = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) transcript += e.results[i][0].transcript;
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      transcript += e.results[i][0].transcript;
+    }
     document.getElementById('voiceStatus').textContent = '🗣️ ' + transcript;
     if (e.results[e.results.length - 1].isFinal) {
       stopListening();
       if (transcript.trim()) sendMessage(transcript.trim());
     }
   };
+
   recognition.onerror = (e) => {
     stopListening();
-    if (e.error === 'not-allowed') { document.getElementById('voiceStatus').textContent = '🎙️ Tap Settings → allow microphone for Safari'; return; }
+    if (e.error === 'not-allowed') {
+      document.getElementById('voiceStatus').textContent = '🎙️ Allow microphone in Settings';
+      return;
+    }
     if (e.error !== 'aborted' && e.error !== 'no-speech') {
       document.getElementById('voiceStatus').textContent = '❌ Didn\'t catch that — try again!';
       setTimeout(() => document.getElementById('voiceStatus').textContent = '', 2000);
     }
   };
+
   recognition.onend = () => { if (isListening) stopListening(); };
 }
 
@@ -515,6 +589,10 @@ function stopListening() {
   setTimeout(() => { document.getElementById('voiceStatus').textContent = ''; }, 1500);
 }
 
+function toggleKeyboard() {
+  document.getElementById('chatInput').focus();
+}
+
 // ════════════════════════════════
 // SEND MESSAGE
 // ════════════════════════════════
@@ -530,26 +608,27 @@ function sendText() {
 
 async function sendMessage(text) {
   addMessage('cassian', text);
-  document.getElementById('quickRow').style.display = 'none';
 
-  // Demo / offline fallback
   if (!workerUrl) {
-    showThinking();
-    setStatus('Thinking... 🧠');
-    await new Promise(r => setTimeout(r, 500));
-    hideThinkingAndResetAvatar();
-    const reply = getDemoReply(text);
-    addMessage('cosmo', reply);
-    speakReply(reply);
-    setStatus('Ready to learn! ✨');
-    document.getElementById('quickRow').style.display = 'flex';
+    if (demoMode) {
+      showThinking();
+      setStatus('Thinking... 🧠');
+      await new Promise(r => setTimeout(r, 500));
+      hideThinkingAndResetAvatar();
+      const reply = getDemoReply(text);
+      addMessage('cosmo', reply);
+      speakReply(reply);
+      setStatus('Ready to learn! ✨');
+      return;
+    }
+    document.getElementById('offlineBanner').classList.add('show');
+    addMessageDisplay('cosmo', "I need my Worker URL to think! Tap ⚙️ to set me up! 🔧");
     return;
   }
 
   showThinking();
   setStatus('Thinking... 🧠');
   document.getElementById('micBtn').disabled = true;
-  document.getElementById('sendBtn').disabled = true;
 
   try {
     const res = await fetch(`${workerUrl}/chat`, {
@@ -569,23 +648,20 @@ async function sendMessage(text) {
       addMessage('cosmo', reply);
       speakReply(reply);
       setStatus('Ready to learn! ✨');
-      document.getElementById('quickRow').style.display = 'flex';
     } else {
       const errMsg = data?.error?.message || data?.error || data?.message || JSON.stringify(data);
       console.error('COSMO API error:', data);
+      setAvatarMood('🤖');
       addMessage('cosmo', `Hmm, my brain glitched! 🤖\n\n(Error: ${errMsg})`);
       setStatus('API error ⚡');
-      document.getElementById('quickRow').style.display = 'flex';
     }
   } catch(err) {
     hideThinkingAndResetAvatar();
     console.error('COSMO fetch error:', err);
-    addMessage('cosmo', `Oops! Connection hiccup 🤔\n\n(${err.message})`);
+    addMessage('cosmo', `Oops! I had a little hiccup 🤔\n\n(${err.message})`);
     setStatus('Connection error ⚡');
-    document.getElementById('quickRow').style.display = 'flex';
   } finally {
     document.getElementById('micBtn').disabled = false;
-    document.getElementById('sendBtn').disabled = false;
   }
 }
 
@@ -596,17 +672,20 @@ function speakReply(text) {
   if (!('speechSynthesis' in window)) return;
   const clean = text.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[🎉✨🔢🧠🎙️🤖⭐🌍♟️😊₿]/g, '').replace(/<br>/g, ' ').trim();
   if (!clean) return;
+
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(clean);
   u.lang = 'en-US';
   u.rate = 1.08;
   u.pitch = 1.0;
+
   const voices = window.speechSynthesis.getVoices();
   const preferred = voices.find(v => v.name === 'Samantha')
     || voices.find(v => v.name === 'Alex')
     || voices.find(v => v.name.includes('Daniel') && v.lang.startsWith('en'))
     || voices.find(v => v.lang === 'en-US' && !v.name.includes('Compact') && !v.name.includes('Eddy'));
   if (preferred) u.voice = preferred;
+
   const avatar = document.getElementById('cosmoAvatar');
   u.onstart = () => { isSpeaking = true; avatar.classList.add('speaking'); setAvatarMood('😄'); setStatus('Speaking... 🗣️'); };
   u.onend = () => { isSpeaking = false; avatar.classList.remove('speaking'); setAvatarMood('🤖'); setStatus('Ready to learn! ✨'); };
@@ -617,7 +696,7 @@ function setStatus(s) { document.getElementById('cosmoStatus').textContent = s; 
 
 function autoResize(el) {
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
 }
 
 if ('speechSynthesis' in window) {
