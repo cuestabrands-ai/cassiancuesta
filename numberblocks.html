@@ -7,62 +7,398 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cassian">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<title>Numberblocks 🔢 — Cassian's Super App</title>
+<title>Number Explorer 🔢 — Cassian's App</title>
 <link rel="manifest" href="/manifest.json">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#0a0a1a}
-body{display:flex;flex-direction:column;height:100dvh}
-.game-frame{flex:1;min-height:0;position:relative}
-.game-frame iframe{width:100%;height:100%;border:none;display:block}
-/* Setup screen */
-.setup{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:white;font-family:system-ui,sans-serif;gap:10px}
-.setup h2{font-size:22px;font-weight:800;color:#00d4ff;margin-bottom:4px}
-.setup p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;max-width:340px}
-.setup .step{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:13px 16px;font-size:14px;text-align:left;width:100%;max-width:340px}
-.setup .step strong{color:#00d4ff}
-.setup button{margin-top:8px;padding:12px 32px;border-radius:50px;background:linear-gradient(135deg,#00d4ff,#8b5cf6);border:none;color:white;font-size:15px;font-weight:800;cursor:pointer;font-family:system-ui}
-/* Nav */
-.app-nav{background:rgba(10,8,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:100;flex-shrink:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:100%}
+body{font-family:system-ui,'SF Pro Display',sans-serif;background:#0a0a1a;color:white;display:flex;flex-direction:column;height:100dvh;overflow:hidden;user-select:none}
+
+/* ── Scroll area ── */
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+
+/* ── Header ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase}
+.xp-badge{background:linear-gradient(135deg,#00d4ff,#8b5cf6);border-radius:50px;padding:5px 14px;font-size:13px;font-weight:900;letter-spacing:.3px}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:4px 0 0}
+.hero-num{font-size:108px;font-weight:900;line-height:1;transition:color .25s;letter-spacing:-4px;font-variant-numeric:tabular-nums}
+.hero-name{font-size:16px;font-weight:800;color:rgba(255,255,255,.4);margin-top:2px;letter-spacing:2px;text-transform:uppercase;min-height:22px}
+
+/* ── Blocks ── */
+.blocks-wrap{
+  display:flex;justify-content:center;align-items:flex-end;
+  min-height:80px;
+  gap:4px;padding:12px 12px 4px;
+  flex-wrap:nowrap;overflow:hidden;
+}
+.block-col{display:flex;flex-direction:column-reverse;gap:3px;flex-shrink:0}
+.blk{border-radius:5px;flex-shrink:0;transition:background .25s}
+
+/* Hundreds representation */
+.place-wrap{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:12px 16px 4px;min-height:80px}
+.place-group{display:flex;flex-direction:column;align-items:center;gap:5px}
+.place-label{font-size:10px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+.place-block{border-radius:8px}
+
+/* ── Nav row ── */
+.num-nav{display:flex;gap:12px;justify-content:center;align-items:center;padding:10px 0}
+.arr-btn{
+  width:58px;height:58px;border-radius:50%;
+  background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12);
+  color:white;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  touch-action:manipulation;transition:all .12s;
+  -webkit-appearance:none;
+}
+.arr-btn:active{transform:scale(.88);background:rgba(255,255,255,.15)}
+.num-pill{
+  background:rgba(255,255,255,.09);border:2px solid rgba(255,255,255,.15);
+  border-radius:16px;color:white;font-size:30px;font-weight:900;
+  width:96px;text-align:center;padding:9px;
+  -webkit-appearance:none;outline:none;font-family:inherit;
+}
+.num-pill:focus{border-color:#00d4ff}
+
+/* ── Clubs ── */
+.clubs{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:2px 12px 10px}
+.club{border-radius:50px;padding:6px 14px;font-size:12px;font-weight:800;letter-spacing:.3px;border:1.5px solid}
+
+/* ── Cards ── */
+.card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px 18px;margin:0 12px 12px}
+.card-title{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px}
+.fact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;font-size:14px;line-height:1.55;font-weight:600;color:rgba(255,255,255,.85)}
+.fact-icon{font-size:17px;flex-shrink:0;line-height:1.3}
+
+/* Times table grid */
+.times-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.tc{background:rgba(255,255,255,.06);border-radius:10px;padding:7px 4px;text-align:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.4)}
+.tc b{display:block;font-size:16px;font-weight:900;margin-top:2px}
+
+/* ── Number grid ── */
+.grid-hdr{font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);text-align:center;padding:4px 0 10px}
+.num-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;padding:0 12px 24px}
+.ng-btn{
+  aspect-ratio:1;border-radius:8px;
+  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.07);
+  color:rgba(255,255,255,.45);font-size:11px;font-weight:800;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  touch-action:manipulation;transition:all .12s;
+  -webkit-appearance:none;font-family:inherit;
+}
+.ng-btn:active{transform:scale(.88)}
+.ng-btn.visited{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.15)}
+.ng-btn.current{border-width:2px;font-size:12px}
+
+/* ── Bottom nav ── */
+.app-nav{background:rgba(10,8,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);flex-shrink:0}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
 .nav-btn:hover,.nav-btn.active{color:#00d4ff}
 .nav-icon{font-size:22px;line-height:1}
-.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:system-ui}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:inherit}
+
+@keyframes popIn{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.pop{animation:popIn .18s cubic-bezier(.34,1.56,.64,1) both}
 </style>
 </head>
-<script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
-<div class="game-frame" id="gameFrame">
-  <iframe src="nb-scratch.html" id="nbFrame" allowfullscreen title="Numberblocks"></iframe>
+<script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script>
+<body>
+
+<div class="hdr">
+  <div class="hdr-title">Number Explorer</div>
+  <div class="xp-badge" id="xpBadge">⭐ 0 XP</div>
 </div>
+
+<div class="scroll" id="mainScroll">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-num" id="heroNum">1</div>
+    <div class="hero-name" id="heroName">ONE</div>
+  </div>
+
+  <!-- Blocks (rebuilt per number) -->
+  <div id="blocksContainer"></div>
+
+  <!-- Navigation -->
+  <div class="num-nav">
+    <button class="arr-btn" onclick="go(-1)" aria-label="Previous">◀</button>
+    <input class="num-pill" type="number" id="numPill" value="1" min="1" max="9999"
+      onchange="goTo(+this.value)" inputmode="numeric">
+    <button class="arr-btn" onclick="go(+1)" aria-label="Next">▶</button>
+  </div>
+
+  <!-- Club badges -->
+  <div class="clubs" id="clubsRow"></div>
+
+  <!-- Facts card -->
+  <div class="card" id="factsCard"></div>
+
+  <!-- Times table -->
+  <div class="card" id="timesCard"></div>
+
+  <!-- 1–100 grid -->
+  <div class="grid-hdr">TAP ANY NUMBER</div>
+  <div class="num-grid" id="numGrid"></div>
+
+</div>
+
 <nav class="app-nav">
   <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
   <a href="numberblocks.html" class="nav-btn active"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
-  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
   <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
+
 <script>
-if(window.location.protocol==='file:'){
-  // On file:// protocol, fetch is blocked — just trust the iframe to load
-  // If nb-scratch.html is missing, the iframe will be blank (acceptable)
-} else {
-  fetch('nb-scratch.html',{method:'HEAD'})
-    .then(r=>{if(!r.ok)showSetup();})
-    .catch(()=>showSetup());
+// ══════════════════════════════
+//  COLOURS — Numberblocks-inspired
+// ══════════════════════════════
+const NB_COL={1:'#FF3B30',2:'#FF9500',3:'#FFCC00',4:'#34C759',5:'#00C7D4',6:'#AF52DE',7:'#FF2D55',8:'#FF6B9D',9:'#007AFF',10:'#5AC8FA'};
+const PALETTE=['#FF6B6B','#FFA94D','#FFD43B','#69DB7C','#4DABF7','#CC5DE8','#F783AC','#63E6BE','#A9E34B','#74C0FC','#FF8787','#DA77F2','#38D9A9','#FFD8A8','#91A7FF'];
+function getColor(n){return NB_COL[n]||PALETTE[n%PALETTE.length];}
+
+// ══════════════════════════════
+//  MATH HELPERS
+// ══════════════════════════════
+function isPrime(n){if(n<2)return false;if(n===2)return true;if(n%2===0)return false;for(let i=3;i<=Math.sqrt(n);i+=2)if(n%i===0)return false;return true;}
+function isSquare(n){const s=Math.sqrt(n);return s===Math.floor(s);}
+function isCube(n){if(n<2)return false;const c=Math.round(Math.cbrt(n));return c*c*c===n;}
+function isTriangular(n){const d=1+8*n;const s=Math.sqrt(d);return s===Math.floor(s);}
+function isFibonacci(n){return isSquare(5*n*n+4)||isSquare(5*n*n-4);}
+function getFactors(n){const f=[];for(let i=1;i<=Math.min(n,10000);i++)if(n%i===0)f.push(i);return f;}
+function getPrimeFactors(n){const f=[];let d=2;while(d*d<=n){while(n%d===0){f.push(d);n/=d;}d++;}if(n>1)f.push(n);return f;}
+function getBestLayout(n){
+  if(n===1)return{cols:1,rows:1};
+  if(isPrime(n))return{cols:1,rows:n};
+  if(isSquare(n)){const s=Math.sqrt(n);return{cols:s,rows:s};}
+  let best={cols:1,rows:n,ratio:n};
+  for(let c=2;c<=Math.sqrt(n);c++){if(n%c===0){const r=n/c;const ratio=Math.max(c,r)/Math.min(c,r);if(ratio<best.ratio)best={cols:c,rows:r,ratio};}}
+  return{cols:best.cols,rows:best.rows};
 }
-function showSetup(){
-  document.getElementById('gameFrame').innerHTML=`
-    <div class="setup">
-      <div style="font-size:52px">🔢</div>
-      <h2>One Setup Step Needed</h2>
-      <p>The Numberblocks game file needs to be downloaded once. Here's how:</p>
-      <div class="step"><strong>Step 1:</strong> Go to <strong>packager.turbowarp.org</strong> on a computer</div>
-      <div class="step"><strong>Step 2:</strong> Enter project ID <strong style="color:#A29BFE;font-size:17px">1291946676</strong> and click Load</div>
-      <div class="step"><strong>Step 3:</strong> Output → HTML file → Package → download</div>
-      <div class="step"><strong>Step 4:</strong> Rename the file to <strong>nb-scratch.html</strong> and put it in the Cassian app folder</div>
-      <button onclick="location.reload()">Tap here after setup ✓</button>
-    </div>`;
+
+// ══════════════════════════════
+//  NUMBER NAMES
+// ══════════════════════════════
+const ONES=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const TENS=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+function numName(n){
+  if(n<=0)return'zero';
+  if(n<=19)return ONES[n];
+  if(n<100)return TENS[Math.floor(n/10)]+(n%10?'-'+ONES[n%10]:'');
+  if(n<1000)return ONES[Math.floor(n/100)]+' hundred'+(n%100?' '+numName(n%100):'');
+  if(n<10000)return ONES[Math.floor(n/1000)]+' thousand'+(n%1000?' '+numName(n%1000):'');
+  return n.toLocaleString();
 }
+
+// ══════════════════════════════
+//  STATE
+// ══════════════════════════════
+let current=+(localStorage.getItem('nb_n')||1);
+let visited=new Set(JSON.parse(localStorage.getItem('nb_visited')||'[]'));
+let xp=+(localStorage.getItem('nb_xp')||0);
+
+// ══════════════════════════════
+//  RENDER
+// ══════════════════════════════
+function render(n){
+  n=Math.max(1,Math.min(9999,Math.floor(+n)||1));
+  current=n;
+  localStorage.setItem('nb_n',n);
+
+  const col=getColor(n);
+
+  // XP for new numbers
+  if(!visited.has(n)){
+    visited.add(n);
+    xp+=10;
+    localStorage.setItem('nb_xp',xp);
+    localStorage.setItem('nb_visited',JSON.stringify([...visited]));
+  }
+  document.getElementById('xpBadge').textContent='⭐ '+xp+' XP';
+
+  // Hero
+  const heroEl=document.getElementById('heroNum');
+  heroEl.textContent=n;
+  heroEl.style.color=col;
+  document.getElementById('heroName').textContent=numName(n).toUpperCase();
+  const pill=document.getElementById('numPill');
+  if(document.activeElement!==pill) pill.value=n;
+
+  renderBlocks(n,col);
+  renderClubs(n,col);
+  renderFacts(n,col);
+  renderTimes(n,col);
+
+  // Grid highlight
+  document.querySelectorAll('.ng-btn').forEach(b=>{
+    const bn=+b.dataset.n;
+    b.classList.toggle('current',bn===n);
+    if(bn===n){b.style.borderColor=col;b.style.color=col;}
+    else{b.style.borderColor='';b.style.color='';}
+  });
+}
+
+function renderBlocks(n,col){
+  const container=document.getElementById('blocksContainer');
+  container.innerHTML='';
+
+  if(n<=100){
+    const wrap=document.createElement('div');
+    wrap.className='blocks-wrap';
+    const sz=n<=5?52:n<=10?44:n<=20?36:n<=36?28:n<=64?22:16;
+    const gap=sz<=22?2:3;
+    wrap.style.gap=gap+'px';
+
+    const{cols,rows}=getBestLayout(n);
+    let idx=0;
+    for(let c=0;c<cols;c++){
+      const colEl=document.createElement('div');
+      colEl.className='block-col';
+      colEl.style.gap=gap+'px';
+      for(let r=0;r<rows;r++){
+        const blk=document.createElement('div');
+        blk.className='blk pop';
+        blk.style.cssText=`width:${sz}px;height:${sz}px;background:${col};box-shadow:0 2px 8px ${col}55;animation-delay:${(idx*0.015).toFixed(3)}s`;
+        colEl.appendChild(blk);
+        idx++;
+      }
+      wrap.appendChild(colEl);
+    }
+    container.appendChild(wrap);
+  } else {
+    // Place-value visual for n > 100
+    const wrap=document.createElement('div');
+    wrap.className='place-wrap';
+    const h=Math.floor(n/100);
+    const t=Math.floor((n%100)/10);
+    const o=n%10;
+
+    const addPlace=(count,label,size,alpha)=>{
+      if(!count)return;
+      const g=document.createElement('div');
+      g.className='place-group';
+      const show=Math.min(count,9);
+      for(let i=0;i<show;i++){
+        const b=document.createElement('div');
+        b.className='blk place-block pop';
+        b.style.cssText=`width:${size}px;height:${size}px;background:${col};opacity:${alpha};box-shadow:0 2px 8px ${col}44;animation-delay:${(i*0.04).toFixed(2)}s`;
+        g.appendChild(b);
+      }
+      if(count>9){
+        const m=document.createElement('div');
+        m.style.cssText='font-size:12px;font-weight:900;color:'+col;
+        m.textContent='×'+count;
+        g.appendChild(m);
+      }
+      const lbl=document.createElement('div');
+      lbl.className='place-label';
+      lbl.textContent=label;
+      g.appendChild(lbl);
+      wrap.appendChild(g);
+    };
+
+    addPlace(h,'hundreds',42,1);
+    addPlace(t,'tens',28,.8);
+    addPlace(o,'ones',18,.6);
+    container.appendChild(wrap);
+  }
+}
+
+function renderClubs(n,col){
+  const cl=[];
+  if(n===1)cl.push({i:'👑',name:'The Original',bg:'rgba(255,215,0,.15)',bc:'rgba(255,215,0,.5)'});
+  if(isPrime(n))cl.push({i:'🔴',name:'Prime Club',bg:'rgba(255,59,48,.15)',bc:'rgba(255,59,48,.5)'});
+  if(isSquare(n)&&n>1)cl.push({i:'⬛',name:'Square Club',bg:'rgba(255,204,0,.15)',bc:'rgba(255,204,0,.5)'});
+  if(isCube(n))cl.push({i:'🎲',name:'Cube Club',bg:'rgba(175,82,222,.18)',bc:'rgba(175,82,222,.5)'});
+  if(isTriangular(n)&&n>1)cl.push({i:'🔺',name:'Triangle Club',bg:'rgba(0,212,255,.12)',bc:'rgba(0,212,255,.4)'});
+  if(isFibonacci(n)&&n>1)cl.push({i:'🌀',name:'Fibonacci',bg:'rgba(52,199,89,.12)',bc:'rgba(52,199,89,.4)'});
+  if(n%2===0)cl.push({i:'💙',name:'Even Club',bg:'rgba(0,122,255,.12)',bc:'rgba(0,122,255,.4)'});
+  else cl.push({i:'🟠',name:'Odd Club',bg:'rgba(255,149,0,.12)',bc:'rgba(255,149,0,.4)'});
+  if(n%10===0)cl.push({i:'💎',name:'Tens Club',bg:'rgba(90,200,250,.12)',bc:'rgba(90,200,250,.4)'});
+
+  document.getElementById('clubsRow').innerHTML=cl.map(c=>
+    `<div class="club" style="background:${c.bg};border-color:${c.bc};color:white">${c.i} ${c.name}</div>`
+  ).join('');
+}
+
+const FUN={1:"The only number that's neither prime nor composite — it's the original!",2:"The only even prime! Every other prime is odd.",3:"Three sides make a triangle. 1+2=3 — the first triangle number!",4:"2×2=4. The first perfect square after 1!",5:"You have 5 fingers on each hand!",6:"First 'perfect' number — its factors 1+2+3 add up to 6!",7:"Lucky 7! The world's most popular favourite number.",8:"2×2×2=8. The first perfect cube after 1!",9:"3×3=9. Multiply anything by 9: add its digits and you get 9!",10:"Base of our number system — we count in groups of 10!",11:"Palindrome prime — same forwards and backwards!",12:"Most divisible 2-digit number: divided by 1,2,3,4,6,12!",13:"Unlucky for some… but 13 is a prime!",17:"Studies show people feel 17 is the most 'random' number!",28:"Second perfect number: 1+2+4+7+14 = 28!",37:"Mathematicians love 37 — it pops up in many cool patterns.",42:"The 'Answer to Life, the Universe, and Everything' in a famous book!",100:"TEN TENS! 10×10=100. You made it to 100! 🎉",144:"12×12=144. A 'gross' — a dozen dozens.",256:"2 to the power of 8! Computers love 256.",360:"A full circle has 360 degrees!",1000:"TEN HUNDREDS! 10×10×10=1000. One thousand!"};
+
+function renderFacts(n,col){
+  const factors=getFactors(n);
+  const parts=[];
+
+  if(isPrime(n)){
+    parts.push({i:'🔴',t:`<strong>${n}</strong> is a <strong>prime number</strong> — only 1 and ${n} can divide it. Super special!`});
+  } else if(n>1){
+    const shown=factors.length>12?factors.slice(0,12).join(', ')+'…':factors.join(', ');
+    parts.push({i:'✂️',t:`<strong>Factors of ${n}:</strong> ${shown} — ${factors.length} ways to divide it!`});
+  }
+  if(isSquare(n)&&n>1){const s=Math.sqrt(n);parts.push({i:'⬛',t:`<strong>${s} × ${s} = ${n}</strong> — a perfect square!`});}
+  if(isCube(n)){const c=Math.round(Math.cbrt(n));parts.push({i:'🎲',t:`<strong>${c} × ${c} × ${c} = ${n}</strong> — a perfect cube!`});}
+  if(isTriangular(n)&&n>1){const k=Math.round((-1+Math.sqrt(1+8*n))/2);parts.push({i:'🔺',t:`Triangle number! Count rows 1 to ${k}: 1+2+…+${k} = ${n}`});}
+  if(isFibonacci(n)&&n>1){parts.push({i:'🌀',t:`Fibonacci number! Found in: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55…`});}
+  if(n>1&&!isPrime(n)){const pf=getPrimeFactors(n);if(pf.length>1)parts.push({i:'🧩',t:`Prime factors: <strong>${pf.join(' × ')}</strong>`});}
+  const divs=[2,3,4,5,6,8,9,10].filter(d=>n>d&&n%d===0);
+  if(divs.length)parts.push({i:'➗',t:`Divisible by: <strong>${divs.join(', ')}</strong>`});
+  if(FUN[n])parts.push({i:'💡',t:FUN[n]});
+  if(!parts.length)parts.push({i:'🔢',t:`${n} is a big number! It has ${factors.length} factor${factors.length!==1?'s':''}.`});
+
+  document.getElementById('factsCard').innerHTML=
+    `<div class="card-title">Facts about ${n}</div>`+
+    parts.map(p=>`<div class="fact-item"><span class="fact-icon">${p.i}</span><span>${p.t}</span></div>`).join('');
+}
+
+function renderTimes(n,col){
+  const card=document.getElementById('timesCard');
+  if(n>500){card.innerHTML='';return;}
+  card.innerHTML=`<div class="card-title">${n} times table</div><div class="times-grid">`+
+    Array.from({length:10},(_,i)=>`<div class="tc">${n}×${i+1}<b style="color:${col}">${n*(i+1)}</b></div>`).join('')+
+    '</div>';
+}
+
+// ══════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════
+function go(dir){goTo(current+dir);}
+function goTo(n){
+  n=Math.max(1,Math.min(9999,Math.floor(+n)||1));
+  render(n);
+  document.getElementById('mainScroll').scrollTop=0;
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowRight'||e.key==='ArrowUp')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown')go(-1);
+});
+
+let _tx=0;
+document.getElementById('blocksContainer').addEventListener('touchstart',e=>{_tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('blocksContainer').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-_tx;
+  if(Math.abs(dx)>50)go(dx<0?1:-1);
+},{passive:true});
+
+// ══════════════════════════════
+//  NUMBER GRID 1–100
+// ══════════════════════════════
+(function buildGrid(){
+  const grid=document.getElementById('numGrid');
+  for(let n=1;n<=100;n++){
+    const btn=document.createElement('button');
+    btn.className='ng-btn'+(visited.has(n)?' visited':'');
+    btn.dataset.n=n;
+    btn.textContent=n;
+    btn.addEventListener('click',()=>goTo(n));
+    grid.appendChild(btn);
+  }
+})();
+
+render(current);
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
