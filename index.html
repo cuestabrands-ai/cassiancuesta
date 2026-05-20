@@ -4,153 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Cassian">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{
   font-family:'Nunito',system-ui,sans-serif;
-  background:#0d0b2e;
-  min-height:100vh;
-  color:white;
+  background:linear-gradient(160deg,#F0F4FF 0%,#FFF8F0 55%,#F0FFF8 100%);
+  min-height:100dvh;color:#1E1B4B;
   padding-bottom:calc(90px + env(safe-area-inset-bottom));
   overflow-x:hidden;
-  position:relative;
 }
-
-/* Colorful background blobs */
-body::before{content:'';position:fixed;inset:0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(139,92,246,.18) 0%, transparent 50%),
-    radial-gradient(circle at 80% 60%, rgba(0,212,255,.12) 0%, transparent 45%),
-    radial-gradient(circle at 50% 90%, rgba(255,107,107,.1) 0%, transparent 40%);
-  pointer-events:none;z-index:0}
-
-.page{max-width:700px;margin:0 auto;padding:32px 16px 20px;position:relative;z-index:1}
+.page{max-width:700px;margin:0 auto;padding:28px 16px 20px;position:relative;z-index:1}
 
 /* ── HEADER ── */
-.header{text-align:center;margin-bottom:28px;position:relative}
-.rocket{font-size:56px;display:block;animation:rocket-float 2.5s ease-in-out infinite;line-height:1;margin-bottom:10px}
-@keyframes rocket-float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-12px) rotate(5deg)}}
-.header-hello{font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
-.header-name{
-  font-size:38px;font-weight:900;line-height:1;
-  background:linear-gradient(90deg,#FF6B6B,#FFD93D,#6BCB77,#4D96FF,#A29BFE);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-bottom:6px;letter-spacing:-1px;
-}
-.header-sub{font-size:14px;font-weight:700;color:rgba(255,255,255,.45)}
-
-/* Floating stars */
-.star-field{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
-.fstar{position:absolute;border-radius:50%;animation:twinkle 3s ease-in-out infinite}
-@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.8;transform:scale(1.3)}}
+.header{text-align:center;margin-bottom:22px}
+.rocket{font-size:58px;display:block;margin-bottom:8px;animation:bounce 2.5s ease-in-out infinite;line-height:1}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.header-hello{font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(30,27,75,.4);margin-bottom:4px}
+.header-name{font-size:40px;font-weight:900;line-height:1;background:linear-gradient(90deg,#6366F1,#EC4899,#F59E0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;letter-spacing:-1px}
+.header-sub{font-size:14px;font-weight:700;color:rgba(30,27,75,.45)}
 
 /* ── XP PANEL ── */
-.xp-panel{
-  background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(0,212,255,.15));
-  border:2px solid rgba(139,92,246,.4);
-  border-radius:20px;padding:16px 20px;
-  margin-bottom:20px;
-  display:flex;align-items:center;gap:14px;
-  position:relative;overflow:hidden;
-}
-.xp-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
-.xp-badge{
-  width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(135deg,#FFD700,#FF8C00);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  flex-shrink:0;box-shadow:0 4px 16px rgba(255,215,0,.4);
-  animation:badge-pulse 2s ease-in-out infinite;
-}
-@keyframes badge-pulse{0%,100%{box-shadow:0 4px 16px rgba(255,215,0,.3)}50%{box-shadow:0 4px 28px rgba(255,215,0,.7)}}
-.badge-lv{font-size:8px;font-weight:900;color:rgba(0,0,0,.7);letter-spacing:1px;text-transform:uppercase}
-.badge-num{font-size:20px;font-weight:900;color:#1a1a00;line-height:1}
+.xp-panel{background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:22px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 32px rgba(99,102,241,.3)}
+.xp-badge{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.15)}
+.badge-lv{font-size:8px;font-weight:900;color:rgba(255,255,255,.75);letter-spacing:1px;text-transform:uppercase}
+.badge-num{font-size:22px;font-weight:900;color:white;line-height:1}
 .xp-right{flex:1;min-width:0}
-.xp-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.xp-title{font-size:15px;font-weight:900;color:white}
-.xp-pts{font-size:13px;font-weight:800;color:rgba(255,255,255,.55)}
-.xp-bar-track{height:12px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-.xp-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#8b5cf6,#00d4ff,#FFD700);width:0;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
-.xp-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.xp-label-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.xp-title{font-size:14px;font-weight:900;color:white}
+.xp-pts{font-size:12px;font-weight:800;color:rgba(255,255,255,.65)}
+.xp-bar-track{height:10px;background:rgba(255,255,255,.2);border-radius:5px;overflow:hidden}
+.xp-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#FBBF24,#FCD34D);width:0;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
 .streak-row{display:flex;align-items:center;gap:6px;margin-top:7px}
-.streak-fire{font-size:14px}
-.streak-txt{font-size:12px;font-weight:800;color:rgba(255,255,255,.5)}
+.streak-txt{font-size:11px;font-weight:800;color:rgba(255,255,255,.65)}
 
 /* ── DAILY CHALLENGE ── */
 .daily{
-  background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,140,0,.08));
-  border:2px solid rgba(255,215,0,.35);
-  border-radius:20px;padding:18px 20px;
-  margin-bottom:24px;position:relative;overflow:hidden;
+  background:white;border-radius:22px;padding:18px 20px;
+  margin-bottom:22px;position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(245,158,11,.15);
+  border:2px solid rgba(245,158,11,.2);
 }
-.daily::before{content:'⚡';position:absolute;right:16px;top:12px;font-size:36px;opacity:.15;pointer-events:none}
-.daily-tag{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#FFD700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.daily-q{font-size:18px;font-weight:800;line-height:1.45;margin-bottom:14px;color:white}
-.daily-answer{font-size:15px;font-weight:700;color:rgba(255,255,255,.75);margin-bottom:14px;display:none;line-height:1.5;padding:10px 14px;background:rgba(255,255,255,.08);border-radius:12px}
-.btn-reveal{
-  background:linear-gradient(135deg,#FFD700,#FF8C00);
-  border:none;color:#1a1a00;
-  padding:12px 28px;border-radius:50px;
-  font-size:15px;font-weight:900;cursor:pointer;
-  font-family:'Nunito',sans-serif;transition:transform .15s;
-  box-shadow:0 4px 16px rgba(255,215,0,.3);
-}
+.daily::before{content:'⚡';position:absolute;right:14px;top:10px;font-size:42px;opacity:.07;pointer-events:none}
+.daily-tag{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#F59E0B;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.daily-q{font-size:18px;font-weight:800;line-height:1.45;margin-bottom:14px;color:#1E1B4B}
+.daily-answer{font-size:15px;font-weight:700;color:#059669;margin-bottom:12px;display:none;line-height:1.5;padding:10px 14px;background:#F0FDF4;border-radius:12px;border:1px solid #D1FAE5}
+.btn-reveal{background:linear-gradient(135deg,#F59E0B,#FBBF24);border:none;color:white;padding:12px 28px;border-radius:50px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;box-shadow:0 4px 16px rgba(245,158,11,.35)}
 .btn-reveal:active{transform:scale(0.95)}
-.btn-reveal:disabled{background:rgba(255,255,255,.15);color:rgba(255,255,255,.4);box-shadow:none;cursor:default}
+.btn-reveal:disabled{background:#E5E7EB;color:#9CA3AF;box-shadow:none;cursor:default}
+.daily-tomorrow{font-size:11px;font-weight:800;color:rgba(30,27,75,.3);margin-top:10px;display:flex;align-items:center;gap:5px}
 
-/* ── APP GRID ── */
-.section-label{font-size:12px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px;padding-left:4px}
+/* ── SECTION LABEL ── */
+.section-label{font-size:12px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:14px;padding-left:2px}
+
+/* ── GRID ── */
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
 
 .card{
-  border-radius:22px;padding:20px 16px 18px;
-  text-decoration:none;color:white;display:block;
-  -webkit-tap-highlight-color:transparent;
+  border-radius:24px;padding:20px 16px 18px;
+  text-decoration:none;color:#1E1B4B;display:block;
   position:relative;overflow:hidden;cursor:pointer;
-  transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
   animation:card-pop .5s cubic-bezier(.34,1.56,.64,1) both;
-  border:2px solid rgba(255,255,255,.1);
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
 }
-.card:active{transform:scale(0.93)!important}
-.card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.card:active{transform:scale(.93)!important}
+.card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.12)}
 @keyframes card-pop{0%{opacity:0;transform:scale(.8) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 
-/* Individual card colors */
-.card-numbers{background:linear-gradient(145deg,#1a3a6e,#1e4d8c);border-color:rgba(0,180,255,.35)}
-.card-games{background:linear-gradient(145deg,#1a4a1a,#2d6b2d);border-color:rgba(100,220,100,.35)}
-.card-chess{background:linear-gradient(145deg,#3d2800,#5a3c00);border-color:rgba(255,215,0,.4)}
-.card-cosmo{background:linear-gradient(145deg,#2a0a4a,#4a1a7a);border-color:rgba(162,155,254,.4)}
-.card-world{background:linear-gradient(145deg,#0a3a3a,#0a5050);border-color:rgba(0,200,180,.35)}
-.card-bitcoin{background:linear-gradient(145deg,#3a1a00,#5a2a00);border-color:rgba(255,150,0,.35)}
-.card-puzzles{background:linear-gradient(145deg,#3a0a3a,#5a1a5a);border-color:rgba(255,100,200,.35)}
-.card-jokes{background:linear-gradient(145deg,#3a3000,#5a4a00);border-color:rgba(255,230,0,.35)}
-.card-beast{background:linear-gradient(145deg,#3a0a0a,#5a1a1a);border-color:rgba(255,100,100,.35)}
-.card-robotics{background:linear-gradient(145deg,#003a2a,#005540);border-color:rgba(0,255,180,.35)}
-.card-books{background:linear-gradient(145deg,#0a2a4a,#0a3a6a);border-color:rgba(100,180,255,.35)}
+.card-numbers{background:linear-gradient(145deg,#EFF6FF,#DBEAFE)}
+.card-games{background:linear-gradient(145deg,#F0FDF4,#DCFCE7)}
+.card-chess{background:linear-gradient(145deg,#FFFBEB,#FEF3C7)}
+.card-cosmo{background:linear-gradient(145deg,#F5F3FF,#EDE9FE)}
+.card-world{background:linear-gradient(145deg,#ECFDF5,#D1FAE5)}
+.card-bitcoin{background:linear-gradient(145deg,#FFF7ED,#FFEDD5)}
+.card-puzzles{background:linear-gradient(145deg,#FDF4FF,#FAE8FF)}
+.card-jokes{background:linear-gradient(145deg,#FEFCE8,#FEF9C3)}
+.card-robotics{background:linear-gradient(145deg,#F0FDFA,#CCFBF1)}
+.card-beast{background:linear-gradient(145deg,#FEF2F2,#FEE2E2)}
+.card-books{background:linear-gradient(145deg,#F0F9FF,#E0F2FE)}
+.card-focus{background:linear-gradient(145deg,#FFF1F2,#FFE4E6)}
 
-.card-shine{position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:card-shine 4s ease-in-out infinite}
-@keyframes card-shine{0%,70%,100%{left:-100%}40%{left:150%}}
+.card-icon{font-size:44px;line-height:1;margin-bottom:10px;display:block}
+.card-title{font-size:17px;font-weight:900;margin-bottom:3px}
+.card-sub{font-size:11px;font-weight:800;color:rgba(30,27,75,.45);letter-spacing:.3px}
 
-.card-icon{font-size:44px;line-height:1;margin-bottom:12px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
-.card-title{font-size:17px;font-weight:900;margin-bottom:3px;color:white;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-.card-sub{font-size:11px;font-weight:800;color:rgba(255,255,255,.55);letter-spacing:.3px}
-
-/* NEW badge on world card */
-.hot-badge{
-  position:absolute;top:10px;right:10px;
-  background:linear-gradient(135deg,#FF6B6B,#FF8E53);
-  color:white;font-size:9px;font-weight:900;
-  padding:3px 8px;border-radius:20px;letter-spacing:.5px;
-  animation:hot-pulse 1.5s ease-in-out infinite;
-  box-shadow:0 2px 8px rgba(255,107,107,.5);
-}
+.hot-badge{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#EF4444,#F97316);color:white;font-size:9px;font-weight:900;padding:3px 8px;border-radius:20px;letter-spacing:.5px;animation:hot-pulse 1.5s ease-in-out infinite;box-shadow:0 2px 8px rgba(239,68,68,.4)}
 @keyframes hot-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
 /* ── CONFETTI ── */
@@ -158,42 +102,24 @@ body::before{content:'';position:fixed;inset:0;
 @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
 /* ── LEVEL UP TOAST ── */
-.levelup-toast{
-  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
-  background:linear-gradient(135deg,#FFD700,#FF8C00);
-  color:#1a1a00;padding:24px 40px;border-radius:24px;
-  font-size:28px;font-weight:900;text-align:center;z-index:9999;
-  box-shadow:0 20px 60px rgba(255,215,0,.5);pointer-events:none;
-  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
-}
+.levelup-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;padding:24px 40px;border-radius:24px;font-size:28px;font-weight:900;text-align:center;z-index:9999;box-shadow:0 20px 60px rgba(99,102,241,.4);pointer-events:none;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
 .levelup-toast.show{transform:translate(-50%,-50%) scale(1)}
 
 /* ── NAV ── */
-.app-nav{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(13,11,46,.97);backdrop-filter:blur(24px);
-  display:flex;justify-content:space-around;align-items:center;
-  padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));
-  border-top:1px solid rgba(255,255,255,.1);z-index:1000;
-}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
-.nav-btn.active,.nav-btn:hover{color:#A29BFE}
-.nav-btn.active .nav-icon{filter:drop-shadow(0 0 8px rgba(162,155,254,.8))}
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:2px solid #EEF2FF;z-index:1000;box-shadow:0 -4px 20px rgba(99,102,241,.06)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active,.nav-btn:hover{color:#6366F1}
 .nav-icon{font-size:22px;line-height:1;transition:transform .2s}
 .nav-btn.active .nav-icon{transform:scale(1.2)}
 .nav-label{font-size:9px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
 </style>
 </head>
-<body>
-
-<!-- Floating stars -->
-<div class="star-field" id="starField"></div>
+<script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
 
 <div class="levelup-toast" id="lvlToast"></div>
 
 <div class="page">
 
-  <!-- Header -->
   <header class="header">
     <span class="rocket">🚀</span>
     <div class="header-hello">Welcome back,</div>
@@ -201,7 +127,6 @@ body::before{content:'';position:fixed;inset:0;
     <div class="header-sub">What are we learning today? ✨</div>
   </header>
 
-  <!-- XP Panel -->
   <div class="xp-panel">
     <div class="xp-badge">
       <div class="badge-lv">LV</div>
@@ -214,98 +139,98 @@ body::before{content:'';position:fixed;inset:0;
       </div>
       <div class="xp-bar-track"><div class="xp-bar-fill" id="xpFill"></div></div>
       <div class="streak-row">
-        <span class="streak-fire">🔥</span>
+        <span>🔥</span>
         <span class="streak-txt" id="streakTxt">Keep learning every day!</span>
       </div>
     </div>
   </div>
 
-  <!-- Daily Challenge -->
   <div class="daily">
     <div class="daily-tag">⚡ Daily Brain Spark</div>
     <div class="daily-q" id="dq">Loading your challenge…</div>
     <div class="daily-answer" id="da"></div>
     <button class="btn-reveal" id="dBtn" onclick="dailyClick()">Show Answer 🔍</button>
+    <div class="daily-tomorrow">🌙 New challenge tomorrow!</div>
   </div>
 
-  <!-- App Grid -->
   <div class="section-label">🎯 Your Apps</div>
-  <div class="grid" id="appGrid">
+  <div class="grid">
 
     <a class="card card-numbers" href="numberblocks.html" style="animation-delay:.05s">
-      <div class="card-shine"></div>
       <span class="card-icon">🔢</span>
       <div class="card-title">Numberblocks</div>
       <div class="card-sub">Number Explorer</div>
     </a>
 
     <a class="card card-games" href="games.html" style="animation-delay:.1s">
-      <div class="card-shine"></div>
       <span class="card-icon">🎮</span>
       <div class="card-title">Math Games</div>
       <div class="card-sub">Speed &amp; Strategy</div>
     </a>
 
     <a class="card card-chess" href="chess.html" style="animation-delay:.15s">
-      <div class="card-shine"></div>
       <span class="card-icon">♟️</span>
       <div class="card-title">Chess</div>
       <div class="card-sub">Learn · Puzzle · Play</div>
     </a>
 
     <a class="card card-cosmo" href="cosmo.html" style="animation-delay:.2s">
-      <div class="card-shine"></div>
       <span class="card-icon">🤖</span>
       <div class="card-title">COSMO</div>
       <div class="card-sub">Talk to your AI tutor</div>
     </a>
 
     <a class="card card-world" href="world.html" style="animation-delay:.25s">
-      <div class="card-shine"></div>
-      <span class="hot-badge">✈️ ITALY!</span>
+      <span class="hot-badge">🆕 Indonesia!</span>
       <span class="card-icon">🌍</span>
       <div class="card-title">World Explorer</div>
-      <div class="card-sub">Manners in 8 languages</div>
+      <div class="card-sub">9 languages</div>
     </a>
 
-    <a class="card card-bitcoin" href="bitcoin.html" style="animation-delay:.3s">
-      <div class="card-shine"></div>
-      <span class="card-icon">₿</span>
-      <div class="card-title">Bitcoin Mine</div>
-      <div class="card-sub">Earn Satoshis</div>
-    </a>
-
-    <a class="card card-puzzles" href="puzzles.html" style="animation-delay:.35s">
-      <div class="card-shine"></div>
-      <span class="card-icon">🧩</span>
-      <div class="card-title">Math Puzzles</div>
-      <div class="card-sub">30 Tough Challenges</div>
-    </a>
-
-    <a class="card card-jokes" href="jokes.html" style="animation-delay:.4s">
-      <div class="card-shine"></div>
-      <span class="card-icon">😄</span>
-      <div class="card-title">Smart Jokes</div>
-      <div class="card-sub">3 Languages</div>
-    </a>
-
-    <a class="card card-robotics" href="robotics.html" style="animation-delay:.45s">
-      <div class="card-shine"></div>
-      <span class="hot-badge">🆕 NEW!</span>
+    <a class="card card-robotics" href="robotics.html" style="animation-delay:.3s">
+      <span class="hot-badge">🆕 New!</span>
       <span class="card-icon">🦾</span>
       <div class="card-title">Robotics Lab</div>
       <div class="card-sub">Build · Code · Explore</div>
     </a>
 
-    <a class="card card-beast" href="https://beastacademy.com" target="_blank" rel="noopener" style="animation-delay:.5s">
-      <div class="card-shine"></div>
+    <a class="card card-bitcoin" href="bitcoin.html" style="animation-delay:.35s">
+      <span class="card-icon">₿</span>
+      <div class="card-title">Bitcoin Mine</div>
+      <div class="card-sub">Earn Satoshis</div>
+    </a>
+
+    <a class="card card-puzzles" href="puzzles.html" style="animation-delay:.4s">
+      <span class="card-icon">🧩</span>
+      <div class="card-title">Math Puzzles</div>
+      <div class="card-sub">30 Tough Challenges</div>
+    </a>
+
+    <a class="card card-focus" href="focus.html" style="animation-delay:.45s">
+      <span class="card-icon">⏱️</span>
+      <div class="card-title">Focus Timer</div>
+      <div class="card-sub">Pomodoro for Cassian</div>
+    </a>
+
+    <a class="card card-jokes" href="jokes.html" style="animation-delay:.5s">
+      <span class="card-icon">😄</span>
+      <div class="card-title">Smart Jokes</div>
+      <div class="card-sub">New joke every day!</div>
+    </a>
+
+    <a class="card card-books" href="books.html" style="animation-delay:.55s">
+      <span class="card-icon">📚</span>
+      <div class="card-title">Cool Books</div>
+      <div class="card-sub">100 Amazing Things</div>
+    </a>
+
+    <a class="card card-beast" href="https://beastacademy.com" target="_blank" rel="noopener" style="animation-delay:.6s">
       <span class="card-icon">🎓</span>
       <div class="card-title">Beast Academy</div>
       <div class="card-sub">↗ Open in browser</div>
     </a>
 
   </div>
-
 </div>
 
 <nav class="app-nav">
@@ -317,50 +242,69 @@ body::before{content:'';position:fixed;inset:0;
 </nav>
 
 <script>
-// ── Stars ──
-const sf = document.getElementById('starField');
-for (let i = 0; i < 40; i++) {
-  const s = document.createElement('div');
-  s.className = 'fstar';
-  const sz = Math.random() * 3 + 1;
-  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:white;animation-delay:${Math.random()*4}s;animation-duration:${2+Math.random()*3}s`;
-  sf.appendChild(s);
-}
-
-// ── Daily challenges ──
+// ── Daily Challenges (30 questions, rotates by date) ──
 const CHALLENGES = [
-  {q:"2, 4, 8, 16, 32 — what comes next? 🤔",a:"64! Each number doubles. Powers of 2!"},
-  {q:"Triple a number, subtract 6, get 21. What's the number? 🔢",a:"9! Because 9×3=27, then 27-6=21 ✓"},
-  {q:"How many seconds are in one hour? ⏰",a:"3,600! That's 60 seconds × 60 minutes = 3,600 🕐"},
-  {q:"What is 25 × 4? Quick! ⚡",a:"100! Nice work if you got that fast 🚀"},
+  {q:"2, 4, 8, 16, 32 — what comes next? 🤔",a:"64! Each number doubles. Powers of 2! 2¹ 2² 2³..."},
+  {q:"Triple a number, subtract 6, get 21. What's the number? 🔢",a:"9! Because 9×3=27, then 27−6=21 ✓"},
+  {q:"How many seconds are in one hour? ⏰",a:"3,600! That's 60 seconds × 60 minutes 🕐"},
+  {q:"What is 25 × 4? Quick! ⚡",a:"100! 25×4 = 100. Easy way: 25×4 = 100÷1 🚀"},
   {q:"What comes next? 1, 4, 9, 16, 25, ___ 🌟",a:"36! These are square numbers: 6×6=36 📐"},
-  {q:"A chess knight moves in an L-shape. From centre, how many squares can it reach? ♞",a:"8 different squares! The sneakiest piece on the board 😏"},
-  {q:"A piano has 88 keys and 12 notes per octave. How many full octaves? 🎹",a:"7 full octaves + 4 extra keys! 🎵"},
-  {q:"What is the sum of angles inside any triangle? 📐",a:"180°! Always, no matter what shape the triangle is 🔺"},
-  {q:"1, 1, 2, 3, 5, 8 — what comes next? 🌀",a:"13! Fibonacci: add the last two numbers together 🐚"},
+  {q:"A chess knight moves in an L-shape. From the centre, how many squares can it reach? ♞",a:"8 different squares! The sneakiest piece on the board 😏"},
+  {q:"A piano has 88 keys and 12 notes per octave. How many full octaves? 🎹",a:"7 full octaves + 4 extra keys! 88 ÷ 12 = 7 remainder 4 🎵"},
+  {q:"What is the sum of angles inside any triangle? 📐",a:"180°! Always — no matter what shape the triangle is 🔺"},
+  {q:"1, 1, 2, 3, 5, 8 — what comes next? 🌀",a:"13! Fibonacci: add the last two numbers. 5+8=13 🐚"},
   {q:"What is 100 ÷ 4 ÷ 5? Do it step by step! 🧠",a:"5! First 100÷4=25, then 25÷5=5 ✅"},
-  {q:"What is the only even prime number? 🌟",a:"2! All other even numbers divide by 2, so they're not prime 👑"},
+  {q:"What is the only even prime number? 🌟",a:"2! All other even numbers can be divided by 2, so they're not prime 👑"},
   {q:"uno + dos + tres + cuatro + cinco = ? 🇪🇸",a:"15! (1+2+3+4+5=15) Great Spanish counting! 🎉"},
-  {q:"What number is both square AND triangular (under 50)? 🔲🔺",a:"1 and 36! 36=6² and also 1+2+3+4+5+6+7+8=36 🤯"},
-  {q:"If you fold a paper in half 10 times, how thick is it? (paper = 0.1mm) 📄",a:"Over 100mm thick — more than 10cm! Doubling is POWERFUL 💥"},
-  {q:"What's 111 × 111? 🔢",a:"12,321! See the pattern? 1,121,12321 — it's palindrome magic! 🪄"},
+  {q:"What number is both square AND triangular (under 50)? 🔲🔺",a:"1 and 36! 36=6² and 1+2+3+4+5+6+7+8=36 🤯"},
+  {q:"What's 111 × 111? 🔢",a:"12,321! See the palindrome? 1, 121, 12321... magic! 🪄"},
+  {q:"How many faces does a cube have? And how many edges? 🎲",a:"6 faces, 12 edges, and 8 corners! Every time ✓"},
+  {q:"If a robot arm is 10cm long and turns 180°, how far does the tip travel? 🦾",a:"About 31.4cm! Arc = radius × π. 10 × 3.14159 ≈ 31.4cm"},
+  {q:"What are the first 5 prime numbers? 🔢",a:"2, 3, 5, 7, 11! Primes can only be divided by 1 and themselves 💎"},
+  {q:"What is 12 × 12? (No calculator!) ⚡",a:"144! It's called a gross. 12 dozen = 144 🎯"},
+  {q:"How many sides does a hexagon have? And a heptagon? 📐",a:"Hexagon = 6, Heptagon = 7! Hex means 6, Hept means 7 in Greek 🏛️"},
+  {q:"Gear A has 8 teeth, Gear B has 32 teeth. What is the gear ratio? ⚙️",a:"4:1! Gear B turns 4× slower but 4× stronger. B÷A = 32÷8 = 4"},
+  {q:"What is 2⁸? (2 to the power of 8) 💻",a:"256! That's how many colours your computer can make with 8 bits! 2×2×2×2×2×2×2×2"},
+  {q:"What fraction of an hour is 15 minutes? ⏰",a:"One quarter! 15÷60 = ¼. So 15 minutes = ¼ hour 🕐"},
+  {q:"Count in Arabic: واحد، اثنان، ثلاثة... what is four in Arabic? 🇸🇦",a:"أربعة (Arba'a)! 1=واحد 2=اثنان 3=ثلاثة 4=أربعة 5=خمسة"},
+  {q:"What is the perimeter of a square with sides of 7cm? 📐",a:"28cm! Perimeter = 4 × side. 4 × 7 = 28cm. All 4 sides added up"},
+  {q:"A wheel has diameter 6cm. How far does it roll in one full turn? 🚗",a:"About 18.85cm! Circumference = π × diameter. 3.14159 × 6 ≈ 18.85cm"},
+  {q:"What is the biggest 2-digit prime number? 🔢",a:"97! Check: not divisible by 2,3,5,7. Next prime is 101 (3 digits!) 💎"},
+  {q:"How many zeros are in one million? 🤯",a:"6 zeros! 1,000,000. Million = 10⁶. Billion has 9 zeros! 😱"},
+  {q:"What's the area of a rectangle 8cm wide and 5cm tall? 📏",a:"40cm²! Area = width × height. 8 × 5 = 40 square centimetres"},
+  {q:"Bitcoin has a fixed supply. How many Bitcoin will EVER exist? ₿",a:"21 million! That's the maximum, ever. Right now about 19.7 million exist 🔐"},
+  {q:"What is the square root of 144? 🧮",a:"12! Because 12 × 12 = 144. √144 = 12 ✓"},
 ];
 
+// Date-based seed — same question all day, new one each day
 const today = new Date();
-const idx = (today.getFullYear()*365 + today.getMonth()*31 + today.getDate()) % CHALLENGES.length;
+const dayKey = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+const idx = dayKey % CHALLENGES.length;
 const ch = CHALLENGES[idx];
 document.getElementById('dq').textContent = ch.q;
+
+// Track if today's challenge was already answered
+const doneKey = 'daily_done_' + dayKey;
+const alreadyDone = localStorage.getItem(doneKey);
+if (alreadyDone) {
+  document.getElementById('da').textContent = ch.a;
+  document.getElementById('da').style.display = 'block';
+  const btn = document.getElementById('dBtn');
+  btn.textContent = '🎉 Come back tomorrow!';
+  btn.disabled = true;
+}
 
 let dShown = false;
 function dailyClick() {
   if (!dShown) {
     document.getElementById('da').textContent = ch.a;
     document.getElementById('da').style.display = 'block';
-    document.getElementById('dBtn').textContent = 'Awesome! +15 ⭐';
+    document.getElementById('dBtn').textContent = 'Awesome! Claim +15 ⭐';
     dShown = true;
   } else {
     addXP(15);
     confettiBurst();
+    localStorage.setItem(doneKey, '1');
     const btn = document.getElementById('dBtn');
     btn.textContent = '🎉 Come back tomorrow!';
     btn.disabled = true;
@@ -368,60 +312,55 @@ function dailyClick() {
 }
 
 // ── XP System ──
-let xp = +localStorage.getItem('c_xp') || 0;
+let xp  = +localStorage.getItem('c_xp')  || 0;
 let lvl = +localStorage.getItem('c_lvl') || 1;
 const legacyXP = +localStorage.getItem('xp_total') || 0;
 if (legacyXP > xp) { xp = legacyXP; localStorage.setItem('c_xp', xp); }
 
-const last = localStorage.getItem('c_last');
 const todayStr = today.toDateString();
+const last = localStorage.getItem('c_last');
 let streak = +localStorage.getItem('c_streak') || 1;
 if (last !== todayStr) {
   const yest = new Date(today); yest.setDate(yest.getDate()-1);
-  streak = last === yest.toDateString() ? streak + 1 : 1;
+  streak = last === yest.toDateString() ? streak+1 : 1;
   localStorage.setItem('c_last', todayStr);
   localStorage.setItem('c_streak', streak);
 }
-document.getElementById('streakTxt').textContent = streak > 1 ? `${streak} day streak! Keep going! 🔥` : 'Start a streak — learn today!';
+document.getElementById('streakTxt').textContent =
+  streak > 1 ? `${streak} day streak! Keep it up! 🔥` : 'Start a streak — learn today!';
 
 function addXP(n) {
   xp += n;
   const need = lvl * 100;
-  if (xp >= need) {
-    xp -= need; lvl++;
-    localStorage.setItem('c_lvl', lvl);
-    showLevelUp(lvl);
-  }
+  if (xp >= need) { xp -= need; lvl++; localStorage.setItem('c_lvl', lvl); showLevelUp(lvl); }
   localStorage.setItem('c_xp', xp);
   drawXP();
 }
-
 function drawXP() {
-  const need = lvl * 100, pct = Math.min((xp/need)*100, 100);
-  document.getElementById('xpFill').style.width = pct + '%';
-  document.getElementById('xpPts').textContent = xp + ' / ' + need;
+  const need = lvl*100, pct = Math.min((xp/need)*100,100);
+  document.getElementById('xpFill').style.width = pct+'%';
+  document.getElementById('xpPts').textContent = xp+' / '+need;
   document.getElementById('lvlNum').textContent = lvl;
 }
-
 function showLevelUp(l) {
   const t = document.getElementById('lvlToast');
   t.innerHTML = `🎉<br>LEVEL ${l}!<br><span style="font-size:18px">You're incredible, Cassian!</span>`;
   t.classList.add('show');
   confettiBurst();
-  setTimeout(() => t.classList.remove('show'), 2800);
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // ── Confetti ──
-const COLORS = ['#FF6B6B','#FFD700','#6BCB77','#4D96FF','#A29BFE','#FF8E53','#00d4ff'];
+const COLORS=['#6366F1','#EC4899','#F59E0B','#10B981','#3B82F6','#EF4444','#FBBF24'];
 function confettiBurst() {
-  for (let i = 0; i < 30; i++) {
-    setTimeout(() => {
-      const p = document.createElement('div');
-      p.className = 'confetti-piece';
-      p.style.cssText = `left:${20+Math.random()*60}%;background:${COLORS[Math.floor(Math.random()*COLORS.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${.8+Math.random()*.6}s;animation-delay:${Math.random()*.3}s`;
+  for (let i=0;i<35;i++) {
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='confetti-piece';
+      p.style.cssText=`left:${15+Math.random()*70}%;background:${COLORS[Math.floor(Math.random()*COLORS.length)]};width:${6+Math.random()*9}px;height:${6+Math.random()*9}px;border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${.8+Math.random()*.6}s;animation-delay:${Math.random()*.3}s`;
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), 1400);
-    }, i * 30);
+      setTimeout(()=>p.remove(),1400);
+    },i*30);
   }
 }
 

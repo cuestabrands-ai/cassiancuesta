@@ -5,251 +5,243 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Cassian">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<title>Robotics Lab 🤖 — Cassian's Super App</title>
+<title>Robotics Lab — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:#070712;font-family:'Nunito',system-ui,sans-serif;color:white}
-body{display:flex;flex-direction:column;min-height:100dvh}
-.page-wrap{flex:1;padding:20px 16px 110px;max-width:700px;margin:0 auto;width:100%}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:#0a0a1a;
+  min-height:100vh;color:white;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+body::before{content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(0,255,180,.12) 0%,transparent 50%),
+    radial-gradient(circle at 85% 60%,rgba(139,92,246,.10) 0%,transparent 45%),
+    radial-gradient(circle at 50% 90%,rgba(0,212,255,.08) 0%,transparent 40%);
+  pointer-events:none;z-index:0}
+.page{max-width:700px;margin:0 auto;padding:28px 16px 20px;position:relative;z-index:1}
 
-/* Hero */
+/* HERO */
 .hero{text-align:center;margin-bottom:28px}
-.hero-emoji{font-size:60px;display:block;line-height:1;margin-bottom:10px;animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.hero h1{font-size:32px;font-weight:900;background:linear-gradient(90deg,#00d4ff,#8b5cf6,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
-.hero p{color:rgba(255,255,255,.5);font-size:14px;font-weight:700}
+.hero-icon{font-size:54px;display:block;margin-bottom:10px;animation:wrench 3s ease-in-out infinite}
+@keyframes wrench{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+.hero-title{
+  font-size:34px;font-weight:900;letter-spacing:-1px;
+  background:linear-gradient(90deg,#00ffb4,#00d4ff,#8b5cf6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+}
+.hero-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase}
 
-/* Section label */
-.section-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin:24px 0 12px}
+/* SECTION HEADERS */
+.section-title{
+  font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin:28px 0 12px;display:flex;align-items:center;gap:8px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
 
-/* How Robots Work — 3-part cards */
-.parts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
-.part-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:16px 10px;text-align:center;transition:transform .2s}
-.part-card:active{transform:scale(.96)}
-.part-icon{font-size:36px;margin-bottom:8px;display:block}
-.part-name{font-size:13px;font-weight:900;color:white;margin-bottom:4px}
-.part-desc{font-size:11px;font-weight:700;color:rgba(255,255,255,.45);line-height:1.4}
-.part-card.sensors{border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.07)}
-.part-card.brain{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.07)}
-.part-card.motors{border-color:rgba(255,107,157,.4);background:rgba(255,107,157,.07)}
+/* GLASS CARD */
+.glass{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:20px;
+  backdrop-filter:blur(12px);
+}
 
-/* Robot types */
-.types-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
-.types-scroll::-webkit-scrollbar{display:none}
-.type-card{flex-shrink:0;width:130px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s}
-.type-card:active{transform:scale(.94)}
-.type-card.active{border-color:rgba(0,212,255,.6);background:rgba(0,212,255,.1)}
-.type-emoji{font-size:36px;margin-bottom:6px;display:block}
-.type-name{font-size:13px;font-weight:900;color:white;margin-bottom:3px}
-.type-tag{font-size:10px;font-weight:700;color:rgba(255,255,255,.4)}
+/* PARTS LIBRARY */
+.parts-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.parts-scroll::-webkit-scrollbar{display:none}
+.part-card{
+  flex-shrink:0;width:130px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:14px 10px;
+  cursor:pointer;transition:all .2s;
+}
+.part-card.active,.part-card:hover{transform:translateY(-3px)}
+.part-card.active{border-color:var(--c);background:rgba(255,255,255,.09)}
+.part-icon{font-size:30px;display:block;margin-bottom:7px;text-align:center}
+.part-name{font-size:12px;font-weight:900;color:white;text-align:center;line-height:1.3}
+.part-short{font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-align:center;margin-top:3px}
 
-/* Type detail panel */
-.type-detail{background:rgba(255,255,255,.05);border:2px solid rgba(0,212,255,.25);border-radius:20px;padding:18px;margin-top:12px;display:none}
-.type-detail.show{display:block}
-.type-detail-title{font-size:18px;font-weight:900;color:#00d4ff;margin-bottom:8px}
-.type-detail-text{font-size:14px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:10px}
-.robot-example{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border-radius:50px;padding:8px 14px;font-size:13px;font-weight:800;color:white;margin:4px 4px 0 0}
+.part-detail{
+  margin-top:12px;
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:18px;
+  display:none;animation:fadeIn .2s ease;
+}
+.part-detail.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.detail-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.detail-icon{font-size:36px}
+.detail-name{font-size:19px;font-weight:900}
+.detail-desc{font-size:14px;font-weight:600;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:12px}
+.detail-specs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.spec-pill{font-size:11px;font-weight:800;padding:4px 10px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7)}
+.detail-tip{font-size:13px;font-weight:700;background:rgba(0,255,180,.08);border:1px solid rgba(0,255,180,.2);border-radius:10px;padding:10px 12px;color:rgba(0,255,180,.9);line-height:1.5}
 
-/* Program Your Robot game */
-.game-section{background:rgba(255,255,255,.04);border:2px solid rgba(139,92,246,.25);border-radius:24px;padding:20px;margin-top:8px}
-.game-title{font-size:18px;font-weight:900;color:#A29BFE;margin-bottom:6px}
-.game-sub{font-size:13px;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:16px}
-.game-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-width:250px;margin:0 auto 16px;aspect-ratio:1}
-.cell{background:rgba(255,255,255,.05);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .2s}
-.cell.robot{background:rgba(139,92,246,.4);border:2px solid #A29BFE}
-.cell.trail{background:rgba(0,212,255,.2)}
-.cell.goal{background:rgba(255,215,0,.25);border:2px solid rgba(255,215,0,.6)}
-.cell.wall{background:rgba(255,100,100,.2)}
-.controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
-.ctrl-btn{width:60px;height:60px;background:rgba(139,92,246,.2);border:2px solid rgba(139,92,246,.4);border-radius:16px;color:white;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;font-family:'Nunito',sans-serif}
-.ctrl-btn:active{transform:scale(.9);background:rgba(139,92,246,.5)}
-.ctrl-btn.go{background:linear-gradient(135deg,#00d4ff,#0080aa);border-color:#00d4ff;font-size:15px;font-weight:900;width:auto;padding:0 20px}
-.ctrl-btn.reset{background:rgba(255,100,100,.2);border-color:rgba(255,100,100,.4);font-size:14px;font-weight:900;width:auto;padding:0 16px}
-.queue-display{min-height:44px;background:rgba(255,255,255,.04);border-radius:12px;padding:8px 12px;font-size:22px;letter-spacing:4px;text-align:center;margin-bottom:8px;color:rgba(255,255,255,.7)}
-.game-msg{text-align:center;font-size:14px;font-weight:900;min-height:20px;color:#00d4ff}
+/* CALCULATORS */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:500px){.calc-grid{grid-template-columns:1fr}}
+.calc-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px}
+.calc-title{font-size:15px;font-weight:900;margin-bottom:3px}
+.calc-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+label{font-size:11px;font-weight:800;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px}
+input[type=range]{width:100%;accent-color:#00ffb4;cursor:pointer;margin-bottom:3px}
+input[type=number]{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;color:white;font-size:14px;font-family:inherit;font-weight:700;outline:none}
+input[type=number]:focus{border-color:#00ffb4}
+.result-box{margin-top:12px;background:rgba(0,255,180,.08);border:1px solid rgba(0,255,180,.25);border-radius:12px;padding:12px}
+.result-label{font-size:10px;font-weight:800;color:rgba(0,255,180,.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.result-val{font-size:21px;font-weight:900;color:#00ffb4}
+.result-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-top:3px;line-height:1.5}
+.servo-vis{text-align:center;margin:12px 0}
+.gear-vis{text-align:center;margin:12px 0}
 
-/* Fun facts */
-.facts-grid{display:grid;gap:10px}
-.fact-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:flex-start}
-.fact-emoji{font-size:28px;flex-shrink:0;line-height:1}
-.fact-text{font-size:14px;font-weight:700;color:rgba(255,255,255,.8);line-height:1.5}
-.fact-text strong{color:white}
+/* CHALLENGES */
+.challenges-grid{display:grid;gap:12px}
+.challenge{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;position:relative;overflow:hidden;transition:all .2s}
+.challenge:hover{border-color:rgba(255,255,255,.16)}
+.challenge::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,#00ffb4);border-radius:4px 0 0 4px}
+.ch-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ch-tag{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--c,#00ffb4)}
+.ch-diff span{font-size:13px;opacity:.3}
+.ch-diff span.on{opacity:1}
+.ch-q{font-size:14px;font-weight:800;line-height:1.5;color:rgba(255,255,255,.9);margin-bottom:10px}
+.ch-actions{display:flex;gap:8px;flex-wrap:wrap}
+.hint-btn{font-size:11px;font-weight:800;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 12px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s}
+.hint-btn:hover{background:rgba(255,255,255,.1);color:white}
+.ans-btn{font-size:11px;font-weight:800;background:rgba(0,255,180,.1);border:1px solid rgba(0,255,180,.2);border-radius:8px;padding:6px 12px;color:rgba(0,255,180,.8);cursor:pointer;transition:all .2s}
+.ans-btn:hover{background:rgba(0,255,180,.2);color:#00ffb4}
+.hint-text{margin-top:9px;font-size:12px;font-weight:700;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:9px 12px;color:rgba(255,215,0,.9);display:none;line-height:1.6}
+.hint-text.show{display:block;animation:fadeIn .2s ease}
+.answer-text{margin-top:7px;font-size:12px;font-weight:700;background:rgba(0,255,180,.08);border:1px solid rgba(0,255,180,.2);border-radius:10px;padding:9px 12px;color:rgba(0,255,180,.9);display:none;line-height:1.6}
+.answer-text.show{display:block;animation:fadeIn .2s ease}
 
-/* Famous robots */
-.robots-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.robot-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:18px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.robot-card:active{transform:scale(.97)}
-.robot-face{font-size:40px;display:block;text-align:center;margin-bottom:8px}
-.robot-card-name{font-size:14px;font-weight:900;color:white;text-align:center;margin-bottom:2px}
-.robot-card-job{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px}
-.robot-card-fact{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);line-height:1.4;display:none}
-.robot-card.flipped .robot-card-fact{display:block}
-.robot-card.flipped .robot-face,.robot-card.flipped .robot-card-name,.robot-card.flipped .robot-card-job{display:none}
-.flip-hint{font-size:10px;font-weight:700;color:rgba(255,255,255,.25);text-align:center;margin-top:4px}
+/* WIRING */
+.wire-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.wire-tab{font-size:12px;font-weight:800;padding:7px 15px;border-radius:50px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s}
+.wire-tab.active{background:rgba(0,255,180,.15);border-color:rgba(0,255,180,.4);color:#00ffb4}
+.wire-panel{display:none}
+.wire-panel.show{display:block;animation:fadeIn .2s ease}
+.wire-svg-wrap{text-align:center;margin-bottom:12px;overflow-x:auto}
+.wire-desc{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);line-height:1.7}
+.wire-pins{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}
+.pin{border-radius:10px;padding:9px;text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.pin-color{width:13px;height:13px;border-radius:50%;margin:0 auto 4px}
+.pin-name{font-size:10px;font-weight:900;color:rgba(255,255,255,.8)}
+.pin-desc{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);margin-top:2px}
 
-/* Bottom nav */
-.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,18,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:100}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
-.nav-btn:hover,.nav-btn.active{color:#A29BFE}
+/* NOTES */
+.notes-area{width:100%;min-height:110px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:13px;color:white;font-family:inherit;font-size:14px;font-weight:600;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s}
+.notes-area:focus{border-color:rgba(0,255,180,.4)}
+.notes-area::placeholder{color:rgba(255,255,255,.2)}
+.notes-meta{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.notes-saved{font-size:11px;font-weight:700;color:rgba(0,255,180,.6);opacity:0;transition:opacity .4s}
+.notes-saved.show{opacity:1}
+.notes-clear{font-size:11px;font-weight:800;color:rgba(255,255,255,.3);background:none;border:none;cursor:pointer;padding:4px 8px}
+.notes-clear:hover{color:rgba(255,100,100,.7)}
+
+/* NAV */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,26,.92);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-around;align-items:center;padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:100}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:rgba(255,255,255,.4);font-size:10px;font-weight:800;letter-spacing:.5px;transition:color .2s;padding:4px 10px;border-radius:12px}
+.nav-btn.active,.nav-btn:hover{color:#00ffb4}
 .nav-icon{font-size:22px;line-height:1}
-.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.nav-label{text-transform:uppercase}
 </style>
 </head>
 <body>
+<div class="page">
 
-<div class="page-wrap">
-
-  <!-- Hero -->
+  <!-- HERO -->
   <div class="hero">
-    <span class="hero-emoji">🦾</span>
-    <h1>Robotics Lab</h1>
-    <p>Build it. Program it. Watch it move! 🚀</p>
+    <span class="hero-icon">🔧</span>
+    <div class="hero-title">Robotics Lab</div>
+    <div class="hero-sub">Cassian's Engineering Space</div>
   </div>
 
-  <!-- How Robots Work -->
-  <div class="section-label">⚙️ How Every Robot Works</div>
-  <div class="parts-grid">
-    <div class="part-card sensors">
-      <span class="part-icon">👁️</span>
-      <div class="part-name">Sensors</div>
-      <div class="part-desc">Eyes & ears — they feel the world</div>
-    </div>
-    <div class="part-card brain">
-      <span class="part-icon">🧠</span>
-      <div class="part-name">Computer</div>
-      <div class="part-desc">The brain — makes all decisions</div>
-    </div>
-    <div class="part-card motors">
-      <span class="part-icon">💪</span>
-      <div class="part-name">Actuators</div>
-      <div class="part-desc">Muscles — make things move</div>
-    </div>
-  </div>
-  <p style="font-size:12px;font-weight:700;color:rgba(255,255,255,.35);text-align:center;margin-top:8px">Every robot ever built has these 3 things! 🤯</p>
+  <!-- PARTS LIBRARY -->
+  <div class="section-title">⚙️ Parts Library</div>
+  <div class="parts-scroll" id="partsScroll"></div>
+  <div class="part-detail" id="partDetail"></div>
 
-  <!-- Robot Types -->
-  <div class="section-label">🌟 Types of Robots</div>
-  <div class="types-scroll" id="typesScroll">
-    <div class="type-card active" onclick="showType(0,this)">
-      <span class="type-emoji">🏭</span>
-      <div class="type-name">Factory</div>
-      <div class="type-tag">Industrial</div>
-    </div>
-    <div class="type-card" onclick="showType(1,this)">
-      <span class="type-emoji">🚀</span>
-      <div class="type-name">Space</div>
-      <div class="type-tag">Explorer</div>
-    </div>
-    <div class="type-card" onclick="showType(2,this)">
-      <span class="type-emoji">🏠</span>
-      <div class="type-name">Home</div>
-      <div class="type-tag">Helper</div>
-    </div>
-    <div class="type-card" onclick="showType(3,this)">
-      <span class="type-emoji">🏥</span>
-      <div class="type-name">Medical</div>
-      <div class="type-tag">Doctor bot</div>
-    </div>
-    <div class="type-card" onclick="showType(4,this)">
-      <span class="type-emoji">🐕</span>
-      <div class="type-name">Animal</div>
-      <div class="type-tag">Bio-inspired</div>
-    </div>
-    <div class="type-card" onclick="showType(5,this)">
-      <span class="type-emoji">🌊</span>
-      <div class="type-name">Ocean</div>
-      <div class="type-tag">Deep sea</div>
-    </div>
-  </div>
-  <div class="type-detail show" id="typeDetail"></div>
+  <!-- CALCULATORS -->
+  <div class="section-title">🧮 Engineering Calculators</div>
+  <div class="calc-grid">
 
-  <!-- Program Your Robot Game -->
-  <div class="section-label">🕹️ Program Your Robot</div>
-  <div class="game-section">
-    <div class="game-title">🤖 Guide the Robot to the Star!</div>
-    <div class="game-sub">Tap directions to build your program, then press GO!</div>
-    <div class="game-grid" id="gameGrid"></div>
-    <div class="queue-display" id="queueDisplay">—</div>
-    <div class="controls">
-      <button class="ctrl-btn" onclick="addCmd('⬆️')" title="Forward">⬆️</button>
-      <button class="ctrl-btn" onclick="addCmd('⬇️')" title="Back">⬇️</button>
-      <button class="ctrl-btn" onclick="addCmd('⬅️')" title="Left">⬅️</button>
-      <button class="ctrl-btn" onclick="addCmd('➡️')" title="Right">➡️</button>
-      <button class="ctrl-btn go" onclick="runProgram()">▶ GO</button>
-      <button class="ctrl-btn reset" onclick="resetGame()">↺ Reset</button>
+    <!-- Servo -->
+    <div class="calc-card">
+      <div class="calc-title">Servo Angle</div>
+      <div class="calc-sub">Arm tip distance</div>
+      <label>Angle: <span id="angleVal">90</span>°</label>
+      <input type="range" id="angleSlider" min="0" max="180" value="90" oninput="updateServo()">
+      <div class="servo-vis">
+        <svg id="servoSvg" width="150" height="110" viewBox="-5 -5 170 120" overflow="visible">
+          <rect x="55" y="65" width="50" height="28" rx="6" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.18)" stroke-width="1.5"/>
+          <text x="80" y="83" text-anchor="middle" fill="rgba(255,255,255,.35)" font-size="9" font-family="system-ui" font-weight="700">SERVO</text>
+          <circle cx="80" cy="65" r="5" fill="rgba(0,255,180,.4)" stroke="#00ffb4" stroke-width="1.5"/>
+          <path id="servoArc" stroke="rgba(0,255,180,.2)" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <line id="servoArm" x1="80" y1="65" x2="80" y2="17" stroke="#00ffb4" stroke-width="3" stroke-linecap="round"/>
+          <circle id="servoTip" cx="80" cy="17" r="5" fill="#00ffb4"/>
+          <text id="servoAngleText" x="80" y="105" text-anchor="middle" fill="rgba(0,255,180,.7)" font-size="11" font-family="system-ui" font-weight="800">90°</text>
+        </svg>
+      </div>
+      <label>Arm length (cm)</label>
+      <input type="number" id="armLen" value="6" min="1" max="30" oninput="updateServo()">
+      <div class="result-box">
+        <div class="result-label">Tip travels</div>
+        <div class="result-val" id="servoOut">9.4 cm</div>
+        <div class="result-sub" id="servoSub">arc = arm × θ radians</div>
+      </div>
     </div>
-    <div class="game-msg" id="gameMsg"></div>
+
+    <!-- Gear -->
+    <div class="calc-card">
+      <div class="calc-title">Gear Ratio</div>
+      <div class="calc-sub">Speed &amp; torque</div>
+      <label>Drive gear teeth</label>
+      <input type="number" id="gear1" value="8" min="4" max="100" oninput="updateGear()">
+      <label style="margin-top:11px">Output gear teeth</label>
+      <input type="number" id="gear2" value="24" min="4" max="100" oninput="updateGear()">
+      <div class="gear-vis">
+        <svg id="gearSvg" width="150" height="80" viewBox="0 0 150 80">
+          <circle id="g1c" cx="38" cy="40" r="18" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5 4"/>
+          <text id="g1t" x="38" y="44" text-anchor="middle" fill="#8b5cf6" font-size="10" font-family="system-ui" font-weight="900">8T</text>
+          <circle id="g2c" cx="105" cy="40" r="28" fill="none" stroke="#00ffb4" stroke-width="2" stroke-dasharray="7 5"/>
+          <text id="g2t" x="105" y="44" text-anchor="middle" fill="#00ffb4" font-size="10" font-family="system-ui" font-weight="900">24T</text>
+        </svg>
+      </div>
+      <div class="result-box">
+        <div class="result-label">Gear ratio</div>
+        <div class="result-val" id="gearRatio">3 : 1</div>
+        <div class="result-sub" id="gearSub">Speed ÷3 · Torque ×3<br>Slower but stronger</div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Famous Robots -->
-  <div class="section-label">🌍 Famous Robots — Tap to Learn</div>
-  <div class="robots-grid">
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🐕</span>
-      <div class="robot-card-name">Spot</div>
-      <div class="robot-card-job">Boston Dynamics</div>
-      <div class="robot-card-fact">Spot can walk, climb stairs, open doors, and even dance! Scientists send it into dangerous buildings so humans stay safe. 🦾</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🚗</span>
-      <div class="robot-card-name">Curiosity</div>
-      <div class="robot-card-job">Mars Rover, NASA</div>
-      <div class="robot-card-fact">Curiosity has been driving around Mars since 2012 — that's over 4 billion km from home! It uses lasers to vaporize rocks and study them. 🔬</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🧹</span>
-      <div class="robot-card-name">Roomba</div>
-      <div class="robot-card-job">iRobot — Home cleaner</div>
-      <div class="robot-card-fact">Roomba maps your entire house using sensors and remembers it! It knows where the sofa is and won't bump into it twice. Smart and lazy! 😂</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🏃</span>
-      <div class="robot-card-name">Atlas</div>
-      <div class="robot-card-job">Boston Dynamics</div>
-      <div class="robot-card-fact">Atlas can run, jump, do backflips, and even parkour! It's the world's most athletic robot. Engineers call it "the most dynamic humanoid robot ever built." 🤸</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🦾</span>
-      <div class="robot-card-name">Da Vinci</div>
-      <div class="robot-card-job">Surgical Robot</div>
-      <div class="robot-card-fact">Da Vinci helps doctors perform surgery through tiny holes — its arms are steadier than human hands. It has saved over 10 million patients! 🏥</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
-    <div class="robot-card" onclick="this.classList.toggle('flipped')">
-      <span class="robot-face">🤿</span>
-      <div class="robot-card-name">Aquanaut</div>
-      <div class="robot-card-job">Ocean Explorer</div>
-      <div class="robot-card-fact">Aquanaut transforms from a submarine into a robot with arms! It dives 3km deep to fix underwater pipelines where humans can't go. 🌊</div>
-      <div class="flip-hint">Tap to flip</div>
-    </div>
+  <!-- CHALLENGES -->
+  <div class="section-title">🏆 Build Challenges</div>
+  <div class="challenges-grid" id="challengesGrid"></div>
+
+  <!-- WIRING -->
+  <div class="section-title">⚡ Wiring Guide</div>
+  <div class="glass">
+    <div class="wire-tabs" id="wireTabs"></div>
+    <div id="wirePanels"></div>
   </div>
 
-  <!-- Fun Facts -->
-  <div class="section-label">🤯 Mind-Blowing Robot Facts</div>
-  <div class="facts-grid">
-    <div class="fact-card">
-      <span class="fact-emoji">🦾</span>
-      <div class="fact-text">The word <strong>"robot"</strong> comes from a Czech word meaning <strong>"forced labour"</strong> — it was invented in a play in 1920!</div>
-    </div>
-    <div class="fact-card">
-      <span class="fact-emoji">🏭</span>
-      <div class="fact-text">There are over <strong>3 million robots</strong> working in factories around the world right now — and that number doubles every 5 years.</div>
-    </div>
-    <div class="fact-card">
-      <span class="fact-emoji">🧠</span>
-      <div class="fact-text">The most advanced AI robots can now <strong>learn from watching videos</strong> — just like you learn by watching YouTube!</div>
-    </div>
-    <div class="fact-card">
-      <span class="fact-emoji">🐟</span>
-      <div class="fact-text">Scientists built a <strong>robotic fish</strong> that swims with real fish — and the real fish follow it as their leader! 🐠</div>
+  <!-- NOTES -->
+  <div class="section-title">📓 My Build Notes</div>
+  <div class="glass">
+    <textarea class="notes-area" id="buildNotes" placeholder="What are you building right now? Write down your ideas, measurements, what worked, what didn't..."></textarea>
+    <div class="notes-meta">
+      <span class="notes-saved" id="notesSaved">✓ Saved</span>
+      <button class="notes-clear" onclick="clearNotes()">Clear</button>
     </div>
   </div>
 
@@ -264,134 +256,261 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 </nav>
 
 <script>
-// ── Robot Types Data ──
-const TYPES = [
-  {
-    title:'🏭 Factory Robots',
-    text:'Factory robots weld cars, pack boxes, and paint things perfectly — 24 hours a day without getting tired! They work 10× faster than humans and make products for Apple, Tesla, and Amazon.',
-    examples:['🚗 Tesla car welder','📦 Amazon warehouse bot','💊 Medicine packager']
-  },
-  {
-    title:'🚀 Space Robots',
-    text:'Space robots explore places that would kill a human — like Mars (-80°C!) or the Sun. They beam back photos and science data across hundreds of millions of kilometres.',
-    examples:['🔭 Hubble Space Telescope','🚗 Curiosity Rover','🛰️ ISS robotic arm']
-  },
-  {
-    title:'🏠 Home Robots',
-    text:'Home robots do the chores you hate — vacuuming, mopping, even mowing the lawn! The latest ones can recognise your pets, avoid cables, and remember your furniture layout.',
-    examples:['🧹 Roomba vacuum','🌿 Lawnmowing robot','🍳 Moley cooking robot']
-  },
-  {
-    title:'🏥 Medical Robots',
-    text:'Medical robots help doctors perform surgery with incredible precision — their hands never shake! Some robots can deliver medicine in hospitals and others help people walk again after injuries.',
-    examples:['🦾 Da Vinci surgical bot','💊 Pharmacy robot','🦿 Exoskeleton walker']
-  },
-  {
-    title:'🐕 Animal-Inspired Robots',
-    text:'Bio-inspired robots copy how animals move — dogs run on 4 legs, snakes slither, birds fly, fish swim. Animals solved movement over millions of years, so robots borrow their tricks!',
-    examples:['🐕 Boston Dynamics Spot','🐍 Snake rescue bot','🦅 Ornithopter drone']
-  },
-  {
-    title:'🌊 Ocean Robots',
-    text:'The ocean is more mysterious than outer space — and robots are exploring it! Deep-sea robots find shipwrecks, fix underwater cables, and discover creatures never seen before.',
-    examples:['🤿 Aquanaut transformer','🦑 Soft robotic fish','🗺️ Ocean mapping AUV']
-  }
+/* ── PARTS DATA ── */
+const PARTS = [
+  {id:'servo',icon:'🔄',name:'Servo Motor',short:'Precise angle',color:'#00ffb4',
+   desc:'A servo moves to an exact angle and holds it. Perfect for arms and grippers. It has 3 wires: power, ground, and signal.',
+   specs:['4.8V–6V','0°–180°','PWM signal','3 wires'],
+   tip:'💡 The signal wire (orange/yellow) tells the servo exactly where to go. Short PWM pulse = one end. Long pulse = other end. The servo holds that position until told otherwise.'},
+  {id:'dcmotor',icon:'⚡',name:'DC Motor',short:'Spin & drive',color:'#8b5cf6',
+   desc:'Spins continuously while powered. Great for wheels. Reverse the wires and it spins the other way. Needs an H-bridge chip to control direction from a microcontroller.',
+   specs:['3V–12V','Full rotation','2 wires','H-bridge to reverse'],
+   tip:'💡 DC motors go fast but have no position sense. Pair with gears to trade speed for torque. The gear ratio tells you exactly how much slower and stronger the output will be.'},
+  {id:'led',icon:'💡',name:'LED',short:'Light up',color:'#FFD700',
+   desc:'Lights up when current flows through — but only one direction! Long leg (+) to positive. ALWAYS use a resistor or it burns out in seconds.',
+   specs:['2V–3.3V','20mA max','Needs resistor','One direction only'],
+   tip:'💡 Resistor formula: R = (Battery V − LED V) ÷ 0.02. With 9V battery and 2V red LED: (9−2)÷0.02 = 350Ω. Use 330Ω or 390Ω (nearest standard value).'},
+  {id:'sensor',icon:'👁️',name:'Distance Sensor',short:'See obstacles',color:'#00d4ff',
+   desc:'Sends out a sound pulse and times how long it takes to bounce back. Distance = time × speed of sound ÷ 2. Your robot can "see" without eyes!',
+   specs:['5V power','2cm–400cm','4 pins','Trigger + Echo'],
+   tip:'💡 Sound travels at ~343 m/s. Echo time 0.001 sec → distance = 343 × 0.001 ÷ 2 = 17.15cm. Divide by 2 because the sound goes THERE and BACK.'},
+  {id:'gear',icon:'⚙️',name:'Gear',short:'Change speed/force',color:'#ff6b6b',
+   desc:'Transfers rotation between axles. Small gear driving big gear = slower but stronger output. Ratio = driven ÷ driving teeth. Also reverses spin direction.',
+   specs:['No power needed','Ratio = driven÷drive','Multiplies torque','Reverses direction'],
+   tip:'💡 Gear ratio 4:1 = output 4× slower but 4× stronger. Use this when your motor is fast but not strong enough — like making a robot arm lift something heavy.'},
+  {id:'battery',icon:'🔋',name:'Battery Pack',short:'Power source',color:'#34d399',
+   desc:'Powers everything. 4× AA batteries in series = 6V. Always check your motor and servo voltage ratings! Every component shares the same ground wire.',
+   specs:['4×AA = 6V','9V block','Check polarity','Common ground'],
+   tip:'💡 All components share one GROUND (negative) wire — this is called "common ground". But they can draw power at different voltage points along the circuit.'}
 ];
 
-function showType(idx, el) {
-  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  const t = TYPES[idx];
-  const detail = document.getElementById('typeDetail');
-  detail.classList.add('show');
-  detail.innerHTML = `
-    <div class="type-detail-title">${t.title}</div>
-    <div class="type-detail-text">${t.text}</div>
-    <div>${t.examples.map(e => `<span class="robot-example">${e}</span>`).join('')}</div>
-  `;
+let activePart = null;
+function buildParts() {
+  document.getElementById('partsScroll').innerHTML = PARTS.map(p =>
+    `<div class="part-card" id="pc-${p.id}" style="--c:${p.color}" onclick="selectPart('${p.id}')">
+      <span class="part-icon">${p.icon}</span>
+      <div class="part-name">${p.name}</div>
+      <div class="part-short">${p.short}</div>
+    </div>`
+  ).join('');
+}
+function selectPart(id) {
+  const p = PARTS.find(x => x.id === id);
+  const det = document.getElementById('partDetail');
+  document.querySelectorAll('.part-card').forEach(c => c.classList.remove('active'));
+  if (activePart === id) { activePart = null; det.classList.remove('show'); return; }
+  activePart = id;
+  document.getElementById('pc-'+id).classList.add('active');
+  det.innerHTML = `
+    <div class="detail-header">
+      <span class="detail-icon">${p.icon}</span>
+      <div><div class="detail-name" style="color:${p.color}">${p.name}</div>
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4)">${p.short}</div></div>
+    </div>
+    <div class="detail-desc">${p.desc}</div>
+    <div class="detail-specs">${p.specs.map(s=>`<span class="spec-pill">${s}</span>`).join('')}</div>
+    <div class="detail-tip">${p.tip}</div>`;
+  det.classList.add('show');
 }
 
-// Init first type
-showType(0, document.querySelector('.type-card'));
-
-// ── Robot Programming Game ──
-const COLS = 6, ROWS = 6;
-let robotPos = {r:5, c:0};
-let goalPos = {r:0, c:5};
-let cmdQueue = [];
-let isRunning = false;
-
-function renderGrid() {
-  const g = document.getElementById('gameGrid');
-  g.innerHTML = '';
-  for (let r=0;r<ROWS;r++) {
-    for (let c=0;c<COLS;c++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      if (r===robotPos.r && c===robotPos.c) { cell.classList.add('robot'); cell.textContent='🤖'; }
-      else if (r===goalPos.r && c===goalPos.c) { cell.classList.add('goal'); cell.textContent='⭐'; }
-      g.appendChild(cell);
-    }
+/* ── SERVO CALC ── */
+function updateServo() {
+  const angle = parseFloat(document.getElementById('angleSlider').value);
+  const arm   = parseFloat(document.getElementById('armLen').value) || 6;
+  document.getElementById('angleVal').textContent = angle;
+  const rad = angle * Math.PI / 180;
+  const arc = arm * rad;
+  document.getElementById('servoOut').textContent = arc.toFixed(1) + ' cm';
+  document.getElementById('servoSub').textContent = `${arm}cm × ${angle}° × (π÷180) = ${arc.toFixed(2)}cm`;
+  // SVG: pivot at (80,65), arm length 48px, 0°=up, 180°=down
+  const svgRad = (270 + angle) * Math.PI / 180;
+  const L = 48;
+  const ex = 80 + Math.cos(svgRad) * L;
+  const ey = 65 + Math.sin(svgRad) * L;
+  document.getElementById('servoArm').setAttribute('x2', ex.toFixed(1));
+  document.getElementById('servoArm').setAttribute('y2', ey.toFixed(1));
+  document.getElementById('servoTip').setAttribute('cx', ex.toFixed(1));
+  document.getElementById('servoTip').setAttribute('cy', ey.toFixed(1));
+  document.getElementById('servoAngleText').textContent = angle + '°';
+  // Arc
+  if (angle > 1 && angle < 179) {
+    const sr = 270 * Math.PI / 180;
+    const er = (270 + angle) * Math.PI / 180;
+    const sx = 80 + Math.cos(sr)*L, sy = 65 + Math.sin(sr)*L;
+    const ex2 = 80 + Math.cos(er)*L, ey2 = 65 + Math.sin(er)*L;
+    document.getElementById('servoArc').setAttribute('d',
+      `M${sx.toFixed(1)} ${sy.toFixed(1)} A${L} ${L} 0 ${angle>180?1:0} 1 ${ex2.toFixed(1)} ${ey2.toFixed(1)}`);
+  } else {
+    document.getElementById('servoArc').setAttribute('d','');
   }
 }
 
-function addCmd(dir) {
-  if (isRunning) return;
-  if (cmdQueue.length >= 10) { showMsg('Max 10 steps! Hit GO or Reset first.'); return; }
-  cmdQueue.push(dir);
-  document.getElementById('queueDisplay').textContent = cmdQueue.join(' ') || '—';
-  showMsg('');
+/* ── GEAR CALC ── */
+function gcd(a,b){return b===0?a:gcd(b,a%b);}
+function updateGear() {
+  const g1 = parseFloat(document.getElementById('gear1').value)||8;
+  const g2 = parseFloat(document.getElementById('gear2').value)||24;
+  const ratio = g2/g1;
+  const d = gcd(Math.round(g2),Math.round(g1));
+  document.getElementById('gearRatio').textContent = `${Math.round(g2/d)} : ${Math.round(g1/d)}`;
+  let sub = '';
+  if (ratio > 1.01) sub = `Speed ÷${ratio.toFixed(2)} · Torque ×${ratio.toFixed(2)}<br>Slower but stronger 💪`;
+  else if (ratio < 0.99) sub = `Speed ×${(1/ratio).toFixed(2)} · Torque ÷${(1/ratio).toFixed(2)}<br>Faster but weaker`;
+  else sub = '1:1 — same speed and torque';
+  document.getElementById('gearSub').innerHTML = sub;
+  // resize circles
+  const r1 = Math.max(10, Math.min(30, g1*0.45));
+  const r2 = Math.max(10, Math.min(42, g2*0.45));
+  const cx1 = 8+r1, cx2 = cx1+r1+r2+3;
+  document.getElementById('g1c').setAttribute('cx',cx1); document.getElementById('g1c').setAttribute('r',r1);
+  document.getElementById('g2c').setAttribute('cx',cx2); document.getElementById('g2c').setAttribute('r',r2);
+  document.getElementById('g1t').setAttribute('x',cx1); document.getElementById('g1t').textContent=g1+'T';
+  document.getElementById('g2t').setAttribute('x',cx2); document.getElementById('g2t').textContent=g2+'T';
 }
 
-async function runProgram() {
-  if (isRunning || cmdQueue.length===0) { showMsg(cmdQueue.length===0?'Add some moves first!':''); return; }
-  isRunning = true;
-  let pos = {...robotPos};
-  for (let i=0;i<cmdQueue.length;i++) {
-    const cmd = cmdQueue[i];
-    let nr = pos.r, nc = pos.c;
-    if (cmd==='⬆️') nr--;
-    else if (cmd==='⬇️') nr++;
-    else if (cmd==='⬅️') nc--;
-    else if (cmd==='➡️') nc++;
-    if (nr<0||nr>=ROWS||nc<0||nc>=COLS) { showMsg('🤖 Oops! Robot hit a wall! Adjust your program.'); isRunning=false; return; }
-    pos = {r:nr, c:nc};
-    robotPos = {...pos};
-    renderGrid();
-    if (pos.r===goalPos.r && pos.c===goalPos.c) {
-      showMsg('🎉 You did it! Robot reached the star! Amazing programming!');
-      newGoal(); isRunning=false; cmdQueue=[]; document.getElementById('queueDisplay').textContent='—'; return;
-    }
-    await sleep(380);
-  }
-  showMsg('Almost! Try adjusting your moves and GO again 🤔');
-  isRunning = false;
+/* ── CHALLENGES ── */
+const CHALLENGES = [
+  {tag:'Servo Math',color:'#00ffb4',diff:2,
+   q:'Your servo arm is 6 cm long. You turn it 90°. How far does the tip travel?',
+   hint:'Arc length = radius × angle in radians. Radians = degrees × π ÷ 180.',
+   ans:'Arc = 6 × (90 × π÷180) = 6 × 1.571 = 9.4 cm 🎯'},
+  {tag:'Gear Ratio',color:'#8b5cf6',diff:2,
+   q:'Drive gear: 8 teeth. Output gear: 32 teeth. Motor spins at 200 rpm. What speed does the output spin at?',
+   hint:'Ratio = output÷drive. Then output speed = input speed ÷ ratio.',
+   ans:'Ratio = 32÷8 = 4. Output = 200÷4 = 50 rpm. But torque is 4× stronger! ⚙️'},
+  {tag:'Wheel Distance',color:'#00d4ff',diff:1,
+   q:'Robot wheels have diameter 5 cm. How far does the robot move in one full wheel rotation?',
+   hint:'Distance = π × diameter. Pi ≈ 3.14159.',
+   ans:'Distance = π × 5 = 15.7 cm per rotation — that\'s the circumference! 🚗'},
+  {tag:'LED Circuit',color:'#FFD700',diff:3,
+   q:'9V battery. Red LED needs 2V at 20mA. What resistor do you need?',
+   hint:'R = (Vbattery − Vled) ÷ current. Current: 20mA = 0.02A.',
+   ans:'R = (9−2) ÷ 0.02 = 7 ÷ 0.02 = 350Ω. Use 330Ω or 390Ω. ⚡'},
+  {tag:'Robot Turn',color:'#ff6b6b',diff:3,
+   q:'Wheel base is 12 cm. To turn exactly 90° (one wheel still), how far must the moving wheel travel?',
+   hint:'The moving wheel traces a quarter circle. Full circle = π × diameter of the turn circle.',
+   ans:'Quarter of π×12 = 3.14159×12÷4 = 9.42 cm 🔄'},
+  {tag:'Chain Drive',color:'#34d399',diff:2,
+   q:'Front sprocket: 12 teeth. Rear sprocket: 36 teeth. Input: 120 rpm. Output speed?',
+   hint:'Same as gear ratio. Ratio = rear ÷ front. Divide input by ratio.',
+   ans:'Ratio = 36÷12 = 3. Output = 120÷3 = 40 rpm. Like bicycle gears! 🚲'},
+  {tag:'Servo Steps',color:'#00ffb4',diff:1,
+   q:'Servo range is 0°–180°. You want 9 equal steps. How many degrees per step?',
+   hint:'Divide total range by number of GAPS (one less than number of positions).',
+   ans:'180° ÷ 9 gaps = 20° per step. Positions: 0°, 20°, 40°... 180° 🎯'},
+  {tag:'Power Budget',color:'#8b5cf6',diff:3,
+   q:'2 servos × 500mA each + 3 LEDs × 20mA each. What total current does your robot need?',
+   hint:'Add all currents. 1000mA = 1A.',
+   ans:'Servos: 2×500 = 1000mA. LEDs: 3×20 = 60mA. Total = 1060mA = 1.06A 🔋'}
+];
+
+function buildChallenges() {
+  document.getElementById('challengesGrid').innerHTML = CHALLENGES.map((c,i) => {
+    const stars = [1,2,3].map(n=>`<span class="${n<=c.diff?'on':''}">${n<=c.diff?'⚙️':'·'}</span>`).join('');
+    return `<div class="challenge" style="--c:${c.color}">
+      <div class="ch-header"><span class="ch-tag">${c.tag}</span><span class="ch-diff">${stars}</span></div>
+      <div class="ch-q">${c.q}</div>
+      <div class="ch-actions">
+        <button class="hint-btn" onclick="tog('hint-${i}')">💡 Hint</button>
+        <button class="ans-btn" onclick="tog('ans-${i}')">✓ Answer</button>
+      </div>
+      <div class="hint-text" id="hint-${i}">${c.hint}</div>
+      <div class="answer-text" id="ans-${i}">${c.ans}</div>
+    </div>`;
+  }).join('');
+}
+function tog(id){ document.getElementById(id).classList.toggle('show'); }
+
+/* ── WIRING ── */
+const WIRING = [
+  {label:'Servo',
+   svg:`<svg width="250" height="130" viewBox="0 0 250 130" xmlns="http://www.w3.org/2000/svg">
+     <rect x="10" y="45" width="38" height="48" rx="6" fill="rgba(52,211,153,.12)" stroke="#34d399" stroke-width="1.5"/>
+     <text x="29" y="66" text-anchor="middle" fill="#34d399" font-size="9" font-weight="800" font-family="system-ui">6V</text>
+     <text x="29" y="78" text-anchor="middle" fill="#34d399" font-size="9" font-weight="800" font-family="system-ui">BATT</text>
+     <rect x="175" y="35" width="62" height="58" rx="8" fill="rgba(0,255,180,.1)" stroke="#00ffb4" stroke-width="1.5"/>
+     <text x="206" y="62" text-anchor="middle" fill="#00ffb4" font-size="10" font-weight="900" font-family="system-ui">SERVO</text>
+     <polyline points="48,52 120,52 120,46 175,46" fill="none" stroke="#ff6b6b" stroke-width="2.5" stroke-linecap="round"/>
+     <text x="85" y="44" text-anchor="middle" fill="#ff6b6b" font-size="9" font-weight="800" font-family="system-ui">+ Power (Red)</text>
+     <polyline points="48,84 120,84 120,78 175,78" fill="none" stroke="rgba(200,200,200,.6)" stroke-width="2.5" stroke-linecap="round"/>
+     <text x="85" y="98" text-anchor="middle" fill="rgba(200,200,200,.6)" font-size="9" font-weight="800" font-family="system-ui">− Ground (Brown/Black)</text>
+     <polyline points="85,120 120,120 120,62 175,62" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="5 3" stroke-linecap="round"/>
+     <rect x="55" y="111" width="60" height="17" rx="4" fill="rgba(255,215,0,.1)" stroke="rgba(255,215,0,.35)" stroke-width="1"/>
+     <text x="85" y="123" text-anchor="middle" fill="#FFD700" font-size="9" font-weight="800" font-family="system-ui">Signal (Orange)</text>
+   </svg>`,
+   desc:'3 wires: Red = power (+), Brown/Black = ground (−), Orange/Yellow = signal. The signal wire carries a PWM pulse that tells the servo its exact angle.',
+   pins:[{color:'#ff6b6b',name:'Red',desc:'Power +'},{color:'rgba(200,200,200,.6)',name:'Brown/Black',desc:'Ground −'},{color:'#FFD700',name:'Orange/Yellow',desc:'Signal PWM'}]},
+  {label:'LED',
+   svg:`<svg width="250" height="120" viewBox="0 0 250 120" xmlns="http://www.w3.org/2000/svg">
+     <rect x="8" y="30" width="36" height="50" rx="6" fill="rgba(52,211,153,.12)" stroke="#34d399" stroke-width="1.5"/>
+     <text x="26" y="52" text-anchor="middle" fill="#34d399" font-size="9" font-weight="800" font-family="system-ui">9V</text>
+     <rect x="90" y="22" width="46" height="20" rx="4" fill="rgba(255,215,0,.12)" stroke="#FFD700" stroke-width="1.5"/>
+     <text x="113" y="35" text-anchor="middle" fill="#FFD700" font-size="9" font-weight="800" font-family="system-ui">330Ω</text>
+     <polygon points="160,22 160,42 178,32" fill="rgba(255,107,107,.25)" stroke="#ff6b6b" stroke-width="1.5"/>
+     <line x1="178" y1="22" x2="178" y2="42" stroke="#ff6b6b" stroke-width="2"/>
+     <line x1="180" y1="21" x2="188" y2="16" stroke="#FFD700" stroke-width="1.5"/>
+     <line x1="183" y1="26" x2="191" y2="21" stroke="#FFD700" stroke-width="1.5"/>
+     <polyline points="44,38 90,38 90,32 90,32" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round"/>
+     <polyline points="136,32 160,32" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round"/>
+     <polyline points="178,32 210,32 210,76 44,76" fill="none" stroke="rgba(200,200,200,.5)" stroke-width="2" stroke-linecap="round"/>
+     <text x="113" y="106" text-anchor="middle" fill="#FFD700" font-size="9" font-weight="700" font-family="system-ui">Always use a resistor!</text>
+   </svg>`,
+   desc:'Long leg (+) → Resistor → Short leg (−) → Ground. Formula: R = (Vbattery − Vled) ÷ 0.02. For 9V battery with red LED: (9−2)÷0.02 = 350Ω.',
+   pins:[{color:'#ff6b6b',name:'Long leg (+)',desc:'Anode → +'},{color:'rgba(200,200,200,.5)',name:'Short leg (−)',desc:'Cathode → −'},{color:'#FFD700',name:'Resistor',desc:'Always in series'}]},
+  {label:'Ultrasonic',
+   svg:`<svg width="250" height="130" viewBox="0 0 250 130" xmlns="http://www.w3.org/2000/svg">
+     <rect x="8" y="25" width="58" height="80" rx="8" fill="rgba(139,92,246,.1)" stroke="#8b5cf6" stroke-width="1.5"/>
+     <text x="37" y="60" text-anchor="middle" fill="#8b5cf6" font-size="9" font-weight="900" font-family="system-ui">MICRO</text>
+     <text x="37" y="72" text-anchor="middle" fill="#8b5cf6" font-size="9" font-weight="900" font-family="system-ui">CTRL</text>
+     <rect x="168" y="20" width="72" height="85" rx="8" fill="rgba(0,212,255,.08)" stroke="#00d4ff" stroke-width="1.5"/>
+     <text x="204" y="52" text-anchor="middle" fill="#00d4ff" font-size="8" font-weight="900" font-family="system-ui">ULTRASONIC</text>
+     <text x="204" y="63" text-anchor="middle" fill="#00d4ff" font-size="8" font-weight="900" font-family="system-ui">SENSOR</text>
+     <ellipse cx="188" cy="80" rx="7" ry="9" fill="none" stroke="#00d4ff" stroke-width="1.2"/>
+     <ellipse cx="220" cy="80" rx="7" ry="9" fill="none" stroke="#00d4ff" stroke-width="1.2"/>
+     <line x1="66" y1="35" x2="168" y2="30" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round"/>
+     <line x1="66" y1="50" x2="168" y2="45" stroke="rgba(200,200,200,.5)" stroke-width="2" stroke-linecap="round"/>
+     <line x1="66" y1="65" x2="168" y2="60" stroke="#FFD700" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+     <line x1="66" y1="80" x2="168" y2="75" stroke="#00ffb4" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+     <text x="117" y="28" text-anchor="middle" fill="#ff6b6b" font-size="8" font-weight="800" font-family="system-ui">VCC +5V</text>
+     <text x="117" y="43" text-anchor="middle" fill="rgba(200,200,200,.5)" font-size="8" font-weight="800" font-family="system-ui">GND</text>
+     <text x="117" y="58" text-anchor="middle" fill="#FFD700" font-size="8" font-weight="800" font-family="system-ui">Trigger</text>
+     <text x="117" y="92" text-anchor="middle" fill="#00ffb4" font-size="8" font-weight="800" font-family="system-ui">Echo</text>
+   </svg>`,
+   desc:'4 pins: VCC (power), GND (ground), Trig (you send a pulse out), Echo (times how long the bounce takes). Distance = echo time × 343 m/s ÷ 2.',
+   pins:[{color:'#ff6b6b',name:'VCC',desc:'Power +5V'},{color:'rgba(200,200,200,.5)',name:'GND',desc:'Ground −'},{color:'#FFD700',name:'Trig',desc:'Send pulse'},{color:'#00ffb4',name:'Echo',desc:'Receive bounce'}]}
+];
+
+function buildWiring() {
+  document.getElementById('wireTabs').innerHTML = WIRING.map((w,i)=>
+    `<button class="wire-tab ${i===0?'active':''}" onclick="showWire(${i})">${w.label}</button>`).join('');
+  document.getElementById('wirePanels').innerHTML = WIRING.map((w,i)=>`
+    <div class="wire-panel ${i===0?'show':''}" id="wp-${i}">
+      <div class="wire-svg-wrap">${w.svg}</div>
+      <div class="wire-desc">${w.desc}</div>
+      <div class="wire-pins">${w.pins.map(p=>`
+        <div class="pin">
+          <div class="pin-color" style="background:${p.color}"></div>
+          <div class="pin-name">${p.name}</div>
+          <div class="pin-desc">${p.desc}</div>
+        </div>`).join('')}</div>
+    </div>`).join('');
+}
+function showWire(i) {
+  document.querySelectorAll('.wire-tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.wire-panel').forEach((p,j)=>p.classList.toggle('show',j===i));
 }
 
-function newGoal() {
-  setTimeout(() => {
-    robotPos = {r:5, c:0};
-    goalPos = {r: Math.floor(Math.random()*ROWS), c: Math.floor(Math.random()*COLS)};
-    if (goalPos.r===5 && goalPos.c===0) goalPos = {r:0, c:5};
-    renderGrid();
-    showMsg('New challenge! Program your robot to reach the ⭐');
-  }, 1800);
-}
+/* ── NOTES ── */
+const NK = 'robotics_build_notes';
+let st = null;
+function loadNotes(){ const s=localStorage.getItem(NK); if(s) document.getElementById('buildNotes').value=s; }
+function saveNotes(){ localStorage.setItem(NK,document.getElementById('buildNotes').value); const el=document.getElementById('notesSaved'); el.classList.add('show'); clearTimeout(st); st=setTimeout(()=>el.classList.remove('show'),2000); }
+function clearNotes(){ if(confirm('Clear all build notes?')){ document.getElementById('buildNotes').value=''; localStorage.removeItem(NK); } }
+document.getElementById('buildNotes').addEventListener('input',saveNotes);
 
-function resetGame() {
-  isRunning = false;
-  cmdQueue = [];
-  robotPos = {r:5, c:0};
-  document.getElementById('queueDisplay').textContent='—';
-  renderGrid();
-  showMsg('');
-}
-
-function showMsg(m) { document.getElementById('gameMsg').textContent = m; }
-function sleep(ms) { return new Promise(r=>setTimeout(r,ms)); }
-
-renderGrid();
+/* ── INIT ── */
+buildParts(); buildChallenges(); buildWiring(); updateServo(); updateGear(); loadNotes();
 </script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>
