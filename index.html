@@ -162,11 +162,11 @@ body{
   </div>
 
   <div class="daily">
-    <div class="daily-tag">⚡ Daily Brain Spark</div>
+    <div class="daily-tag">⚡ Brain Spark <span id="sparkCountdown" style="margin-left:auto;font-size:10px;letter-spacing:1px;color:#F59E0B;font-weight:800"></span></div>
     <div class="daily-q" id="dq">Loading your challenge…</div>
     <div class="daily-answer" id="da"></div>
     <button class="btn-reveal" id="dBtn" onclick="dailyClick()">Show Answer 🔍</button>
-    <div class="daily-tomorrow">🌙 New challenge tomorrow!</div>
+    <div class="daily-tomorrow" id="sparkNext">⏰ New challenge every hour!</div>
   </div>
 
   <!-- ★ DAILY FAVOURITES ★ -->
@@ -222,8 +222,8 @@ body{
       <a class="card" href="ai.html" style="animation-delay:.35s;background:linear-gradient(145deg,#EFF6FF,#E0E7FF)">
         <span class="hot-badge">🆕 New!</span>
         <span class="card-icon">🧠</span>
-        <div class="card-title">AI Brain Trainer</div>
-        <div class="card-sub">Teach a robot to think!</div>
+        <div class="card-title">Teach the AI!</div>
+        <div class="card-sub">You train it — it learns!</div>
       </a>
 
       <a class="card card-bitcoin" href="bitcoin.html" style="animation-delay:.4s">
@@ -260,9 +260,9 @@ body{
       </a>
 
       <a class="card card-books" href="books.html" style="animation-delay:.6s">
-        <span class="card-icon">📚</span>
-        <div class="card-title">Cool Books</div>
-        <div class="card-sub">100 Amazing Things</div>
+        <span class="card-icon">🃏</span>
+        <div class="card-title">Wonder Cards</div>
+        <div class="card-sub">100 Amazing Facts to Flip!</div>
       </a>
 
       <a class="card card-jokes" href="jokes.html" style="animation-delay:.65s">
@@ -324,23 +324,40 @@ const CHALLENGES = [
   {q:"What is the square root of 144? 🧮",a:"12! Because 12 × 12 = 144. √144 = 12 ✓"},
 ];
 
-// Date-based seed — same question all day, new one each day
+// Hour-based seed — new challenge every hour
 const today = new Date();
-const dayKey = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
-const idx = dayKey % CHALLENGES.length;
+const hourKey = today.getFullYear()*1000000 + (today.getMonth()+1)*10000 + today.getDate()*100 + today.getHours();
+const idx = hourKey % CHALLENGES.length;
 const ch = CHALLENGES[idx];
 document.getElementById('dq').textContent = ch.q;
 
-// Track if today's challenge was already answered
-const doneKey = 'daily_done_' + dayKey;
+// Track if this hour's challenge was already answered
+const doneKey = 'daily_done_' + hourKey;
 const alreadyDone = localStorage.getItem(doneKey);
 if (alreadyDone) {
   document.getElementById('da').textContent = ch.a;
   document.getElementById('da').style.display = 'block';
   const btn = document.getElementById('dBtn');
-  btn.textContent = '🎉 Come back tomorrow!';
+  btn.textContent = '🎉 Next one coming soon!';
   btn.disabled = true;
 }
+
+// Countdown to next hour
+function updateCountdown() {
+  const now = new Date();
+  const minsLeft = 59 - now.getMinutes();
+  const secsLeft = 59 - now.getSeconds();
+  const el = document.getElementById('sparkCountdown');
+  const nextEl = document.getElementById('sparkNext');
+  if (el) el.textContent = `⏱ ${minsLeft}m ${secsLeft}s`;
+  if (nextEl && !localStorage.getItem(doneKey)) {
+    nextEl.textContent = '⏰ New challenge every hour!';
+  } else if (nextEl) {
+    nextEl.textContent = `⏳ Next challenge in ${minsLeft}m ${secsLeft}s`;
+  }
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
 let dShown = false;
 function dailyClick() {
@@ -354,7 +371,7 @@ function dailyClick() {
     confettiBurst();
     localStorage.setItem(doneKey, '1');
     const btn = document.getElementById('dBtn');
-    btn.textContent = '🎉 Come back tomorrow!';
+    btn.textContent = '🎉 Next one coming soon!';
     btn.disabled = true;
   }
 }

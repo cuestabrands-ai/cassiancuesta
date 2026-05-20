@@ -59,12 +59,13 @@ body{
 .rule-desc{font-size:11px;font-weight:700;color:rgba(30,27,75,.45);line-height:1.4}
 
 /* ── HOW IT WORKS ── */
-.how-it-works{background:white;border-radius:18px;padding:16px 18px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
-.how-title{font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:12px}
-.steps{display:flex;gap:8px}
-.step{flex:1;text-align:center}
-.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
-.step-txt{font-size:11px;font-weight:800;color:rgba(30,27,75,.5);line-height:1.3}
+.how-it-works{background:white;border-radius:20px;padding:20px 18px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.how-title{font-size:13px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:16px;text-align:center}
+.steps{display:flex;gap:6px;align-items:flex-start}
+.step{flex:1;text-align:center;padding:0 4px}
+.step-num{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:0 4px 12px rgba(99,102,241,.25)}
+.step-arrow{font-size:18px;color:rgba(30,27,75,.15);margin-top:12px;flex-shrink:0}
+.step-txt{font-size:12px;font-weight:800;color:#4B5563;line-height:1.4}
 
 /* ── TRAIN SCREEN ── */
 .train-header{text-align:center;margin-bottom:16px}
@@ -190,8 +191,8 @@ body{
   <!-- ── HEADER ── -->
   <header class="header">
     <span class="header-icon">🧠</span>
-    <div class="header-title">AI Brain Trainer</div>
-    <div class="header-sub">Teach a robot to think! 🤖✨</div>
+    <div class="header-title">Teach the AI! 🤖</div>
+    <div class="header-sub">You pick the rule — the AI learns it from YOU ✨</div>
   </header>
 
   <!-- ── XP ── -->
@@ -238,19 +239,21 @@ body{
     </div>
 
     <div class="how-it-works">
-      <div class="how-title">How It Works</div>
+      <div class="how-title">⚡ How It Works</div>
       <div class="steps">
         <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-txt">You label numbers YES or NO</div>
+          <div class="step-num">👆</div>
+          <div class="step-txt">You tap <strong>YES</strong> or <strong>NO</strong> for 8 numbers</div>
         </div>
+        <span class="step-arrow">›</span>
         <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-txt">The AI brain learns from you</div>
+          <div class="step-num">🧠</div>
+          <div class="step-txt">The AI watches and <strong>learns the rule</strong></div>
         </div>
+        <span class="step-arrow">›</span>
         <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-txt">Test the AI on mystery numbers!</div>
+          <div class="step-num">🎯</div>
+          <div class="step-txt">Then it tries <strong>5 new numbers</strong> on its own!</div>
         </div>
       </div>
     </div>
