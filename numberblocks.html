@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Numberblocks 🔢 — Cassian's Super App</title>
+<link rel="manifest" href="/manifest.json">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#0a0a1a}
+body{display:flex;flex-direction:column;height:100dvh}
+.game-frame{flex:1;min-height:0;position:relative}
+.game-frame iframe{width:100%;height:100%;border:none;display:block}
+/* Setup screen */
+.setup{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:24px;text-align:center;color:white;font-family:system-ui,sans-serif;gap:10px}
+.setup h2{font-size:22px;font-weight:800;color:#00d4ff;margin-bottom:4px}
+.setup p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;max-width:340px}
+.setup .step{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:13px 16px;font-size:14px;text-align:left;width:100%;max-width:340px}
+.setup .step strong{color:#00d4ff}
+.setup button{margin-top:8px;padding:12px 32px;border-radius:50px;background:linear-gradient(135deg,#00d4ff,#8b5cf6);border:none;color:white;font-size:15px;font-weight:800;cursor:pointer;font-family:system-ui}
+/* Nav */
+.app-nav{background:rgba(10,8,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:100;flex-shrink:0}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn:hover,.nav-btn.active{color:#00d4ff}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:system-ui}
+</style>
+</head>
+<body>
+<div class="game-frame" id="gameFrame">
+  <iframe src="nb-scratch.html" id="nbFrame" allowfullscreen title="Numberblocks"></iframe>
+</div>
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn active"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+<script>
+if(window.location.protocol==='file:'){
+  // On file:// protocol, fetch is blocked — just trust the iframe to load
+  // If nb-scratch.html is missing, the iframe will be blank (acceptable)
+} else {
+  fetch('nb-scratch.html',{method:'HEAD'})
+    .then(r=>{if(!r.ok)showSetup();})
+    .catch(()=>showSetup());
+}
+function showSetup(){
+  document.getElementById('gameFrame').innerHTML=`
+    <div class="setup">
+      <div style="font-size:52px">🔢</div>
+      <h2>One Setup Step Needed</h2>
+      <p>The Numberblocks game file needs to be downloaded once. Here's how:</p>
+      <div class="step"><strong>Step 1:</strong> Go to <strong>packager.turbowarp.org</strong> on a computer</div>
+      <div class="step"><strong>Step 2:</strong> Enter project ID <strong style="color:#A29BFE;font-size:17px">1291946676</strong> and click Load</div>
+      <div class="step"><strong>Step 3:</strong> Output → HTML file → Package → download</div>
+      <div class="step"><strong>Step 4:</strong> Rename the file to <strong>nb-scratch.html</strong> and put it in the Cassian app folder</div>
+      <button onclick="location.reload()">Tap here after setup ✓</button>
+    </div>`;
+}
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

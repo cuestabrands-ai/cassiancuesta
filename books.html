@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+  <title>100 Cool Things — Cassian's Library</title>
+  <link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+  <style>
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #070710;
+      color: #E8E4FF;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+    body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 40% at 50% -10%, rgba(240,163,163,0.05) 0%, transparent 70%); pointer-events:none; z-index:0; }
+
+    /* ── Header ── */
+    .library-header {
+      text-align: center;
+      padding: 28px 20px 12px;
+    }
+    .library-header h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      font-family: 'Playfair Display', Georgia, serif;
+      background: linear-gradient(135deg, #F0A3A3, #e08080);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .library-header p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    /* ── Discovered counter ── */
+    .discovery-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 20px 16px;
+    }
+    .discovery-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #F0A3A3;
+    }
+    .discovery-progress {
+      flex: 1;
+      max-width: 220px;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .discovery-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #F0A3A3, #e08080);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Category pills ── */
+    .filter-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    .pill {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .pill:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+    .pill.active {
+      background: #F0A3A3;
+      border-color: #F0A3A3;
+      color: #070710;
+    }
+
+    /* ── Card grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+      padding: 0 16px;
+    }
+
+    /* ── Flip card ── */
+    .card {
+      aspect-ratio: 3/4;
+      perspective: 900px;
+      cursor: pointer;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card-front {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 10px;
+    }
+    .card-front:hover {
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.09);
+    }
+    .card.flipped .card-front { border-color: rgba(255,255,255,0.08); }
+
+    .card-emoji {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+    .card-category {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.55;
+    }
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: rgba(255,255,255,0.92);
+    }
+    .card-tap-hint {
+      font-size: 0.6rem;
+      opacity: 0.35;
+      margin-top: 4px;
+    }
+
+    /* Seen badge */
+    .seen-dot {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F0A3A3;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .card.seen .seen-dot { opacity: 1; }
+
+    /* ── Card back colors per category ── */
+    .card-back {
+      transform: rotateY(180deg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .card-back.cat-math     { background: linear-gradient(135deg, #003d4d 0%, #005566 100%); border-color: #00d4ff44; }
+    .card-back.cat-chess    { background: linear-gradient(135deg, #3d2e00 0%, #5c4500 100%); border-color: #f59e0b44; }
+    .card-back.cat-bitcoin  { background: linear-gradient(135deg, #3d1a00 0%, #5c2800 100%); border-color: #f97316aa; }
+    .card-back.cat-music    { background: linear-gradient(135deg, #3d0026 0%, #5c003a 100%); border-color: #ec489944; }
+    .card-back.cat-robotics { background: linear-gradient(135deg, #1a0040 0%, #280060 100%); border-color: #8b5cf644; }
+    .card-back.cat-languages{ background: linear-gradient(135deg, #003d1a 0%, #005528 100%); border-color: #22c55e44; }
+    .card-back.cat-space    { background: linear-gradient(135deg, #000d3d 0%, #001466 100%); border-color: #6366f144; }
+    .card-back.cat-bonus    { background: linear-gradient(135deg, #1a1a3d 0%, #2a2a5c 100%); border-color: #a78bfa44; }
+
+    .back-number {
+      font-size: 0.6rem;
+      font-weight: 800;
+      opacity: 0.4;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .back-emoji {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .back-fact {
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: rgba(255,255,255,0.92);
+      font-weight: 500;
+    }
+    .back-tap-hint {
+      font-size: 0.6rem;
+      opacity: 0.35;
+      text-align: right;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    /* ── Bottom nav ── */
+    .app-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background: rgba(7,7,16,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 8px 0 env(safe-area-inset-bottom, 8px);
+      z-index: 100;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      text-decoration: none;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.65rem;
+      font-weight: 600;
+      transition: color 0.2s;
+      padding: 4px 0;
+    }
+    .nav-btn.active { color: #F0A3A3; }
+    .nav-btn:hover { color: #F0A3A3; }
+    .nav-icon { font-size: 1.35rem; line-height: 1; }
+    .nav-label { letter-spacing: 0.02em; }
+
+    @media (min-width: 600px) {
+      .card-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; padding: 0 24px; }
+      .library-header h1 { font-size: 2.2rem; }
+    }
+    @media (min-width: 900px) {
+      .card-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="library-header">
+    <h1>📚 100 Cool Things</h1>
+    <p>Tap any card to reveal the fact</p>
+  </div>
+
+  <div class="discovery-bar">
+    <span class="discovery-text" id="discoveryText">Discovered: 0 / 100</span>
+    <div class="discovery-progress">
+      <div class="discovery-fill" id="discoveryFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="filter-scroll" id="filterBar"></div>
+
+  <div class="card-grid" id="cardGrid"></div>
+  <div class="empty-state" id="emptyState">No cards in this category yet!</div>
+
+  <nav class="app-nav">
+    <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+    <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+    <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+    <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+  </nav>
+
+  <script>
+  // ─────────────────────────────────────────────
+  //  FACTS DATABASE — 100 cards
+  // ─────────────────────────────────────────────
+  const FACTS = [
+    // ── MATH (20 facts) ──────────────────────────
+    {
+      id: 1, cat: 'math', catLabel: '🔢 Math', emoji: '🔢',
+      title: '1 Is Not Prime',
+      fact: 'The number 1 is NOT a prime number — mathematicians decided this on purpose! If 1 were prime, the Fundamental Theorem of Arithmetic would break: every number has exactly one prime factorization, and letting 1 be prime would create infinitely many.'
+    },
+    {
+      id: 2, cat: 'math', catLabel: '🔢 Math', emoji: '♾️',
+      title: 'Infinity + 1',
+      fact: 'Adding 1 to infinity doesn\'t make it bigger. But some infinities ARE bigger than others — the infinity of real numbers (like 3.14159…) is provably larger than the infinity of whole numbers. Mathematician Georg Cantor proved this in 1891.'
+    },
+    {
+      id: 3, cat: 'math', catLabel: '🔢 Math', emoji: '🌀',
+      title: 'The Fibonacci Spiral',
+      fact: 'The sequence 1, 1, 2, 3, 5, 8, 13, 21… (each number = the two before it) creates a spiral that appears in sunflower seeds, pinecones, nautilus shells, and galaxies. Nature discovered this pattern before humans did.'
+    },
+    {
+      id: 4, cat: 'math', catLabel: '🔢 Math', emoji: '🔴',
+      title: 'Googol vs Googolplex',
+      fact: 'A googol is 10¹⁰⁰ — a 1 followed by 100 zeros. A googolplex is 10^googol — a 1 followed by a googol of zeros. A googolplex is so large that you could NOT write it out even if every atom in the observable universe were a digit.'
+    },
+    {
+      id: 5, cat: 'math', catLabel: '🔢 Math', emoji: '📐',
+      title: 'Pi Goes Forever',
+      fact: 'π (pi) = 3.14159265358979… and it NEVER repeats, NEVER ends. Computers have calculated it to over 100 trillion decimal places. Somewhere in those digits, your birthday appears — and so does every number ever written.'
+    },
+    {
+      id: 6, cat: 'math', catLabel: '🔢 Math', emoji: '✂️',
+      title: 'The Infinite Hotel',
+      fact: 'Hilbert\'s Hotel is a thought experiment: a hotel with infinite rooms is full. A new guest arrives — no problem! Move guest in room 1 to room 2, room 2 to room 3, and so on. Room 1 is now free. Infinity works very strangely.'
+    },
+    {
+      id: 7, cat: 'math', catLabel: '🔢 Math', emoji: '🎲',
+      title: 'The Largest Known Prime',
+      fact: 'As of 2024, the largest known prime has 41 million digits. It belongs to a special family called Mersenne primes: 2ⁿ − 1. Finding new primes wins you prize money — the Electronic Frontier Foundation offers $150,000 for a 100-million-digit prime.'
+    },
+    {
+      id: 8, cat: 'math', catLabel: '🔢 Math', emoji: '🔑',
+      title: 'Zero Was Invented',
+      fact: 'Zero was invented by Indian mathematician Brahmagupta around 628 AD. Before that, most civilizations had no symbol for nothing — they just left a blank space. Zero made our entire number system, computers, and calculus possible.'
+    },
+    {
+      id: 9, cat: 'math', catLabel: '🔢 Math', emoji: '⬡',
+      title: 'Hexagons Everywhere',
+      fact: 'Hexagons are the most efficient shape for tiling a flat surface — they pack the most area using the least perimeter. That\'s why bees evolved to build hexagonal honeycombs: they use minimum wax for maximum honey storage.'
+    },
+    {
+      id: 10, cat: 'math', catLabel: '🔢 Math', emoji: '🌊',
+      title: 'Fractals Are Infinite Edges',
+      fact: 'The coastline of Britain is infinitely long — the more precisely you measure it (using smaller and smaller rulers), the longer it gets. This is the "coastline paradox," and it led mathematician Benoit Mandelbrot to invent fractal geometry in 1975.'
+    },
+    {
+      id: 11, cat: 'math', catLabel: '🔢 Math', emoji: '🏆',
+      title: 'Fermat\'s Last Theorem',
+      fact: 'In 1637, Pierre de Fermat scribbled in a book: "I have a marvellous proof that no whole numbers a, b, c satisfy aⁿ+bⁿ=cⁿ for n>2." He never wrote it down. The proof wasn\'t found for 358 years — mathematician Andrew Wiles solved it in 1995 using 200 pages.'
+    },
+    {
+      id: 12, cat: 'math', catLabel: '🔢 Math', emoji: '🎴',
+      title: 'The Golden Ratio',
+      fact: 'The golden ratio φ ≈ 1.618… appears when you divide a line so the whole/long = long/short. It appears in the Parthenon, Leonardo da Vinci\'s paintings, credit card proportions, and the ratio of consecutive Fibonacci numbers.'
+    },
+    {
+      id: 13, cat: 'math', catLabel: '🔢 Math', emoji: '🧊',
+      title: 'Euler\'s Identity',
+      fact: 'eⁱπ + 1 = 0. This single equation — called "the most beautiful in mathematics" — connects five fundamental constants: e (the base of natural logs), i (imaginary unit), π (pi), 1, and 0. Physicist Richard Feynman called it "our jewel."'
+    },
+    {
+      id: 14, cat: 'math', catLabel: '🔢 Math', emoji: '🔵',
+      title: 'The Four Color Theorem',
+      fact: 'Any map can be colored with just 4 colors so no two neighboring regions share a color. Mathematicians suspected this for 120 years. In 1976 it was finally proven — but only by checking 1,936 special cases with a computer. Many mathematicians found that uncomfortable.'
+    },
+    {
+      id: 15, cat: 'math', catLabel: '🔢 Math', emoji: '🧩',
+      title: 'The Collatz Conjecture',
+      fact: 'Take any number. If even, divide by 2. If odd, multiply by 3 and add 1. Keep going — you always seem to reach 1 eventually. Mathematicians have checked this for quadrillions of numbers. But nobody has proven it ALWAYS works. It\'s one of math\'s most famous unsolved puzzles.'
+    },
+    {
+      id: 16, cat: 'math', catLabel: '🔢 Math', emoji: '📊',
+      title: 'Pascal\'s Triangle Hides Everything',
+      fact: 'Pascal\'s triangle looks simple (each number = sum of two above), but inside it hides: Fibonacci numbers, powers of 2, powers of 11, triangular numbers, the binomial theorem, and fractal patterns. It\'s one of the most information-dense simple structures in mathematics.'
+    },
+    {
+      id: 17, cat: 'math', catLabel: '🔢 Math', emoji: '♾',
+      title: 'Some Infinities Are Bigger',
+      fact: 'Georg Cantor proved there are different sizes of infinity. The counting numbers {1, 2, 3…} are "countably infinite." But the real numbers (including all decimals) are "uncountably infinite" — a strictly bigger infinity. His proof using "diagonalization" is one of the cleverest in all mathematics.'
+    },
+    {
+      id: 18, cat: 'math', catLabel: '🔢 Math', emoji: '🔮',
+      title: 'The Banach-Tarski Paradox',
+      fact: 'In pure mathematics, it\'s theoretically possible to take a solid ball, cut it into 5 pieces, and reassemble them into TWO balls identical to the original. This is mathematically proven — it\'s not a trick. It works because of infinite precision and something called the Axiom of Choice.'
+    },
+    {
+      id: 19, cat: 'math', catLabel: '🔢 Math', emoji: '🌐',
+      title: 'Graph Theory Started With Bridges',
+      fact: 'In 1736, Leonhard Euler solved the "Seven Bridges of Königsberg" — could you walk across all 7 bridges exactly once? He proved you couldn\'t, and invented graph theory to do it. Graph theory now powers Google Maps, Facebook\'s friend networks, and how the internet routes data.'
+    },
+    {
+      id: 20, cat: 'math', catLabel: '🔢 Math', emoji: '🔄',
+      title: 'Kaprekar\'s Constant',
+      fact: 'Take any 4-digit number (not all same digits). Arrange digits largest→smallest, then smallest→largest. Subtract. Repeat. Within 7 steps you ALWAYS reach 6174 — Kaprekar\'s constant. Example: 1234 → 4321−1234=3087 → 8730−0378=8352 → 8532−2358=6174. Every time.'
+    },
+
+    // ── CHESS (15 facts) ──────────────────────────
+    {
+      id: 21, cat: 'chess', catLabel: '♟️ Chess', emoji: '♟️',
+      title: 'Chess Is Ancient',
+      fact: 'Chess originated in India around 600 AD as a game called "Chaturanga" — meaning four military divisions: infantry, cavalry, elephants, and chariots. These became our pawns, knights, bishops, and rooks. It spread to Persia, then Arabia, then Europe.'
+    },
+    {
+      id: 22, cat: 'chess', catLabel: '♟️ Chess', emoji: '⏱️',
+      title: 'The Longest Game',
+      fact: 'The longest recorded chess game lasted 269 moves between Ivan Nikolic and Goran Arsovic in 1989 — over 20 hours! They drew. Modern rules now limit games to 75 moves without a pawn move or capture, to prevent this.'
+    },
+    {
+      id: 23, cat: 'chess', catLabel: '♟️ Chess', emoji: '💡',
+      title: 'More Games Than Atoms',
+      fact: 'The number of possible chess games is estimated at 10¹²⁰ — the "Shannon Number." The entire observable universe has about 10⁸⁰ atoms. So there are vastly more possible chess games than atoms in the universe. No computer has ever "solved" chess completely.'
+    },
+    {
+      id: 24, cat: 'chess', catLabel: '♟️ Chess', emoji: '👑',
+      title: 'Youngest World Champion',
+      fact: 'Garry Kasparov became World Chess Champion in 1985 at age 22, and was widely considered the greatest player ever. Magnus Carlsen became champion in 2013 and held the title for 10 years. Magnus learned chess by age 8 and reached Grandmaster at 13.'
+    },
+    {
+      id: 25, cat: 'chess', catLabel: '♟️ Chess', emoji: '🤖',
+      title: 'Deep Blue Beat a Champion',
+      fact: 'In 1997, IBM\'s chess computer Deep Blue defeated World Champion Garry Kasparov in a 6-game match 3.5–2.5 — the first time a computer beat a world champion under standard conditions. Kasparov was furious and demanded a rematch that never happened.'
+    },
+    {
+      id: 26, cat: 'chess', catLabel: '♟️ Chess', emoji: '🎯',
+      title: 'The Scholar\'s Mate',
+      fact: 'Checkmate in 4 moves is called the Scholar\'s Mate: e4, Bc4, Qh5, Qxf7#. It only works if the opponent makes weak moves — but it\'s the first trap every beginner must learn to avoid. Knowing a trap is half of not falling into it.'
+    },
+    {
+      id: 27, cat: 'chess', catLabel: '♟️ Chess', emoji: '♖',
+      title: 'Castling Was Added Later',
+      fact: 'Castling — moving the king two squares toward a rook, which jumps over — was added to European chess around the 15th century to speed up the game. It\'s the only move where you move two pieces at once AND the only move where the king moves more than one square.'
+    },
+    {
+      id: 28, cat: 'chess', catLabel: '♟️ Chess', emoji: '🌟',
+      title: 'The Immortal Game',
+      fact: 'The "Immortal Game" (Anderssen vs Kieseritzky, 1851) is considered the most beautiful chess game ever played. Anderssen sacrificed both rooks, his bishop, AND his queen, then delivered checkmate with minor pieces. He gave away everything to win with nothing.'
+    },
+    {
+      id: 29, cat: 'chess', catLabel: '♟️ Chess', emoji: '🧠',
+      title: 'Chess Improves Your Brain',
+      fact: 'Studies show chess increases IQ, improves memory, activates both brain hemispheres simultaneously, and helps with math and reading. Schools in over 30 countries have added chess to their curriculum as a cognitive training tool.'
+    },
+    {
+      id: 30, cat: 'chess', catLabel: '♟️ Chess', emoji: '🎭',
+      title: 'The Queen Was a King',
+      fact: 'In early chess, the piece next to the king was called the "vizier" (advisor) and could only move one square diagonally. Around 1470, the piece became "la dama" (the queen) in Spain and gained its current unlimited diagonal AND straight movement — the most powerful piece.'
+    },
+    {
+      id: 31, cat: 'chess', catLabel: '♟️ Chess', emoji: '🔣',
+      title: 'Chess Notation',
+      fact: 'Every chess move can be recorded in a compact code: "Nf3" means Knight to f3. "O-O" means kingside castle. "Qxd7+" means Queen captures on d7, check. An entire game with 80+ moves fits on a single index card — and can be replayed perfectly from that record.'
+    },
+    {
+      id: 32, cat: 'chess', catLabel: '♟️ Chess', emoji: '♛',
+      title: 'En Passant: The Weird Rule',
+      fact: '"En passant" is French for "in passing." If your pawn is on the 5th rank and the opponent\'s pawn advances two squares past yours, you can capture it AS IF it only moved one square. It\'s the rarest legal move in chess and surprises players who never learned it.'
+    },
+    {
+      id: 33, cat: 'chess', catLabel: '♟️ Chess', emoji: '🏅',
+      title: 'The Grandmaster Title',
+      fact: 'The title "Grandmaster" (GM) is the highest in chess, awarded by FIDE. Players must reach a 2500 ELO rating and score 3 "norms" in strong tournaments. The ELO system was invented by physicist Arpad Elo and is now used in sports, video games, and even dating apps.'
+    },
+    {
+      id: 34, cat: 'chess', catLabel: '♟️ Chess', emoji: '🌀',
+      title: 'The Knight\'s Tour',
+      fact: 'A knight can visit every square on a chessboard exactly once — called a "knight\'s tour." There are over 26 trillion distinct tours on an 8×8 board. Some form closed loops where the last jump returns to the starting square — a closed knight\'s tour.'
+    },
+    {
+      id: 35, cat: 'chess', catLabel: '♟️ Chess', emoji: '🎪',
+      title: 'Chess960 Randomizes the Start',
+      fact: 'Chess960 (invented by Bobby Fischer) randomly shuffles the back rank of pieces at game start — creating 960 possible starting positions. This removes all memorized openings and forces pure creative thinking. Magnus Carlsen has called it his favorite chess variant.'
+    },
+
+    // ── BITCOIN (12 facts) ────────────────────────
+    {
+      id: 36, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '₿',
+      title: 'Who Is Satoshi?',
+      fact: 'Bitcoin was invented by "Satoshi Nakamoto" — but nobody knows who that is. The name is Japanese, but Satoshi never revealed their identity. They could be one person or a group. In 2011, Satoshi disappeared and has never been heard from since. Their 1 million bitcoin have never moved.'
+    },
+    {
+      id: 37, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '📄',
+      title: 'The White Paper',
+      fact: 'Bitcoin was announced on October 31, 2008, in a 9-page document called a "white paper" titled "Bitcoin: A Peer-to-Peer Electronic Cash System." Satoshi posted it to a cryptography email list. Nine pages changed the history of money.'
+    },
+    {
+      id: 38, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '⛏️',
+      title: 'Mining Uses Real Electricity',
+      fact: 'Bitcoin "mining" means computers compete to solve a cryptographic puzzle. The winner adds the next block of transactions and earns new bitcoin. The whole network uses as much electricity as some medium-sized countries — because harder puzzles = harder to cheat.'
+    },
+    {
+      id: 39, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🎯',
+      title: '21 Million Maximum',
+      fact: 'Only 21 million bitcoin will ever exist — this is written into the code and can\'t be changed. About 19.7 million have already been mined. The last bitcoin will be mined around the year 2140. This hard cap is why people compare bitcoin to gold.'
+    },
+    {
+      id: 40, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '📦',
+      title: 'The Blockchain Never Forgets',
+      fact: 'Every bitcoin transaction ever made is stored on the blockchain — a chain of "blocks" of data, each one cryptographically linked to the previous one. To change a past transaction, you\'d have to redo the computational work for EVERY block since then. That\'s practically impossible.'
+    },
+    {
+      id: 41, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🍕',
+      title: 'Bitcoin Pizza Day',
+      fact: 'On May 22, 2010, Laszlo Hanyecz paid 10,000 bitcoin for two pizzas — the first real-world bitcoin purchase. Those 10,000 BTC are now worth hundreds of millions of dollars. May 22 is celebrated every year as "Bitcoin Pizza Day."'
+    },
+    {
+      id: 42, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🔐',
+      title: 'Private Keys Are Everything',
+      fact: 'Your bitcoin is controlled by a "private key" — a 256-bit number. There are 2²⁵⁶ possible keys, roughly 10⁷⁷. If you lose your private key, the bitcoin is gone forever. An estimated 3–4 million bitcoin (worth billions) are permanently lost because owners lost their keys.'
+    },
+    {
+      id: 43, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '📉',
+      title: 'The Halving',
+      fact: 'Every 210,000 blocks (roughly every 4 years), the bitcoin mining reward is cut in half — this is called "the halving." In 2009, miners earned 50 BTC per block. After four halvings, it\'s now 3.125 BTC. This programmed scarcity is like an economic countdown.'
+    },
+    {
+      id: 44, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🌍',
+      title: 'No Central Bank',
+      fact: 'No government, company, or person controls bitcoin. It runs on thousands of computers around the world simultaneously. To shut it down, you\'d need to turn off the internet globally. This decentralization means nobody can freeze your account or print more coins.'
+    },
+    {
+      id: 45, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🔗',
+      title: 'Hash Functions Are One-Way',
+      fact: 'Bitcoin uses the SHA-256 cryptographic hash: feed in any data, get a 64-character fingerprint. Change one letter of the input and the output completely changes. But you can NEVER work backwards from the output to find the input. This one-way property is what makes bitcoin secure.'
+    },
+    {
+      id: 46, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '⚡',
+      title: 'Lightning: Instant Payments',
+      fact: 'The Lightning Network is a "layer 2" built on top of bitcoin. It lets two people open a payment channel and make millions of instant transactions without hitting the blockchain — only settling the final balance. Transactions confirm in milliseconds for fractions of a cent.'
+    },
+    {
+      id: 47, cat: 'bitcoin', catLabel: '₿ Bitcoin', emoji: '🌐',
+      title: 'Bitcoin vs. The World',
+      fact: 'Bitcoin\'s market value has at times exceeded $1 trillion — larger than most countries\' currencies in circulation. It\'s the first asset in history with a mathematically guaranteed supply cap, creating a new category: "digital scarcity." Economists still debate whether this makes it a currency, commodity, or something new.'
+    },
+
+    // ── MUSIC & PIANO (12 facts) ──────────────────
+    {
+      id: 48, cat: 'music', catLabel: '🎵 Music', emoji: '🎹',
+      title: 'Perfect Pitch Is Rare',
+      fact: 'Perfect pitch (absolute pitch) means you can identify or produce any musical note without a reference tone. Only about 1 in 10,000 people have it. Studies suggest it\'s partly genetic and much easier to develop before age 6 — and speakers of tonal languages (like Mandarin) are more likely to have it.'
+    },
+    {
+      id: 49, cat: 'music', catLabel: '🎵 Music', emoji: '🎶',
+      title: 'Mozart\'s Impossible Memory',
+      fact: 'At age 14, Mozart heard a piece called "Miserere" by Allegri — which the Vatican kept secret and forbidden to copy. He transcribed the entire 12-minute piece from memory after hearing it once. The Vatican was so amazed they gave him a medal instead of punishing him.'
+    },
+    {
+      id: 50, cat: 'music', catLabel: '🎵 Music', emoji: '🔊',
+      title: 'Sound Is Vibration',
+      fact: 'Sound is air molecules vibrating. Middle A on a piano vibrates exactly 440 times per second (440 Hz). An octave higher doubles the frequency to 880 Hz. Your ear contains tiny hair cells that translate different frequencies into different perceived pitches — and you have about 16,000 of them.'
+    },
+    {
+      id: 51, cat: 'music', catLabel: '🎵 Music', emoji: '📏',
+      title: 'The Piano Has 12,000 Parts',
+      fact: 'A grand piano has approximately 12,000 individual parts. The strings are under immense tension — the combined pull on a grand piano\'s frame can exceed 20 tons. The cast iron frame is required to hold this force. A piano is simultaneously a string, percussion, and keyboard instrument.'
+    },
+    {
+      id: 52, cat: 'music', catLabel: '🎵 Music', emoji: '🎼',
+      title: 'Bach\'s Mathematical Music',
+      fact: 'Johann Sebastian Bach\'s music is so mathematically structured that when researchers fed it to AI, the model could predict the next note better than with any other composer. Bach composed over 1,100 works and is believed to have written his entire Well-Tempered Clavier as a demonstration of equal temperament tuning.'
+    },
+    {
+      id: 53, cat: 'music', catLabel: '🎵 Music', emoji: '🌊',
+      title: 'Music and Math Are Twins',
+      fact: 'Pythagoras (the triangle theorem guy) discovered that musical harmony is ratio math. A perfect 5th is a 3:2 frequency ratio. An octave is 2:1. A perfect 4th is 4:3. The ancient Greeks believed music was "numbers made audible" — and that\'s literally true.'
+    },
+    {
+      id: 54, cat: 'music', catLabel: '🎵 Music', emoji: '🦻',
+      title: 'Beethoven Went Deaf',
+      fact: 'Ludwig van Beethoven began losing his hearing in his late 20s and was almost completely deaf by age 44 — but he continued composing masterpieces including his Ninth Symphony, which he never heard performed. He conducted its premiere deaf, feeling the vibrations through the floor.'
+    },
+    {
+      id: 55, cat: 'music', catLabel: '🎵 Music', emoji: '🎸',
+      title: 'Every Instrument Has Overtones',
+      fact: 'When you play a note, you don\'t just hear one frequency — you hear a "harmonic series" of overtones above it. A flute has few overtones (pure, hollow sound). A violin has many (rich, complex sound). The particular mix of overtones is called "timbre" — it\'s why a C on piano sounds different from C on guitar.'
+    },
+    {
+      id: 56, cat: 'music', catLabel: '🎵 Music', emoji: '🌐',
+      title: '12 Notes, Infinite Music',
+      fact: 'Western music uses just 12 notes in an octave (7 white keys, 5 black keys on piano). From these 12, composers have created millions of songs across centuries. The number of possible 10-note melodies from 12 pitches is already over 60 billion — musical space is effectively infinite.'
+    },
+    {
+      id: 57, cat: 'music', catLabel: '🎵 Music', emoji: '⚡',
+      title: 'Music Changes Your Brain',
+      fact: 'Learning an instrument causes measurable physical changes to the brain. Musicians show larger corpus callosum (the bridge between brain hemispheres), stronger motor cortex, and enhanced auditory processing. Children who learn piano before age 7 show the largest changes — your brain is most plastic right now.'
+    },
+    {
+      id: 58, cat: 'music', catLabel: '🎵 Music', emoji: '🌀',
+      title: 'The Circle of Fifths',
+      fact: 'Arrange the 12 musical keys in a circle so each adjacent key is a "perfect fifth" apart — you get the Circle of Fifths. It\'s one of the most powerful tools in music theory: it predicts which chords sound good together, how to modulate between keys, and why some key signatures have sharps while others have flats.'
+    },
+    {
+      id: 59, cat: 'music', catLabel: '🎵 Music', emoji: '🎭',
+      title: 'The World\'s Oldest Song',
+      fact: 'The oldest known melody is the "Hurrian Hymn No. 6" from ancient Syria, written around 1400 BC — over 3,400 years ago. It was found on clay tablets and has been performed by modern musicians. Humans have been making structured music for at least 60,000 years based on bone flutes found in caves.'
+    },
+
+    // ── ROBOTICS (12 facts) ───────────────────────
+    {
+      id: 60, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🤖',
+      title: '"Robot" Comes From a Play',
+      fact: 'The word "robot" was coined in 1920 by Czech writer Karel Čapek in his science fiction play "R.U.R." — it comes from the Czech word "robota" meaning "forced labor." The play featured artificial people who eventually revolted against their human creators.'
+    },
+    {
+      id: 61, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🦾',
+      title: 'Boston Dynamics\' Atlas',
+      fact: 'Boston Dynamics\' Atlas robot can do backflips, parkour, and gymnastics routines. It weighs 89 kg and is 1.5m tall. Its movements are not pre-programmed tricks — it uses real-time balance algorithms and sensors to react to the actual ground it\'s standing on.'
+    },
+    {
+      id: 62, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🚀',
+      title: 'Robots on Mars',
+      fact: 'NASA\'s Perseverance rover has been exploring Mars since February 2021. It carries a small helicopter called Ingenuity — the first powered flight on another planet. Ingenuity was designed for 5 test flights but had logged over 70 flights before going silent in January 2024.'
+    },
+    {
+      id: 63, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🏭',
+      title: 'Robots Built Your Phone',
+      fact: 'Most of the electronics you use were assembled by robotic arms with sub-millimeter precision. The most common industrial robot — the 6-axis articulated arm — can repeat movements with accuracy to 0.02mm. That\'s about one-fifth the width of a human hair.'
+    },
+    {
+      id: 64, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🐕',
+      title: 'Robot Dogs Are Real',
+      fact: 'Boston Dynamics\' Spot robot dog is commercially available for about $75,000. It\'s used for inspecting construction sites, mapping mines, and even herding sheep in New Zealand. It can open doors, carry 14kg payloads, and climb stairs — using legs instead of wheels lets it navigate terrain wheels cannot.'
+    },
+    {
+      id: 65, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🧠',
+      title: 'Neural Networks Learned From Vision',
+      fact: 'Modern AI vision was inspired by the visual cortex. In 1959, scientists discovered that cat neurons fired differently for edges, angles, and movements. This led to "convolutional neural networks" — now used in self-driving cars, medical imaging, and face recognition.'
+    },
+    {
+      id: 66, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🎮',
+      title: 'AlphaGo Shocked the World',
+      fact: 'The ancient game of Go has more possible positions than atoms in the universe (10¹⁷⁰). In 2016, Google\'s AlphaGo defeated 18-time world champion Lee Sedol 4–1 using deep learning. Move 37 in Game 2 was so creative that commentators thought it was a mistake — it won the game.'
+    },
+    {
+      id: 67, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '✂️',
+      title: 'Surgical Robots Are Precise',
+      fact: 'The da Vinci Surgical System lets surgeons operate through tiny incisions using robot arms they control remotely. The robot scales down movements (eliminate tremor) and provides 10× magnified 3D vision. It has performed over 10 million surgeries worldwide since 2000.'
+    },
+    {
+      id: 68, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🌊',
+      title: 'Robots Explore the Deep Sea',
+      fact: 'Over 80% of Earth\'s oceans remain unexplored. ROVs (Remotely Operated Vehicles) can descend to 11,000 meters — the deepest point on Earth. The pressure there is over 1,000 atmospheres, enough to crush a car into a ball. Only robots can survive it.'
+    },
+    {
+      id: 69, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '⚙️',
+      title: 'Servo Motors vs Stepper Motors',
+      fact: 'Robot joints use either servo motors (measure their actual position with feedback sensors) or stepper motors (move in fixed steps assuming they\'re correct). Servos are more accurate and powerful but costlier. Your 3D printer uses stepper motors; industrial robot arms use servos.'
+    },
+    {
+      id: 70, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🕷️',
+      title: 'Soft Robots Are Squishy',
+      fact: 'A new field of "soft robotics" makes robots from silicone and rubber instead of metal. They can squeeze through gaps, grip delicate objects without crushing them, and are safer around humans. Harvard engineers made a robot octopus that moves using pressurized air through flexible channels.'
+    },
+    {
+      id: 71, cat: 'robotics', catLabel: '🤖 Robotics', emoji: '🔬',
+      title: 'Nanobots: Robots in Your Blood',
+      fact: 'Scientists have built microscopic robots (nanobots) from DNA molecules. In lab tests, DNA nanobots carrying drug molecules navigated to cancer cells and delivered their payload. They are 1,000× smaller than a human hair. This field, called nanomedicine, could transform how we treat disease.'
+    },
+
+    // ── LANGUAGES (12 facts) ──────────────────────
+    {
+      id: 72, cat: 'languages', catLabel: '🌍 Languages', emoji: '🌍',
+      title: 'How Many Languages Exist?',
+      fact: 'There are approximately 7,000 languages spoken in the world today. Half the world\'s population speaks just 23 of them. One language goes extinct every 2 weeks. Linguists estimate over 50% of current languages will be extinct by 2100.'
+    },
+    {
+      id: 73, cat: 'languages', catLabel: '🌍 Languages', emoji: '🇸🇦',
+      title: 'Arabic Reads Right to Left',
+      fact: 'Arabic is written and read from right to left — and so are Hebrew and Persian. Arabic has 28 letters that change shape depending on where they appear in a word (beginning, middle, end, or alone). It\'s the liturgical language of Islam and the native language of over 300 million people.'
+    },
+    {
+      id: 74, cat: 'languages', catLabel: '🌍 Languages', emoji: '🇪🇸',
+      title: 'Spanish Has 500M Speakers',
+      fact: 'Spanish is the second most spoken language by native speakers (~500 million), behind only Mandarin Chinese. It\'s the official language of 21 countries. Spanish and English actually share thousands of words — called "cognates" — like "animal," "hospital," "perfect," and "natural."'
+    },
+    {
+      id: 75, cat: 'languages', catLabel: '🌍 Languages', emoji: '🧒',
+      title: 'Children Learn Faster Than Adults',
+      fact: 'Children under 7 learn languages differently than adults. They absorb grammar rules automatically without thinking about them — called "implicit learning." Adults have to study rules explicitly. That\'s why growing up bilingual gives you a native accent and perfect grammar, while adult learners always struggle with both.'
+    },
+    {
+      id: 76, cat: 'languages', catLabel: '🌍 Languages', emoji: '🔤',
+      title: 'The Longest Word',
+      fact: 'The longest word in the English dictionary is "pneumonoultramicroscopicsilicovolcanoconiosis" — 45 letters, a lung disease from inhaling volcanic dust. German is famous for compound words: "Donaudampfschifffahrtsgesellschaft" (Danube steamship company) has 42 letters. Turkish can express entire sentences as one word.'
+    },
+    {
+      id: 77, cat: 'languages', catLabel: '🌍 Languages', emoji: '🌐',
+      title: 'Languages Change Over Time',
+      fact: 'English 1,000 years ago (Old English) is completely unreadable to modern English speakers — it looks like German. The word "nice" used to mean "foolish." "Awful" meant "awe-inspiring." "Silly" meant "blessed." Every language mutates continuously, driven by how people actually speak.'
+    },
+    {
+      id: 78, cat: 'languages', catLabel: '🌍 Languages', emoji: '🧩',
+      title: 'Bilingualism Changes Your Brain',
+      fact: 'Bilingual people have denser grey matter in the left inferior parietal cortex. Using two languages daily exercises the brain\'s "executive function" — the ability to switch attention and suppress irrelevant information. Studies suggest bilingualism delays Alzheimer\'s symptoms by an average of 4–5 years.'
+    },
+    {
+      id: 79, cat: 'languages', catLabel: '🌍 Languages', emoji: '📢',
+      title: 'Sign Languages Are Full Languages',
+      fact: 'Sign languages are not simplified versions of spoken languages — they are complete, grammatically complex languages. American Sign Language (ASL) is structurally more similar to Japanese than to English. There are over 300 different sign languages worldwide, each developed independently.'
+    },
+    {
+      id: 80, cat: 'languages', catLabel: '🌍 Languages', emoji: '👃',
+      title: 'Some Languages Use Clicks',
+      fact: 'The Khoisan languages of southern Africa use click consonants as regular speech sounds. ǃXóõ (spoken in Botswana) has about 112 distinct phonemes — the most of any known language. English has only about 44. These click sounds are made by pulling the tongue away from the roof of the mouth.'
+    },
+    {
+      id: 81, cat: 'languages', catLabel: '🌍 Languages', emoji: '🔢',
+      title: 'Some Languages Count Differently',
+      fact: 'Most languages count in base 10 (ten fingers). But French counts in base 20 — "eighty" in French is "quatre-vingts" (four-twenties). Some Amazonian languages have no words for numbers above 2. The Pirahã people of Brazil have no number words at all — only "few" and "many."'
+    },
+    {
+      id: 82, cat: 'languages', catLabel: '🌍 Languages', emoji: '🗺️',
+      title: 'Latin Is the Parent',
+      fact: 'Latin, the language of ancient Rome, is the "parent" of the Romance languages: Spanish, Portuguese, French, Italian, Romanian, and Catalan. These languages evolved from Vulgar Latin (everyday spoken Latin) over 1,000+ years. Latin itself evolved from Proto-Indo-European, the ancestor of over 400 modern languages.'
+    },
+    {
+      id: 83, cat: 'languages', catLabel: '🌍 Languages', emoji: '📖',
+      title: 'The First Writing',
+      fact: 'The oldest known writing system is Sumerian cuneiform, developed around 3200 BC in what is now Iraq. The earliest texts are grocery lists and accounting records — ancient people wrote down how much barley they had, not poetry. The oldest known story with named characters is the Epic of Gilgamesh, from ~2100 BC.'
+    },
+
+    // ── SPACE (17 facts) ──────────────────────────
+    {
+      id: 84, cat: 'space', catLabel: '🌌 Space', emoji: '🌌',
+      title: 'The Observable Universe',
+      fact: 'The observable universe is 93 billion light-years across — but the universe is older than that implies, because space itself is expanding. There are an estimated 2 trillion galaxies in the observable universe, each containing hundreds of billions of stars. The total is beyond comprehension.'
+    },
+    {
+      id: 85, cat: 'space', catLabel: '🌌 Space', emoji: '🕳️',
+      title: 'Black Holes Warp Time',
+      fact: 'Near a black hole, gravity is so intense it slows time itself — called gravitational time dilation (Einstein predicted this). Clocks run slower in stronger gravity. The supermassive black hole at our galaxy\'s center (Sagittarius A*, 4 million solar masses) causes significant time dilation close to it.'
+    },
+    {
+      id: 86, cat: 'space', catLabel: '🌌 Space', emoji: '⭐',
+      title: 'Stars Are Nuclear Reactors',
+      fact: 'Stars shine because of nuclear fusion: hydrogen atoms are crushed together so hard that they fuse into helium, releasing enormous energy. The Sun fuses 620 million tonnes of hydrogen every second. It has been doing this for 4.6 billion years and has enough hydrogen for another 5 billion.'
+    },
+    {
+      id: 87, cat: 'space', catLabel: '🌌 Space', emoji: '🌙',
+      title: 'The Moon Is Moving Away',
+      fact: 'The Moon moves about 3.8 cm farther from Earth every year. When it formed 4.5 billion years ago, it was 10× closer, making it look enormous in Earth\'s sky. In about 600 million years, the Moon will be too far away for total solar eclipses. We live in a special era for eclipse-watching.'
+    },
+    {
+      id: 88, cat: 'space', catLabel: '🌌 Space', emoji: '🔭',
+      title: 'Light From the Past',
+      fact: 'Looking at distant objects in space is literally looking back in time. The Sun\'s light takes 8 minutes to reach us — we see the Sun as it was 8 minutes ago. The Andromeda Galaxy is 2.5 million light-years away, so we see it as it looked 2.5 million years ago, before humans evolved.'
+    },
+    {
+      id: 89, cat: 'space', catLabel: '🌌 Space', emoji: '💥',
+      title: 'Neutron Stars Are Extreme',
+      fact: 'A neutron star is the collapsed core of a supernova — about 20 km across but containing more mass than our Sun. A teaspoon of neutron star material weighs about 4 billion tonnes. Some neutron stars spin 716 times per second (called pulsars), faster than a kitchen blender.'
+    },
+    {
+      id: 90, cat: 'space', catLabel: '🌌 Space', emoji: '🌠',
+      title: 'Dark Matter Is Invisible',
+      fact: 'About 27% of the universe is "dark matter" — we can\'t see it, detect it directly, or interact with it. We only know it exists because of how galaxies rotate (they spin too fast to hold together without extra invisible mass). The other 68% is "dark energy," accelerating the universe\'s expansion. Visible matter is just 5%.'
+    },
+    {
+      id: 91, cat: 'space', catLabel: '🌌 Space', emoji: '🌋',
+      title: 'Jupiter\'s Storm Is Ancient',
+      fact: 'Jupiter\'s Great Red Spot is a storm bigger than Earth that has been raging for at least 350 years (since we first observed it with telescopes). However, it\'s been slowly shrinking — in 1800 it was three times Earth\'s size; today it\'s barely 1.3× Earth\'s diameter. Scientists don\'t know if it will eventually disappear.'
+    },
+    {
+      id: 92, cat: 'space', catLabel: '🌌 Space', emoji: '🛸',
+      title: 'Voyager 1 Left the Solar System',
+      fact: 'NASA\'s Voyager 1 spacecraft launched in 1977 and crossed into interstellar space in 2012 — the first human-made object to leave our solar system. It\'s now over 23 billion km away. Its signal, traveling at the speed of light, takes over 22 hours to reach Earth. It still phones home.'
+    },
+    {
+      id: 93, cat: 'space', catLabel: '🌌 Space', emoji: '🎇',
+      title: 'Supernovae Forge Elements',
+      fact: 'Every heavy atom in your body — carbon, iron, calcium, oxygen — was forged inside a star that exploded as a supernova billions of years ago. Hydrogen and helium formed in the Big Bang, but everything heavier required stellar nuclear fusion and the violence of stellar death. You are made of ancient stardust.'
+    },
+    {
+      id: 94, cat: 'space', catLabel: '🌌 Space', emoji: '🌡️',
+      title: 'Space Is Almost Absolute Zero',
+      fact: 'The average temperature of deep space is 2.7 Kelvin (−270.45°C) — just above absolute zero, the coldest possible temperature. This is the temperature of the Cosmic Microwave Background: the leftover glow from the Big Bang, 13.8 billion years ago, still detectable everywhere in the universe.'
+    },
+    {
+      id: 95, cat: 'space', catLabel: '🌌 Space', emoji: '🪐',
+      title: 'Saturn Would Float',
+      fact: 'Saturn is the only planet in our solar system less dense than water — its average density is 0.69 g/cm³ vs water\'s 1.0 g/cm³. If you had an ocean large enough, Saturn would float. Its beautiful rings are made mostly of ice chunks ranging from grain-sized to house-sized.'
+    },
+    {
+      id: 96, cat: 'space', catLabel: '🌌 Space', emoji: '🌀',
+      title: 'The Big Bang Had No Center',
+      fact: 'The Big Bang didn\'t happen at a single point in space — space itself expanded from everywhere simultaneously. Every point in the universe sees every other point rushing away from it. If you traveled anywhere in the universe, you\'d still be at the "center" of the expansion. There is no center.'
+    },
+    {
+      id: 97, cat: 'space', catLabel: '🌌 Space', emoji: '🔴',
+      title: 'Red Dwarf Stars Last Longest',
+      fact: 'Red dwarf stars are the smallest and coolest stars. They burn fuel so slowly that they can survive for 1 to 10 trillion years. The universe itself is only 13.8 billion years old — not a single red dwarf has died of old age yet. When the universe is very old, red dwarfs will be the only stars left.'
+    },
+    {
+      id: 98, cat: 'space', catLabel: '🌌 Space', emoji: '🌊',
+      title: 'Gravitational Waves Are Real',
+      fact: 'In 2015, LIGO detected gravitational waves for the first time — ripples in spacetime caused by two black holes colliding 1.3 billion years ago. The detected wave changed the 4km detector by less than one-thousandth the diameter of a proton. Einstein predicted gravitational waves in 1916 but doubted we\'d ever detect them.'
+    },
+    {
+      id: 99, cat: 'space', catLabel: '🌌 Space', emoji: '☄️',
+      title: 'Comets Have Two Tails',
+      fact: 'Comets always have two distinct tails: a dust tail (pushed back by solar radiation pressure, curved) and an ion tail (blown straight back by solar wind, always pointing exactly away from the Sun). Both tails always point away from the Sun, which means as a comet moves away, its tails point ahead of it.'
+    },
+    {
+      id: 100, cat: 'space', catLabel: '🌌 Space', emoji: '🌟',
+      title: 'The Fermi Paradox',
+      fact: '"Where is everybody?" In a galaxy with 400 billion stars, many billions of Earth-like planets, and 13.8 billion years of time, where are the aliens? Physicist Enrico Fermi asked this in 1950. The absence of contact is one of the great unsolved mysteries. Proposed explanations range from "we\'re rare" to "they\'re hiding" to "they\'re gone."'
+    },
+  ];
+
+  // ─────────────────────────────────────────────
+  //  STATE
+  // ─────────────────────────────────────────────
+  const TOTAL = FACTS.length; // 100
+  let seen = new Set(JSON.parse(localStorage.getItem('books_seen') || '[]'));
+  let activeFilter = 'all';
+
+  // ─────────────────────────────────────────────
+  //  CATEGORY METADATA
+  // ─────────────────────────────────────────────
+  const CATEGORIES = [
+    { id: 'all',       label: 'All' },
+    { id: 'math',      label: '🔢 Math' },
+    { id: 'chess',     label: '♟️ Chess' },
+    { id: 'bitcoin',   label: '₿ Bitcoin' },
+    { id: 'music',     label: '🎵 Music' },
+    { id: 'robotics',  label: '🤖 Robotics' },
+    { id: 'languages', label: '🌍 Languages' },
+    { id: 'space',     label: '🌌 Space' },
+  ];
+
+  // ─────────────────────────────────────────────
+  //  BUILD FILTER PILLS
+  // ─────────────────────────────────────────────
+  const filterBar = document.getElementById('filterBar');
+  CATEGORIES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (c.id === 'all' ? ' active' : '');
+    btn.textContent = c.label;
+    btn.dataset.cat = c.id;
+    btn.addEventListener('click', () => {
+      activeFilter = c.id;
+      filterBar.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderCards();
+    });
+    filterBar.appendChild(btn);
+  });
+
+  // ─────────────────────────────────────────────
+  //  RENDER CARDS
+  // ─────────────────────────────────────────────
+  function renderCards() {
+    const grid = document.getElementById('cardGrid');
+    const empty = document.getElementById('emptyState');
+    const filtered = activeFilter === 'all' ? FACTS : FACTS.filter(f => f.cat === activeFilter);
+    grid.innerHTML = '';
+
+    if (filtered.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    filtered.forEach(f => {
+      const isSeen = seen.has(f.id);
+      const card = document.createElement('div');
+      card.className = 'card' + (isSeen ? ' flipped seen' : '');
+      card.dataset.id = f.id;
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">
+            <span class="seen-dot"></span>
+            <div class="card-emoji">${f.emoji}</div>
+            <div class="card-category">${f.catLabel}</div>
+            <div class="card-title">${f.title}</div>
+            <div class="card-tap-hint">tap to reveal</div>
+          </div>
+          <div class="card-back cat-${f.cat}">
+            <div class="back-number">#${f.id}</div>
+            <div class="back-emoji">${f.emoji}</div>
+            <div class="back-fact">${f.fact}</div>
+            <div class="back-tap-hint">tap to flip back</div>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => toggleCard(card, f.id));
+      grid.appendChild(card);
+    });
+  }
+
+  // ─────────────────────────────────────────────
+  //  TOGGLE + PERSIST
+  // ─────────────────────────────────────────────
+  function toggleCard(cardEl, id) {
+    const wasFlipped = cardEl.classList.contains('flipped');
+    cardEl.classList.toggle('flipped');
+    if (!wasFlipped) {
+      cardEl.classList.add('seen');
+      seen.add(id);
+    }
+    // Note: we keep seen even if flipped back (discovery is permanent)
+    localStorage.setItem('books_seen', JSON.stringify([...seen]));
+    updateCounter();
+  }
+
+  // ─────────────────────────────────────────────
+  //  COUNTER
+  // ─────────────────────────────────────────────
+  function updateCounter() {
+    const n = seen.size;
+    document.getElementById('discoveryText').textContent = `Discovered: ${n} / ${TOTAL}`;
+    document.getElementById('discoveryFill').style.width = `${(n / TOTAL) * 100}%`;
+  }
+
+  // ─────────────────────────────────────────────
+  //  INIT
+  // ─────────────────────────────────────────────
+  renderCards();
+  updateCounter();
+  </script>
+
+  <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

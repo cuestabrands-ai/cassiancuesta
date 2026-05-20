@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Math Games — Cassian's Super App</title>
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#070710;min-height:100vh;color:#E8E4FF;padding-bottom:80px}
+.page-wrap{max-width:760px;margin:0 auto;padding:26px 18px}
+.hdr{text-align:center;margin-bottom:24px}
+.hdr h1{font-size:32px;font-weight:700;font-family:'Playfair Display',Georgia,serif;color:#00E5B0;margin-bottom:5px}
+.hdr p{color:#a0aec0;font-size:14px;font-weight:600}
+
+/* Game tabs */
+.tabs{display:flex;gap:8px;margin-bottom:26px;background:rgba(255,255,255,.05);border-radius:16px;padding:6px}
+.tab{flex:1;padding:14px 8px;min-height:48px;border-radius:12px;border:none;background:transparent;color:#718096;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s;text-align:center}
+.tab.active{background:rgba(0,229,176,.15);color:#00E5B0;box-shadow:0 2px 8px rgba(0,229,176,.15)}
+
+/* Game panels */
+.game-panel{display:none}
+.game-panel.active{display:block}
+
+/* ===================== SPEED MATH ===================== */
+.sm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.sm-stat{background:rgba(255,255,255,.05);border-radius:14px;padding:12px 20px;text-align:center;min-width:90px}
+.sm-stat .n{font-size:28px;font-weight:900;display:block}
+.sm-stat small{font-size:11px;font-weight:800;color:#a0aec0;text-transform:uppercase;letter-spacing:.5px}
+.sm-stat.timer .n{color:#FF6B6B}
+.sm-stat.score-box .n{color:#FFD700}
+.sm-stat.streak-box .n{color:#4ECDC4}
+.sm-question-card{background:rgba(255,255,255,.05);border:2px solid rgba(0,229,176,.25);border-radius:24px;padding:36px 28px;text-align:center;margin-bottom:20px;min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+.sm-q{font-size:42px;font-weight:900}
+.sm-input{background:rgba(255,255,255,.08);border:2px solid rgba(0,229,176,.3);border-radius:14px;padding:12px 20px;font-size:28px;font-weight:900;color:#E8E4FF;text-align:center;font-family:'Plus Jakarta Sans',system-ui,sans-serif;outline:none;width:160px;transition:border-color .2s}
+.sm-input:focus{border-color:#00E5B0;box-shadow:0 0 0 3px rgba(0,229,176,.2)}
+.sm-input.correct{border-color:#4ECDC4;background:rgba(78,205,196,.1);animation:flashGreen .3s ease}
+.sm-input.wrong{border-color:#FF6B6B;animation:shake .3s ease}
+.btn-start{background:linear-gradient(135deg,#00E5B0,#00B4D8);color:#070710;border:none;padding:15px 40px;border-radius:50px;font-size:18px;font-weight:900;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s;box-shadow:0 4px 18px rgba(0,229,176,.3)}
+.btn-start:hover{transform:scale(1.06)}
+.sm-result{text-align:center;padding:30px 20px;display:none}
+.sm-result h2{font-size:30px;font-weight:900;color:#FFD700;margin-bottom:8px}
+.sm-result p{color:#a0aec0;font-size:16px;margin-bottom:20px}
+
+/* ===================== GUESSER ===================== */
+.gs-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.gs-round{font-size:14px;font-weight:800;color:#a0aec0}
+.gs-score{font-size:18px;font-weight:900;color:#A29BFE}
+.gs-card{background:rgba(255,255,255,.05);border-radius:22px;padding:28px;text-align:center;margin-bottom:18px;border:2px solid rgba(162,155,254,.3)}
+.gs-block-area{min-height:120px;display:flex;justify-content:center;align-items:center;margin-bottom:20px}
+.gs-q{font-size:19px;font-weight:800;color:#A29BFE;margin-bottom:16px}
+.gs-timer-bar-bg{background:rgba(255,255,255,.1);border-radius:6px;height:8px;margin-bottom:20px;overflow:hidden}
+.gs-timer-bar{height:100%;background:linear-gradient(90deg,#A29BFE,#4ECDC4);border-radius:6px;transition:width .1s linear}
+.gs-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gs-choice{padding:14px;border-radius:14px;border:2px solid rgba(162,155,254,.3);background:rgba(162,155,254,.08);font-size:22px;font-weight:900;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#E8E4FF;transition:all .2s}
+.gs-choice:hover:not(:disabled){background:rgba(162,155,254,.2);transform:scale(1.04)}
+.gs-choice.correct{background:rgba(78,205,196,.2);border-color:#4ECDC4;color:#4ECDC4}
+.gs-choice.wrong{background:rgba(255,107,107,.2);border-color:#FF6B6B;color:#FF6B6B}
+.gs-start{text-align:center;padding:30px}
+.gs-start h3{font-size:22px;font-weight:900;color:#A29BFE;margin-bottom:10px}
+.gs-start p{color:#a0aec0;margin-bottom:20px}
+
+/* ===================== TARGET GAME ===================== */
+.tg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.tg-level{font-size:14px;font-weight:800;color:#a0aec0}
+.tg-wins{font-size:18px;font-weight:900;color:#6BCB77}
+.tg-target-area{text-align:center;margin-bottom:24px}
+.tg-target-label{font-size:13px;font-weight:800;color:#6BCB77;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.tg-target-num{font-size:64px;font-weight:900;color:#FFD700;line-height:1}
+.tg-target-en{font-size:16px;color:#a0aec0;margin-top:4px;font-weight:700}
+.tg-tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;min-height:70px}
+.tg-tile{width:68px;height:68px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;cursor:pointer;transition:all .2s;border:3px solid transparent;user-select:none}
+.tg-tile:not(.used):hover{transform:scale(1.1)}
+.tg-tile.selected{border-color:white;transform:scale(1.12);box-shadow:0 0 20px rgba(255,255,255,.4)}
+.tg-tile.used{opacity:.25;pointer-events:none}
+.tg-tile.winner{animation:winPulse .5s ease infinite alternate}
+.tg-msg{text-align:center;font-size:17px;font-weight:800;min-height:28px;margin-bottom:16px}
+.tg-msg.win{color:#FFD700}
+.tg-msg.hint{color:#a0aec0}
+.tg-hint{font-size:13px;color:#718096;text-align:center;margin-bottom:16px}
+.tg-controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-tg{padding:14px 28px;min-height:48px;border-radius:14px;border:none;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s}
+.btn-reset{background:rgba(255,255,255,.07);color:#E8E4FF}.btn-reset:hover{background:rgba(255,255,255,.2)}
+.btn-next{background:linear-gradient(135deg,#6BCB77,#4ECDC4);color:#1a1a2e}.btn-next:hover{transform:scale(1.06)}
+
+/* Nav */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px 12px;border-top:1px solid rgba(255,255,255,.06);z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn:hover,.nav-btn.active{color:#00E5B0}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes flashGreen{0%,100%{background:rgba(255,255,255,.12)}50%{background:rgba(78,205,196,.2)}}
+@keyframes winPulse{from{box-shadow:0 0 10px #FFD700}to{box-shadow:0 0 30px #FFD700}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <div class="hdr">
+    <h1>🎮 Math Games</h1>
+    <p>Three games — how high can you score?</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(0)">⚡ Speed Math</button>
+    <button class="tab" onclick="switchTab(1)">🔢 Guess the Block</button>
+    <button class="tab" onclick="switchTab(2)">🎯 Hit the Target</button>
+  </div>
+
+  <!-- GAME 1: SPEED MATH -->
+  <div class="game-panel active" id="g0">
+    <div class="sm-header">
+      <div class="sm-stat timer"><span class="n" id="smTimer">60</span><small>Seconds</small></div>
+      <div class="sm-stat score-box"><span class="n" id="smScore">0</span><small>Score</small></div>
+      <div class="sm-stat streak-box"><span class="n" id="smStreak">0</span><small>Streak 🔥</small></div>
+    </div>
+    <div class="sm-question-card" id="smCard">
+      <div id="smStart">
+        <button class="btn-start" onclick="startSpeedMath()">▶ Start!</button>
+        <p style="color:#a0aec0;margin-top:14px;font-size:14px">High Score: <span id="smHi" style="color:#FFD700">0</span></p>
+      </div>
+      <div id="smGame" style="display:none">
+        <div class="sm-q" id="smQ">?</div>
+        <input class="sm-input" id="smInput" type="number" placeholder="?" autocomplete="off"
+          onkeydown="if(event.key==='Enter')checkSM()">
+        <button id="askCosmoBtn" style="display:none;margin:8px auto;padding:10px 24px;border-radius:50px;border:2px solid rgba(162,155,254,.4);background:rgba(162,155,254,.18);color:#A29BFE;font-family:system-ui;font-size:14px;font-weight:800;cursor:pointer" onclick="triggerCosmoHint()">🤖 Ask COSMO?</button>
+      </div>
+    </div>
+    <div class="sm-result" id="smResult">
+      <h2>Time's Up! ⏱️</h2>
+      <p>You scored <span id="smFinalScore" style="color:#FFD700;font-size:22px">0</span> points!</p>
+      <button class="btn-start" onclick="startSpeedMath()">Play Again</button>
+    </div>
+  </div>
+
+  <!-- GAME 2: GUESSER -->
+  <div class="game-panel" id="g1">
+    <div class="gs-start" id="gsStart">
+      <h3>🔢 Guess the Numberblock!</h3>
+      <p>I'll show you the SHAPE of a Numberblock — you guess the number.</p>
+      <button class="btn-start" onclick="startGuesser()" style="background:linear-gradient(135deg,#A29BFE,#007AFF)">▶ Start!</button>
+      <p style="color:#a0aec0;margin-top:14px;font-size:14px">High Score: <span id="gsHi" style="color:#A29BFE">0</span></p>
+    </div>
+    <div id="gsGame" style="display:none">
+      <div class="gs-header">
+        <span class="gs-round" id="gsRound">Round 1 / 10</span>
+        <span class="gs-score">Score: <span id="gsScore">0</span></span>
+      </div>
+      <div class="gs-card">
+        <div class="gs-timer-bar-bg"><div class="gs-timer-bar" id="gsBar" style="width:100%"></div></div>
+        <div class="gs-block-area" id="gsBlockArea"></div>
+        <div class="gs-q">Which Numberblock is this?</div>
+        <div class="gs-choices" id="gsChoices"></div>
+      </div>
+    </div>
+    <div id="gsResult" style="display:none;text-align:center;padding:30px">
+      <h2 style="font-size:30px;font-weight:900;color:#A29BFE;margin-bottom:8px">Game Over! 🎉</h2>
+      <p style="color:#a0aec0;font-size:16px;margin-bottom:6px">You got <span id="gsFinal" style="color:#FFD700;font-size:22px">0</span> / 10 correct!</p>
+      <p style="color:#a0aec0;font-size:13px;margin-bottom:20px">Best: <span id="gsHi2" style="color:#A29BFE">0</span></p>
+      <button class="btn-start" onclick="startGuesser()" style="background:linear-gradient(135deg,#A29BFE,#007AFF)">Play Again</button>
+    </div>
+  </div>
+
+  <!-- GAME 3: TARGET -->
+  <div class="game-panel" id="g2">
+    <div class="tg-header">
+      <span class="tg-level" id="tgLevel">Level 1</span>
+      <span class="tg-wins">Wins: <span id="tgWins">0</span></span>
+    </div>
+    <div class="tg-target-area">
+      <div class="tg-target-label">🎯 Make this number!</div>
+      <div class="tg-target-num" id="tgTargetNum">10</div>
+      <div class="tg-target-en" id="tgTargetEn">ten</div>
+    </div>
+    <div class="tg-tiles" id="tgTiles"></div>
+    <div class="tg-msg" id="tgMsg"><span style="color:#718096">Click two tiles to add them together!</span></div>
+    <div class="tg-controls">
+      <button class="btn-tg btn-reset" onclick="resetTarget()">🔄 New Tiles</button>
+      <button class="btn-tg btn-next" id="tgNextBtn" onclick="nextLevel()" style="display:none">Next Level ➡</button>
+    </div>
+  </div>
+</div>
+
+<nav class="app-nav">
+  <a class="nav-btn" href="index.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a class="nav-btn" href="numberblocks.html"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a class="nav-btn" href="world.html"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a class="nav-btn" href="chess.html"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a class="nav-btn" href="cosmo.html"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<div id="cosmoHint" style="display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;z-index:500">
+  <div style="background:rgba(30,20,70,.97);border:1px solid rgba(162,155,254,.4);border-radius:20px;padding:14px 18px;display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:24px">🤖</span>
+    <p id="cosmoHintText" style="color:#e0d7ff;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:system-ui"></p>
+  </div>
+</div>
+
+<script>
+/* ===== TABS ===== */
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.game-panel').forEach((p,j)=>p.classList.toggle('active',j===i));
+}
+
+/* ===== COLOR HELPERS ===== */
+const PAL=[null,
+  '#FF3B30','#FF9500','#FFD700','#34C759','#5AC8FA',
+  '#FF2D55','#FF6B35','#007AFF','#AF52DE','#FF8C00'
+];
+function gc(n){return PAL[((n-1)%10)+1];}
+function toEn(n){
+  if(n===0)return'zero';
+  const o=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+  if(n<=20)return o[n];
+  if(n<100){const t=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];return t[Math.floor(n/10)]+(n%10?'-'+o[n%10]:'');}
+  return n.toString();
+}
+
+/* Render block (simplified) */
+function mkBlock(n, container, bs=48){
+  container.innerHTML='';
+  if(!n||n<1)return;
+  const disp=Math.min(n,36);
+  const sq=Math.sqrt(disp);
+  let cols=1;
+  if(Number.isInteger(sq)&&sq>=2)cols=sq;
+  else if(n>15)cols=Math.ceil(Math.sqrt(disp));
+  const rows=Math.ceil(disp/cols);
+  const col=gc(n);
+  const g=document.createElement('div');
+  g.style.cssText=`display:inline-grid;grid-template-columns:repeat(${cols},${bs}px);gap:3px`;
+  for(let i=0;i<disp;i++){
+    const d=document.createElement('div');
+    d.style.cssText=`width:${bs}px;height:${bs}px;background:${col};border-radius:${Math.round(bs*.12)}px;
+      box-shadow:inset 0 ${Math.round(bs*.07)}px 0 rgba(255,255,255,.3),inset 0 -${Math.round(bs*.06)}px 0 rgba(0,0,0,.25);
+      display:flex;align-items:center;justify-content:center;`;
+    if(i===0){
+      d.innerHTML=`<svg width="${bs}" height="${bs}" viewBox="0 0 40 40"><circle cx="14" cy="15" r="6" fill="white"/><circle cx="26" cy="15" r="6" fill="white"/><circle cx="15.5" cy="17" r="3.5" fill="#222"/><circle cx="27.5" cy="17" r="3.5" fill="#222"/><circle cx="17" cy="14.5" r="1.5" fill="white"/><circle cx="29" cy="14.5" r="1.5" fill="white"/><path d="M 11 27 Q 20 35 29 27" stroke="#222" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg>`;
+    }
+    g.appendChild(d);
+  }
+  container.appendChild(g);
+}
+
+function mkSilhouette(n, container, bs=52){
+  container.innerHTML='';
+  if(!n||n<1)return;
+  const disp=Math.min(n,25);
+  const sq=Math.sqrt(disp);
+  let cols=1;
+  if(Number.isInteger(sq)&&sq>=2)cols=sq;
+  const rows=Math.ceil(disp/cols);
+  const g=document.createElement('div');
+  g.style.cssText=`display:inline-grid;grid-template-columns:repeat(${cols},${bs}px);gap:3px`;
+  for(let i=0;i<disp;i++){
+    const d=document.createElement('div');
+    d.style.cssText=`width:${bs}px;height:${bs}px;background:#3a3a5c;border-radius:${Math.round(bs*.12)}px;
+      box-shadow:inset 0 ${Math.round(bs*.07)}px 0 rgba(255,255,255,.08),inset 0 -${Math.round(bs*.06)}px 0 rgba(0,0,0,.3)`;
+    g.appendChild(d);
+  }
+  container.appendChild(g);
+}
+
+/* ===== COSMO HINT UTILITIES — provided by cosmo-hints.js ===== */
+
+async function triggerCosmoHint() {
+  const hint = await getCosmoHint(`Cassian got this math problem wrong twice: ${currentQuestion}. Explain it in a fun way for a 6-year-old genius.`);
+  if (hint) {
+    document.getElementById('cosmoHintText').textContent = hint;
+    document.getElementById('cosmoHint').style.display = 'block';
+    setTimeout(() => document.getElementById('cosmoHint').style.display = 'none', 8000);
+  }
+}
+
+/* ===== GAME 1: SPEED MATH ===== */
+let smTimer=null, smTimeLeft=0, smScore=0, smStreak=0, smCurrent=null, smRunning=false;
+let currentQuestion = '';
+
+// Per-game adaptive difficulty tracking for Speed Math
+let smDiffLevel = parseInt(localStorage.getItem('games_diff_speedmath')) || 1;
+let smCorrectCount = 0, smWrongCount = 0, smWrongStreak = 0;
+let smQBlock = 0; // questions in current 5-block
+let smBlockCorrect = 0, smBlockTimes = [];
+let smQStartTime = 0;
+
+function clampDiff(d){ return Math.max(1, Math.min(6, d)); }
+
+function genQ(){
+  const lvl = smDiffLevel;
+  let a, b, c, op, q, ans;
+  switch(lvl){
+    case 1: // 1-digit + 1-digit
+      a=Math.floor(Math.random()*9)+1; b=Math.floor(Math.random()*9)+1;
+      q=`${a} + ${b} = ?`; ans=a+b; break;
+    case 2: // 2-digit + 1-digit
+      a=Math.floor(Math.random()*90)+10; b=Math.floor(Math.random()*9)+1;
+      q=`${a} + ${b} = ?`; ans=a+b; break;
+    case 3: // 2-digit + 2-digit
+      a=Math.floor(Math.random()*90)+10; b=Math.floor(Math.random()*90)+10;
+      q=`${a} + ${b} = ?`; ans=a+b; break;
+    case 4: // Multiplication 1-digit × 1-digit
+      a=Math.floor(Math.random()*8)+2; b=Math.floor(Math.random()*8)+2;
+      q=`${a} × ${b} = ?`; ans=a*b; break;
+    case 5: // Multiplication 2-digit × 1-digit
+      a=Math.floor(Math.random()*90)+10; b=Math.floor(Math.random()*8)+2;
+      q=`${a} × ${b} = ?`; ans=a*b; break;
+    case 6: // Mixed operations with 3 numbers
+    default:
+      const ops=['+','-','×'];
+      op=ops[Math.floor(Math.random()*ops.length)];
+      a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; c=Math.floor(Math.random()*9)+1;
+      if(op==='+') { q=`${a} + ${b} + ${c} = ?`; ans=a+b+c; }
+      else if(op==='-') { const big=a+b; q=`${big} - ${a} - ${c} = ?`; ans=big-a-c; }
+      else { q=`${a} × ${b} + ${c} = ?`; ans=a*b+c; }
+      break;
+  }
+  return { q, ans };
+}
+
+function adjustDiffAfterBlock(){
+  const total = smBlockCorrect + (5 - smBlockCorrect); // always 5
+  const pct = smBlockCorrect / 5;
+  const avgTime = smBlockTimes.length ? smBlockTimes.reduce((s,t)=>s+t,0)/smBlockTimes.length : 10;
+  if(pct < 0.6 || avgTime > 15){
+    smDiffLevel = clampDiff(smDiffLevel - 1);
+  } else if(pct > 0.85 && avgTime < 5){
+    smDiffLevel = clampDiff(smDiffLevel + 1);
+  }
+  localStorage.setItem('games_diff_speedmath', smDiffLevel);
+  // Reset block counters
+  smQBlock = 0; smBlockCorrect = 0; smBlockTimes = [];
+}
+
+function startSpeedMath(){
+  smScore=0;smStreak=0;smTimeLeft=60;smRunning=true;
+  smCorrectCount=0;smWrongCount=0;smWrongStreak=0;
+  smQBlock=0;smBlockCorrect=0;smBlockTimes=[];
+  smDiffLevel = clampDiff(parseInt(localStorage.getItem('games_diff_speedmath')) || 1);
+  document.getElementById('askCosmoBtn').style.display='none';
+  document.getElementById('smStart').style.display='none';
+  document.getElementById('smGame').style.display='flex';
+  document.getElementById('smGame').style.flexDirection='column';
+  document.getElementById('smGame').style.alignItems='center';
+  document.getElementById('smResult').style.display='none';
+  document.getElementById('smCard').style.display='flex';
+  updateSMDisplay();
+  nextSMQ();
+  if(smTimer)clearInterval(smTimer);
+  smTimer=setInterval(()=>{
+    smTimeLeft--;
+    document.getElementById('smTimer').textContent=smTimeLeft;
+    if(smTimeLeft<=0){
+      clearInterval(smTimer);smRunning=false;
+      endSpeedMath();
+    }
+  },1000);
+  document.getElementById('smInput').focus();
+}
+
+function nextSMQ(){
+  smCurrent=genQ();
+  currentQuestion = smCurrent.q.replace(' = ?','');
+  document.getElementById('smQ').textContent=smCurrent.q;
+  smQStartTime = Date.now();
+  const inp=document.getElementById('smInput');
+  inp.value='';inp.className='sm-input';inp.focus();
+}
+
+function checkSM(){
+  if(!smRunning||!smCurrent)return;
+  const v=parseInt(document.getElementById('smInput').value);
+  if(isNaN(v))return;
+  const elapsed = (Date.now() - smQStartTime) / 1000;
+  smQBlock++;
+  if(v===smCurrent.ans){
+    smCorrectCount++;smBlockCorrect++;smBlockTimes.push(elapsed);
+    smWrongStreak=0;
+    document.getElementById('askCosmoBtn').style.display='none';
+    const pts=10+smStreak*2;
+    smScore+=pts;smStreak++;
+    document.getElementById('smScore').textContent=smScore;
+    document.getElementById('smStreak').textContent=smStreak;
+    document.getElementById('smInput').className='sm-input correct';
+    if(smQBlock>=5) adjustDiffAfterBlock();
+    setTimeout(nextSMQ,300);
+  } else {
+    smWrongCount++;smWrongStreak++;smStreak=0;
+    smBlockTimes.push(elapsed);
+    document.getElementById('smStreak').textContent=0;
+    document.getElementById('smInput').className='sm-input wrong';
+    if(smWrongStreak>=2){
+      document.getElementById('askCosmoBtn').style.display='block';
+    }
+    if(smQBlock>=5) adjustDiffAfterBlock();
+    setTimeout(()=>{
+      document.getElementById('smInput').className='sm-input';
+      document.getElementById('smInput').value='';
+      document.getElementById('smInput').focus();
+    },400);
+  }
+}
+
+function updateSMDisplay(){
+  document.getElementById('smScore').textContent=smScore;
+  document.getElementById('smStreak').textContent=smStreak;
+  const hi=+localStorage.getItem('sm_hi')||0;
+  document.getElementById('smHi').textContent=hi;
+}
+
+function endSpeedMath(){
+  const hi=+localStorage.getItem('sm_hi')||0;
+  if(smScore>hi)localStorage.setItem('sm_hi',smScore);
+  document.getElementById('smCard').style.display='none';
+  document.getElementById('smResult').style.display='block';
+  document.getElementById('smFinalScore').textContent=smScore;
+  document.getElementById('smHi').textContent=Math.max(smScore,hi);
+  document.getElementById('askCosmoBtn').style.display='none';
+}
+
+/* ===== GAME 2: GUESSER ===== */
+let gsRound=0, gsScore=0, gsTarget=0, gsTimer=null, gsBarInterval=null, gsAnswered=false;
+const GS_POOL=[2,3,4,5,6,7,8,9,10,12,16,15,6,3,8,4,7,5,9,2];
+
+function startGuesser(){
+  gsRound=0;gsScore=0;
+  document.getElementById('gsStart').style.display='none';
+  document.getElementById('gsResult').style.display='none';
+  document.getElementById('gsGame').style.display='block';
+  gsNextRound();
+}
+
+function gsNextRound(){
+  if(gsRound>=10){gsEnd();return;}
+  gsAnswered=false;
+  gsRound++;
+  document.getElementById('gsRound').textContent=`Round ${gsRound} / 10`;
+  document.getElementById('gsScore').textContent=gsScore;
+
+  gsTarget=GS_POOL[gsRound-1]||Math.floor(Math.random()*9)+2;
+  mkSilhouette(gsTarget,document.getElementById('gsBlockArea'));
+
+  // Generate 3 wrong answers
+  const wrongs=new Set();
+  while(wrongs.size<3){
+    let w=gsTarget+(Math.random()>.5?1:-1)*(Math.floor(Math.random()*4)+1);
+    if(w>=1&&w!==gsTarget)wrongs.add(w);
+  }
+  const choices=[gsTarget,...wrongs].sort(()=>Math.random()-.5);
+
+  const cc=document.getElementById('gsChoices');
+  cc.innerHTML='';
+  choices.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='gs-choice';
+    btn.textContent=c;
+    btn.onclick=()=>gsAnswer(c,btn);
+    cc.appendChild(btn);
+  });
+
+  // 5-second timer bar
+  if(gsBarInterval)clearInterval(gsBarInterval);
+  let pct=100;
+  const bar=document.getElementById('gsBar');
+  bar.style.width='100%';
+  bar.style.background='linear-gradient(90deg,#A29BFE,#4ECDC4)';
+  gsBarInterval=setInterval(()=>{
+    pct-=2;
+    bar.style.width=pct+'%';
+    if(pct<=30)bar.style.background='linear-gradient(90deg,#FF6B6B,#FF8C00)';
+    if(pct<=0){clearInterval(gsBarInterval);if(!gsAnswered)gsAnswer(-1,null);}
+  },100);
+}
+
+function gsAnswer(val,btn){
+  if(gsAnswered)return;
+  gsAnswered=true;
+  clearInterval(gsBarInterval);
+
+  document.querySelectorAll('.gs-choice').forEach(b=>{b.disabled=true;});
+
+  if(val===gsTarget){
+    gsScore++;
+    if(btn)btn.className='gs-choice correct';
+    document.getElementById('gsScore').textContent=gsScore;
+  } else {
+    if(btn)btn.className='gs-choice wrong';
+    document.querySelectorAll('.gs-choice').forEach(b=>{
+      if(parseInt(b.textContent)===gsTarget)b.className='gs-choice correct';
+    });
+  }
+  setTimeout(gsNextRound,900);
+}
+
+function gsEnd(){
+  const hi=+localStorage.getItem('gs_hi')||0;
+  if(gsScore>hi)localStorage.setItem('gs_hi',gsScore);
+  document.getElementById('gsGame').style.display='none';
+  document.getElementById('gsResult').style.display='block';
+  document.getElementById('gsFinal').textContent=gsScore;
+  const best=Math.max(gsScore,hi);
+  document.getElementById('gsHi').textContent=best;
+  document.getElementById('gsHi2').textContent=best;
+}
+
+/* ===== GAME 3: TARGET ===== */
+const TG_LEVELS=[
+  {target:5,  tiles:[1,2,3,4]},
+  {target:10, tiles:[2,3,4,5,6]},
+  {target:12, tiles:[3,4,5,6,7]},
+  {target:15, tiles:[4,5,6,7,8]},
+  {target:20, tiles:[5,6,7,8,9]},
+  {target:24, tiles:[3,5,6,7,8,9]},
+  {target:30, tiles:[6,7,8,9,11,12]},
+  {target:36, tiles:[6,7,8,9,12,15]},
+];
+let tgLvl=0, tgWins=0, tgTiles=[], tgSelected=-1;
+
+function toEn2(n){return toEn(n);}
+
+function initTarget(){
+  const lvl=TG_LEVELS[tgLvl%TG_LEVELS.length];
+  tgTiles=[...lvl.tiles];
+  tgSelected=-1;
+  document.getElementById('tgTargetNum').textContent=lvl.target;
+  document.getElementById('tgTargetEn').textContent=toEn(lvl.target);
+  document.getElementById('tgLevel').textContent=`Level ${tgLvl+1}`;
+  document.getElementById('tgWins').textContent=tgWins;
+  document.getElementById('tgMsg').innerHTML='<span style="color:#718096">Click two tiles to add them!</span>';
+  document.getElementById('tgNextBtn').style.display='none';
+  renderTiles();
+}
+
+function renderTiles(){
+  const lvl=TG_LEVELS[tgLvl%TG_LEVELS.length];
+  const container=document.getElementById('tgTiles');
+  container.innerHTML='';
+  tgTiles.forEach((val,i)=>{
+    if(val===null)return;
+    const tile=document.createElement('div');
+    tile.className='tg-tile'+(tgSelected===i?' selected':'')+(val===lvl.target?' winner':'');
+    tile.style.background=gc(val);
+    tile.style.boxShadow=`inset 0 4px 0 rgba(255,255,255,.3),inset 0 -4px 0 rgba(0,0,0,.2),0 4px 12px rgba(0,0,0,.3)`;
+    tile.textContent=val;
+    tile.onclick=()=>selectTile(i);
+    container.appendChild(tile);
+  });
+}
+
+function selectTile(i){
+  const lvl=TG_LEVELS[tgLvl%TG_LEVELS.length];
+  if(tgTiles[i]===null)return;
+  if(tgSelected===-1){
+    tgSelected=i;renderTiles();
+  } else if(tgSelected===i){
+    tgSelected=-1;renderTiles();
+  } else {
+    const sum=tgTiles[tgSelected]+tgTiles[i];
+    tgTiles[tgSelected]=null;
+    tgTiles[i]=sum;
+    tgSelected=-1;
+    renderTiles();
+    if(sum===lvl.target){
+      setTimeout(()=>{
+        tgWins++;
+        document.getElementById('tgWins').textContent=tgWins;
+        document.getElementById('tgMsg').innerHTML=`<span class="win">🎉 YES! ${sum} = Target! Amazing!</span>`;
+        document.getElementById('tgNextBtn').style.display='inline-block';
+      },200);
+    } else if(sum>lvl.target){
+      document.getElementById('tgMsg').innerHTML=`<span style="color:#FF6B6B">Oops — ${sum} is too big! Try again.</span>`;
+    } else {
+      document.getElementById('tgMsg').innerHTML=`<span style="color:#4ECDC4">Made ${sum} — keep going!</span>`;
+      // Check if any remaining combination can still reach target
+    }
+  }
+}
+
+function resetTarget(){tgSelected=-1;initTarget();}
+function nextLevel(){tgLvl++;initTarget();}
+
+// Init
+document.getElementById('smHi').textContent=+localStorage.getItem('sm_hi')||0;
+document.getElementById('gsHi').textContent=+localStorage.getItem('gs_hi')||0;
+initTarget();
+</script>
+<script src="cosmo-hints.js"></script>
+<script src="cassian-profile.js"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

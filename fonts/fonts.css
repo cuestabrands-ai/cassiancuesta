@@ -1,0 +1,37 @@
+/* Self-hosted fonts — offline-safe, no Google Fonts requests needed */
+
+/* Nunito — used on index, cosmo, world */
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 700 900;
+  font-display: swap;
+  src: url('/fonts/nunito-bold.woff2') format('woff2');
+}
+
+/* Playfair Display italic — used on chess, games, focus, puzzles, jokes, bitcoin, books, learning-path */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/playfair-italic.woff') format('woff');
+}
+
+/* Playfair Display normal bold */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url('/fonts/playfair-bold.woff2') format('woff2');
+}
+
+/* Plus Jakarta Sans — all weights share one file */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/jakarta-sans.woff2') format('woff2');
+}

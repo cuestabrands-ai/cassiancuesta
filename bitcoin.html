@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Satoshi's Math Mine — Cassian's Super App</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:#070710;
+  min-height:100vh;color:#E8E4FF;
+  padding-bottom:calc(88px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(247,147,26,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* Stars */
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.8}}
+
+.page-wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:22px 16px}
+
+/* ── Header ── */
+.hdr{text-align:center;margin-bottom:20px}
+.hdr h1{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;background:linear-gradient(135deg,#F7931A,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px;filter:drop-shadow(0 0 18px rgba(247,147,26,.4))}
+.hdr p{color:#8892b0;font-size:14px;font-weight:700}
+
+/* ── Wallet card ── */
+.wallet{
+  background:linear-gradient(135deg,rgba(247,147,26,.15),rgba(255,215,0,.08));
+  border:2px solid rgba(247,147,26,.4);border-radius:24px;
+  padding:22px 20px;margin-bottom:18px;
+  display:flex;align-items:center;gap:18px;
+  backdrop-filter:blur(16px);
+}
+.btc-logo{font-size:48px;filter:drop-shadow(0 0 16px rgba(247,147,26,.6));flex-shrink:0}
+.wallet-info{flex:1}
+.wallet-info .label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:4px}
+.wallet-sats{font-size:36px;font-weight:900;color:#FFD700;line-height:1;margin-bottom:4px}
+.wallet-btc{font-size:13px;color:#8892b0;font-weight:700}
+.wallet-right{text-align:right;flex-shrink:0}
+.streak-num{font-size:28px;font-weight:900;color:#FF6B6B;display:block}
+.streak-lbl{font-size:11px;color:#8892b0;font-weight:700}
+
+/* ── Scarcity bar ── */
+.scarcity{
+  background:rgba(255,255,255,.055);border:1px solid rgba(247,147,26,.25);
+  border-radius:18px;padding:16px 18px;margin-bottom:18px;
+  backdrop-filter:blur(16px);
+}
+.scarcity-title{font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.supply-track{background:rgba(255,255,255,.1);border-radius:6px;height:12px;overflow:hidden;margin-bottom:6px}
+.supply-fill{height:100%;background:linear-gradient(90deg,#F7931A,#FFD700);border-radius:6px;transition:width 1s ease}
+.supply-labels{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#8892b0}
+.supply-note{font-size:12px;color:#c3cfe2;margin-top:8px;font-weight:700;line-height:1.5}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:8px;margin-bottom:18px;background:rgba(255,255,255,.06);border-radius:16px;padding:5px}
+.tab{flex:1;padding:10px 8px;border-radius:12px;border:none;background:transparent;color:#718096;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s;touch-action:manipulation}
+.tab.active{background:rgba(247,147,26,.2);color:#F7931A}
+
+/* ── Mining (math) section ── */
+.mine-section{display:none}
+.mine-section.active{display:block}
+
+.question-card{
+  background:rgba(255,255,255,.05);border:2px solid rgba(247,147,26,.3);
+  border-radius:24px;padding:28px 20px;margin-bottom:16px;
+  backdrop-filter:blur(16px);text-align:center;
+}
+.question-label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.question-text{font-size:30px;font-weight:900;margin-bottom:22px;line-height:1.3;color:white}
+.reward-label{font-size:14px;font-weight:800;color:#8892b0;margin-bottom:16px}
+.reward-amount{color:#FFD700;font-size:18px;font-weight:900}
+
+/* Answer input */
+.answer-row{display:flex;gap:10px;justify-content:center;margin-bottom:14px}
+.ans-input{
+  width:160px;background:rgba(255,255,255,.1);border:2px solid rgba(247,147,26,.4);
+  border-radius:14px;padding:12px 16px;font-size:28px;font-weight:900;color:#E8E4FF;
+  text-align:center;font-family:'Plus Jakarta Sans',system-ui,sans-serif;outline:none;transition:border-color .25s;
+}
+.ans-input:focus{border-color:#F7931A;box-shadow:0 0 0 4px rgba(247,147,26,.18)}
+.btn-mine{
+  background:linear-gradient(135deg,#F7931A,#FFD700);color:#070710;border:none;
+  padding:12px 28px;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:transform .15s,box-shadow .15s;
+  box-shadow:0 4px 18px rgba(247,147,26,.45);touch-action:manipulation;
+}
+.btn-mine:hover{transform:scale(1.06)}
+.btn-mine:active{transform:scale(.96)}
+.btn-skip{background:rgba(255,255,255,.08);color:#8892b0;border:1px solid rgba(255,255,255,.15);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;touch-action:manipulation}
+.btn-skip:hover{background:rgba(255,255,255,.14)}
+
+/* Feedback */
+.feedback{
+  border-radius:18px;padding:16px 20px;margin-bottom:14px;text-align:center;
+  font-size:16px;font-weight:800;display:none;animation:popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+.feedback.correct{background:rgba(107,203,119,.18);border:2px solid rgba(107,203,119,.4);color:#6BCB77}
+.feedback.wrong{background:rgba(255,107,107,.15);border:2px solid rgba(255,107,107,.3);color:#FF6B6B}
+
+/* Hint */
+.hint-box{background:rgba(162,155,254,.09);border-left:3px solid #A29BFE;border-radius:0 12px 12px 0;padding:10px 14px;font-size:13px;color:#c3cfe2;margin-bottom:14px;line-height:1.55;display:none}
+
+.cosmo-why-btn{margin-top:10px;padding:8px 18px;border-radius:50px;border:2px solid rgba(247,147,26,.4);background:rgba(247,147,26,.1);color:#F7931A;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.cosmo-why-btn:hover{background:rgba(247,147,26,.22)}
+
+/* Difficulty badges */
+.diff-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.diff-btn{padding:7px 16px;border-radius:50px;border:none;font-size:13px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s;touch-action:manipulation;opacity:.55}
+.diff-btn.active{opacity:1;transform:scale(1.05)}
+.diff-easy{background:rgba(107,203,119,.25);color:#6BCB77;border:1px solid rgba(107,203,119,.4)}
+.diff-med {background:rgba(255,215,0,.25);color:#FFD700;border:1px solid rgba(255,215,0,.4)}
+.diff-hard{background:rgba(255,107,107,.25);color:#FF6B6B;border:1px solid rgba(255,107,107,.4)}
+
+/* Progress bar */
+.mine-progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.mine-progress-bar{flex:1;background:rgba(255,255,255,.1);border-radius:6px;height:8px;overflow:hidden}
+.mine-progress-fill{height:100%;background:linear-gradient(90deg,#F7931A,#FFD700);border-radius:6px;transition:width .4s ease}
+.mine-progress-label{font-size:12px;font-weight:800;color:#8892b0;white-space:nowrap}
+
+/* ── Learn section ── */
+.learn-card{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  border-radius:22px;padding:22px 18px;margin-bottom:14px;
+  backdrop-filter:blur(16px);
+}
+.learn-card h3{font-size:18px;font-weight:900;color:#F7931A;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.learn-card p{font-size:14px;color:#c3cfe2;line-height:1.65;margin-bottom:10px}
+.learn-card p:last-child{margin-bottom:0}
+.learn-card strong{color:#FFD700}
+.fact-highlight{
+  background:rgba(247,147,26,.1);border-radius:12px;padding:12px 16px;
+  font-size:16px;font-weight:800;color:#FFD700;text-align:center;margin:10px 0;
+}
+
+/* ── Treasury (savings) section ── */
+.treasury-header{font-size:16px;font-weight:900;color:#4ECDC4;margin-bottom:14px;text-align:center}
+.treasury-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.t-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;text-align:center}
+.t-card .t-icon{font-size:28px;display:block;margin-bottom:6px}
+.t-card .t-val{font-size:20px;font-weight:900;color:#FFD700;display:block;margin-bottom:3px}
+.t-card .t-lbl{font-size:11px;color:#8892b0;font-weight:700}
+.savings-lesson{
+  background:rgba(78,205,196,.09);border-left:3px solid #4ECDC4;
+  border-radius:0 16px 16px 0;padding:14px 18px;font-size:14px;color:#c3cfe2;line-height:1.65;
+}
+.savings-lesson strong{color:#4ECDC4}
+
+/* ── Nav ── */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.08);z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:6px 10px;border-radius:12px;touch-action:manipulation;min-width:52px}
+.nav-btn:hover,.nav-btn.active{color:#F7931A}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── Animations ── */
+@keyframes popIn{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
+@keyframes satEarn{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes coinFloat{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-60px);opacity:0}}
+@keyframes shimmer{0%{left:-70%}100%{left:120%}}
+</style>
+</head>
+<body>
+
+<div class="stars-bg" id="starsBg"></div>
+
+<div class="page-wrap">
+  <div class="hdr">
+    <h1>₿ Satoshi's Math Mine</h1>
+    <p>Solve math → earn satoshis → learn the hardest money in the world</p>
+  </div>
+
+  <!-- Wallet -->
+  <div class="wallet">
+    <div class="btc-logo">₿</div>
+    <div class="wallet-info">
+      <div class="label">Cassian's Wallet</div>
+      <div class="wallet-sats" id="satCount">0</div>
+      <div class="wallet-btc" id="btcCount">0.00000000 BTC</div>
+    </div>
+    <div class="wallet-right">
+      <span class="streak-num" id="mineStreak">🔥0</span>
+      <span class="streak-lbl">streak</span>
+    </div>
+  </div>
+
+  <!-- Bitcoin scarcity bar -->
+  <div class="scarcity">
+    <div class="scarcity-title">⛏️ Bitcoin Scarcity Meter</div>
+    <div class="supply-track">
+      <div class="supply-fill" style="width:92.8%"></div>
+    </div>
+    <div class="supply-labels">
+      <span>0 BTC mined</span>
+      <span>19,636,643 mined ✅</span>
+      <span>21,000,000 max</span>
+    </div>
+    <div class="supply-note">
+      🌍 There will <strong>NEVER</strong> be more than <strong>21 million Bitcoin</strong> — ever!
+      Right now, 19.6 million have been mined. Only 1.36 million are left. That's what makes it special!
+      Your satoshis are real <em>(on the app)</em> — keep earning them! ⚡
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('mine')">⛏️ Mine!</button>
+    <button class="tab" onclick="switchTab('learn')">📖 Learn</button>
+    <button class="tab" onclick="switchTab('treasury')">💰 Treasury</button>
+  </div>
+
+  <!-- ── MINING TAB ── -->
+  <div class="mine-section active" id="tab-mine">
+    <div class="diff-row">
+      <button class="diff-btn diff-easy active" onclick="setDiff('easy',this)">🟢 Easy (+10 sats)</button>
+      <button class="diff-btn diff-med" onclick="setDiff('med',this)">🟡 Medium (+25 sats)</button>
+      <button class="diff-btn diff-hard" onclick="setDiff('hard',this)">🔴 Hard (+50 sats)</button>
+    </div>
+
+    <div class="mine-progress">
+      <div class="mine-progress-bar"><div class="mine-progress-fill" id="mineBar" style="width:0%"></div></div>
+      <div class="mine-progress-label" id="mineProgressLbl">0/10 mined</div>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="question-label">⛏️ Math Block to Mine</div>
+      <div class="question-text" id="questionText">Ready to start mining?</div>
+      <div class="reward-label">Solve it → earn <span class="reward-amount" id="rewardAmt">10 sats</span></div>
+      <div class="feedback" id="feedback"></div>
+      <div class="hint-box" id="hintBox"></div>
+      <div class="answer-row">
+        <input class="ans-input" type="number" id="ansInput" inputmode="numeric" placeholder="?"
+          onkeydown="if(event.key==='Enter')checkAnswer()">
+        <button class="btn-mine" onclick="checkAnswer()">⛏️ Mine!</button>
+      </div>
+      <button class="btn-skip" onclick="skipQ()">Skip this one →</button>
+    </div>
+  </div>
+
+  <!-- ── LEARN TAB ── -->
+  <div class="mine-section" id="tab-learn">
+    <div class="learn-card">
+      <h3>₿ What is Bitcoin?</h3>
+      <p>Bitcoin is <strong>digital money</strong> that nobody controls — not banks, not governments, nobody! It lives on the internet and travels anywhere in the world in seconds.</p>
+      <p>It was invented in 2008 by a mystery person called <strong>Satoshi Nakamoto</strong> — we still don't know who they really are! That's why the smallest unit of Bitcoin is called a <em>satoshi</em>.</p>
+      <div class="fact-highlight">1 Bitcoin = 100,000,000 satoshis ⚡</div>
+      <p>So a satoshi is one hundred-millionth of a Bitcoin. It's like a tiny grain of digital gold!</p>
+      <button class="cosmo-why-btn" onclick="askCosmoWhy('What is Bitcoin?')">🤖 Why?</button>
+    </div>
+
+    <div class="learn-card">
+      <h3>🔢 The 21 Million Rule</h3>
+      <p>Here's the most important number in Bitcoin: <strong>21,000,000</strong>. That is the maximum number of Bitcoin that will <em>ever</em> exist — written into the code forever.</p>
+      <div class="fact-highlight">21,000,000 BTC — Hard Limit ⛰️</div>
+      <p>Compare this to normal money (dollars, euros): governments can print as much as they want! When they print more money, each dollar you have buys less. This is called <strong>inflation</strong>.</p>
+      <p>Bitcoin can't be printed. You have to <strong>work for it</strong> — just like gold has to be mined from the earth. That's why it's called "mining"!</p>
+      <button class="cosmo-why-btn" onclick="askCosmoWhy('The 21 Million Rule — why Bitcoin has a hard limit')">🤖 Why?</button>
+    </div>
+
+    <div class="learn-card">
+      <h3>⛏️ What is Mining?</h3>
+      <p>Bitcoin miners are powerful computers that solve really hard math problems. When they solve one, they earn new Bitcoin as a reward — and they also keep the Bitcoin network safe.</p>
+      <p>Right now, miners earn <strong>3.125 Bitcoin</strong> per block they solve. About every 4 years, this reward is cut in half — this is called the <strong>halving</strong>.</p>
+      <div class="fact-highlight">Halving schedule: 50→25→12.5→6.25→3.125→… BTC</div>
+      <p>The halving keeps Bitcoin scarce. As fewer new Bitcoin are created, and more people want them, each Bitcoin becomes more valuable over time. This is the opposite of inflation — it's called <strong>deflation</strong>!</p>
+      <button class="cosmo-why-btn" onclick="askCosmoWhy('What is Bitcoin Mining and the Halving?')">🤖 Why?</button>
+    </div>
+
+    <div class="learn-card">
+      <h3>💡 Why is Scarcity Important?</h3>
+      <p>Think about this: if you could make unlimited copies of a painting, would it be worth anything? No! Things are valuable because they are <strong>scarce</strong> — hard to get.</p>
+      <p>Gold is valuable because there's a limited amount in the earth. <strong>Bitcoin is even scarcer than gold</strong> — we know exactly how much there will ever be.</p>
+      <div class="fact-highlight">Work + Scarcity + Trust = Money 🧠</div>
+      <p>When you earn satoshis by solving math problems, you're learning the most important lesson in economics: <strong>real value comes from real work</strong>!</p>
+      <button class="cosmo-why-btn" onclick="askCosmoWhy('Why is Scarcity Important for money like Bitcoin?')">🤖 Why?</button>
+    </div>
+
+    <div class="learn-card">
+      <h3>🇦🇹 Austrian Economics (for smart kids!)</h3>
+      <p>A long time ago, some very smart economists in Vienna, Austria figured out important things about money and work:</p>
+      <p><strong>1. Value is subjective</strong> — things are worth what people are willing to work for them.</p>
+      <p><strong>2. Savings are good</strong> — saving money (not spending everything) lets you build bigger things later.</p>
+      <p><strong>3. Sound money matters</strong> — money that can't be inflated away helps everyone plan for the future.</p>
+      <div class="fact-highlight">Bitcoin = Austrian Economics + Math + Internet 🌍</div>
+      <p>The economists were Friedrich Hayek and Ludwig von Mises. Satoshi Nakamoto built their ideas into code!</p>
+      <button class="cosmo-why-btn" onclick="askCosmoWhy('Austrian Economics — Hayek, Mises, and how it connects to Bitcoin')">🤖 Why?</button>
+    </div>
+  </div>
+
+  <!-- ── TREASURY TAB ── -->
+  <div class="mine-section" id="tab-treasury">
+    <div class="treasury-header">💰 Your Savings Vault</div>
+
+    <div class="treasury-grid">
+      <div class="t-card">
+        <span class="t-icon">⚡</span>
+        <span class="t-val" id="t-sats">0</span>
+        <span class="t-lbl">Satoshis saved</span>
+      </div>
+      <div class="t-card">
+        <span class="t-icon">📊</span>
+        <span class="t-val" id="t-solved">0</span>
+        <span class="t-lbl">Problems solved</span>
+      </div>
+      <div class="t-card">
+        <span class="t-icon">🎯</span>
+        <span class="t-val" id="t-acc">0%</span>
+        <span class="t-lbl">Accuracy</span>
+      </div>
+      <div class="t-card">
+        <span class="t-icon">🏆</span>
+        <span class="t-val" id="t-best">0</span>
+        <span class="t-lbl">Best streak</span>
+      </div>
+    </div>
+
+    <!-- Sat milestones -->
+    <div class="learn-card" style="margin-bottom:14px">
+      <h3>🎯 Milestones</h3>
+      <div id="milestonesGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"></div>
+    </div>
+
+    <div class="savings-lesson">
+      <p><strong>Why save satoshis?</strong></p>
+      <p>Every satoshi you earn stays in your wallet. Unlike normal money that loses value over time (inflation), <strong>Bitcoin holds its value</strong> — or gets more valuable as fewer are created.</p>
+      <p>The Austrian economists called this <strong>"time preference"</strong> — people who can wait and save instead of spending everything right now end up wealthier. It's not magic, it's math! 🧮</p>
+      <p style="margin-top:8px">Your <span id="t-sats2" style="color:#FFD700;font-weight:900">0</span> satoshis = <span id="t-pct" style="color:#F7931A;font-weight:900">0.000000%</span> of 21 million BTC! Even tiny amounts add up! ₿</p>
+    </div>
+  </div>
+</div>
+
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   STARS
+══════════════════════════════════════════════════════════════ */
+(function(){
+  const bg=document.getElementById('starsBg');
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=(Math.random()*2+.5)+'px';
+    s.style.cssText=`width:${sz};height:${sz};top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s`;
+    bg.appendChild(s);
+  }
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   STATE (persisted in localStorage)
+══════════════════════════════════════════════════════════════ */
+let sats      = +localStorage.getItem('btc_sats')   || 0;
+let solved    = +localStorage.getItem('btc_solved') || 0;
+let attempted = +localStorage.getItem('btc_att')    || 0;
+let streak    = +localStorage.getItem('btc_streak') || 0;
+let bestStreak= +localStorage.getItem('btc_best')   || 0;
+let diff      = localStorage.getItem('btc_diff')    || 'easy';
+let mined     = +localStorage.getItem('btc_mined')  || 0; // questions answered in session batch
+const BATCH   = 10; // blocks per "halving event"
+
+/* ══════════════════════════════════════════════════════════════
+   QUESTIONS
+══════════════════════════════════════════════════════════════ */
+const QUESTIONS = {
+  easy: [
+    {q:'What is 7 × 8?',  a:56,  hint:'7×8: think 7×4=28, double it!'},
+    {q:'What is 144 ÷ 12?', a:12, hint:'How many dozens in 144?'},
+    {q:'What is 15 + 28?', a:43,  hint:'15+28: 15+30=45, subtract 2'},
+    {q:'What is 9 × 9?',   a:81,  hint:'9×9: 10×9=90, subtract 9'},
+    {q:'What is 100 − 37?',a:63,  hint:'100−37: 100−40=60, add 3'},
+    {q:'What is 6 × 7?',   a:42,  hint:'6×7: 6×5=30, plus 6×2=12'},
+    {q:'What is 64 ÷ 8?',  a:8,   hint:'8×8=64 — square number!'},
+    {q:'What is 25 × 4?',  a:100, hint:'25×4 = 25+25+25+25'},
+    {q:'What is 13 + 19?', a:32,  hint:'13+20=33, subtract 1'},
+    {q:'What is 81 ÷ 9?',  a:9,   hint:'9×9=81 — Nine is squared!'},
+    {q:'What is 3 × 3 × 3?', a:27,hint:'That\'s 3 cubed! 3×3=9, 9×3=?'},
+    {q:'What is 50% of 84?', a:42, hint:'50% means half — divide by 2'},
+    {q:'If you have 120 satoshis and earn 80 more, how many?', a:200, hint:'120+80=?'},
+    {q:'What is 11 × 11?', a:121, hint:'11×11 is a palindrome!'},
+    {q:'What is 7 + 8 + 9 + 10?', a:34, hint:'Add them step by step'},
+  ],
+  med: [
+    {q:'What is 21,000,000 ÷ 3?',          a:7000000,  hint:'7 million!'},
+    {q:'If Bitcoin halves every 4 years,\nhow many halvings in 32 years?', a:8, hint:'32 ÷ 4 = ?'},
+    {q:'1 Bitcoin = 100,000,000 sats.\nHow many sats in 0.5 BTC?',        a:50000000, hint:'Half of 100 million'},
+    {q:'What is 2⁸?',                       a:256,      hint:'2×2×2×2×2×2×2×2'},
+    {q:'What is 2¹⁰?',                      a:1024,     hint:'2⁸=256, ×2=512, ×2=?'},
+    {q:'What is 17 × 17?',                  a:289,      hint:'(17×17): (20−3)²=400−120+9'},
+    {q:'What is the sum 1+2+3+…+20?',       a:210,      hint:'n(n+1)/2 = 20×21÷2'},
+    {q:'What is 144 × 144?',               a:20736,    hint:'12²=144, so 144²=12⁴'},
+    {q:'How many satoshis are in\n21 million Bitcoin?', a:2100000000000000, hint:'21M × 100M = 2.1 quadrillion!'},
+    {q:'What is 2⁶ × 2⁴?',                 a:1024,     hint:'2⁶×2⁴ = 2^(6+4) = 2¹⁰'},
+    {q:'What is 999 + 1,001?',              a:2000,     hint:'999+1000=1999, +1=?'},
+    {q:'What is 48 × 25?',                  a:1200,     hint:'48×25 = 48÷4×100'},
+    {q:'If you save 21 sats per day,\nhow many in 21 days?',               a:441,      hint:'21×21=?'},
+    {q:'What is 37 × 3?',                   a:111,      hint:'37×3: 30×3+7×3'},
+    {q:'What is 2¹²?',                      a:4096,     hint:'2¹⁰=1024, ×4=?'},
+  ],
+  hard: [
+    {q:'What is 2¹⁶?',                      a:65536,    hint:'2¹⁰=1024, 2¹⁶=1024×64'},
+    {q:'How many satoshis are in\n1,000 Bitcoin?', a:100000000000, hint:'1000 × 100,000,000'},
+    {q:'21,000,000 × 100,000,000 = ?\n(total satoshis ever)',a:2100000000000000, hint:'2.1 quadrillion!'},
+    {q:'What is 999 × 999?',               a:998001,   hint:'(1000−1)² = 1,000,000−2,000+1'},
+    {q:'What is 123 × 456?',               a:56088,    hint:'123×400 + 123×56'},
+    {q:'If mining reward started at 50 BTC\nand halves 5 times, what is it?', a:1, hint:'50→25→12.5→6.25→3.125→1.5625... wait, in sats that\'s exact: 50÷2⁵'},
+    {q:'What is 7 × 8 × 9?',              a:504,      hint:'7×8=56, 56×9=?'},
+    {q:'What is 2^20 ÷ 2^10?',            a:1024,     hint:'2^(20−10) = 2^10'},
+    {q:'What is the 10th Fibonacci number?',a:55,      hint:'1,1,2,3,5,8,13,21,34,55…'},
+    {q:'How many prime numbers are\nbetween 1 and 50?', a:15,hint:'2,3,5,7,11,13,17,19,23,29,31,37,41,43,47'},
+    {q:'What is 1,000 × 1,000 × 1,000?',  a:1000000000,hint:'That\'s 1 billion! 10^9'},
+    {q:'What is the square root of 2,025?', a:45,      hint:'45×45=?'},
+    {q:'If 1 sat = $0.001, what is\n1,000,000 sats in dollars?', a:1000, hint:'Million × $0.001'},
+    {q:'What is 256 × 256?',               a:65536,    hint:'256 = 2⁸, so 256² = 2¹⁶'},
+    {q:'What is 12 × 13 × 14?',           a:2184,     hint:'12×13=156, 156×14=?'},
+  ],
+};
+
+let currentQ = null;
+let wrongCount = 0;
+
+/* ══════════════════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.mine-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+  if(tab==='treasury') updateTreasury();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DIFFICULTY
+══════════════════════════════════════════════════════════════ */
+const REWARDS = {easy:10, med:25, hard:50};
+function setDiff(d, btn) {
+  diff=d;localStorage.setItem('btc_diff',d);
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rewardAmt').textContent=REWARDS[d]+' sats';
+  nextQuestion();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   QUESTIONS ENGINE
+══════════════════════════════════════════════════════════════ */
+function nextQuestion() {
+  const pool = QUESTIONS[diff];
+  currentQ = pool[Math.floor(Math.random()*pool.length)];
+  wrongCount = 0;
+
+  document.getElementById('questionText').textContent = currentQ.q;
+  document.getElementById('rewardAmt').textContent = REWARDS[diff]+' sats';
+  document.getElementById('ansInput').value = '';
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('hintBox').style.display='none';
+  document.getElementById('ansInput').focus();
+
+  // Progress bar
+  const pct = (mined%BATCH)/BATCH*100;
+  document.getElementById('mineBar').style.width=pct+'%';
+  document.getElementById('mineProgressLbl').textContent=`${mined%BATCH}/${BATCH} this batch`;
+}
+
+function checkAnswer() {
+  if(!currentQ) return;
+  const input = document.getElementById('ansInput');
+  const val = parseFloat(input.value.replace(/,/g,''));
+  const fb = document.getElementById('feedback');
+  fb.style.display='block';
+  fb.style.animation='none'; fb.offsetHeight; fb.style.animation='popIn .35s cubic-bezier(.34,1.56,.64,1)';
+
+  if(val === currentQ.a) {
+    // Correct!
+    const earned = REWARDS[diff];
+    sats += earned;
+    solved++;
+    attempted++;
+    streak++;
+    mined++;
+    if(streak>bestStreak){bestStreak=streak;localStorage.setItem('btc_best',bestStreak);}
+    saveState();
+
+    fb.className='feedback correct';
+    fb.innerHTML=`✅ Correct! +${earned} satoshis ⚡`;
+    showCoinFloat(earned);
+    updateWallet();
+
+    // Halving event every BATCH questions!
+    if(mined%BATCH===0) {
+      setTimeout(()=>showHalving(),600);
+    } else {
+      setTimeout(()=>nextQuestion(), 1200);
+    }
+  } else {
+    // Wrong
+    attempted++;
+    streak=0;
+    saveState();
+    fb.className='feedback wrong';
+    wrongCount++;
+    if(wrongCount>=2) {
+      fb.innerHTML=`❌ Not quite! Hint: ${currentQ.hint}`;
+      document.getElementById('hintBox').textContent='💡 '+currentQ.hint;
+      document.getElementById('hintBox').style.display='block';
+    } else {
+      fb.innerHTML=`❌ Try again! Check your calculation carefully.`;
+    }
+    updateWallet();
+    input.value='';
+    input.focus();
+  }
+  document.getElementById('mineStreak').textContent='🔥'+streak;
+}
+
+function skipQ() {
+  streak=0;
+  saveState();
+  document.getElementById('mineStreak').textContent='🔥0';
+  nextQuestion();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HALVING EVENT
+══════════════════════════════════════════════════════════════ */
+function showHalving() {
+  const card = document.getElementById('questionCard');
+  const orig = card.innerHTML;
+  card.innerHTML = `
+    <div style="text-align:center;padding:10px 0;animation:popIn .5s ease">
+      <div style="font-size:56px;margin-bottom:14px">⛏️</div>
+      <div style="font-size:24px;font-weight:900;color:#FFD700;margin-bottom:12px">BLOCK MINED!</div>
+      <div style="font-size:14px;color:#c3cfe2;line-height:1.7;margin-bottom:20px">
+        You just mined ${BATCH} math blocks!<br>
+        Just like real Bitcoin, miners get rewarded for solving hard problems.<br>
+        <span style="color:#F7931A;font-weight:900">Total sats: ${sats.toLocaleString()} ⚡</span>
+      </div>
+      <button onclick="continueAfterHalving()" style="background:linear-gradient(135deg,#F7931A,#FFD700);color:#0a0618;border:none;padding:14px 32px;border-radius:50px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif">
+        ⛏️ Keep Mining!
+      </button>
+    </div>`;
+}
+function continueAfterHalving() {
+  nextQuestion();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COIN FLOAT ANIMATION
+══════════════════════════════════════════════════════════════ */
+function showCoinFloat(amount) {
+  const card = document.getElementById('questionCard');
+  const coin = document.createElement('div');
+  coin.style.cssText=`position:absolute;top:20px;right:20px;font-size:18px;font-weight:900;color:#FFD700;animation:coinFloat .8s ease forwards;pointer-events:none;z-index:10;font-family:'Plus Jakarta Sans',system-ui,sans-serif`;
+  coin.textContent=`+${amount} ⚡`;
+  card.style.position='relative';
+  card.appendChild(coin);
+  setTimeout(()=>coin.remove(),900);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WALLET + STATE
+══════════════════════════════════════════════════════════════ */
+function updateWallet() {
+  document.getElementById('satCount').textContent=sats.toLocaleString();
+  document.getElementById('btcCount').textContent=(sats/100000000).toFixed(8)+' BTC';
+  document.getElementById('mineStreak').textContent='🔥'+streak;
+}
+
+function saveState() {
+  localStorage.setItem('btc_sats',sats);
+  localStorage.setItem('btc_solved',solved);
+  localStorage.setItem('btc_att',attempted);
+  localStorage.setItem('btc_streak',streak);
+  localStorage.setItem('btc_mined',mined);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TREASURY
+══════════════════════════════════════════════════════════════ */
+const MILESTONES=[
+  {label:'First Satoshi',  sats:1,      icon:'⚡'},
+  {label:'100 Sats',       sats:100,    icon:'💫'},
+  {label:'1,000 Sats',     sats:1000,   icon:'🌟'},
+  {label:'10,000 Sats',    sats:10000,  icon:'🏆'},
+  {label:'100,000 Sats',   sats:100000, icon:'💎'},
+  {label:'1,000,000 Sats', sats:1000000,icon:'₿'},
+];
+function updateTreasury() {
+  document.getElementById('t-sats').textContent=sats.toLocaleString();
+  document.getElementById('t-sats2').textContent=sats.toLocaleString();
+  document.getElementById('t-solved').textContent=solved;
+  document.getElementById('t-acc').textContent=attempted>0?Math.round(solved/attempted*100)+'%':'0%';
+  document.getElementById('t-best').textContent=bestStreak;
+  const pct=(sats/(21000000*100000000)*100).toFixed(8);
+  document.getElementById('t-pct').textContent=pct+'%';
+  const grid=document.getElementById('milestonesGrid');
+  grid.innerHTML=MILESTONES.map(m=>{
+    const done=sats>=m.sats;
+    return `<div style="background:rgba(255,255,255,.07);border:1px solid ${done?'rgba(247,147,26,.5)':'rgba(255,255,255,.1)'};border-radius:14px;padding:12px;text-align:center;opacity:${done?1:.45}">
+      <span style="font-size:22px">${m.icon}</span>
+      <div style="font-size:12px;font-weight:800;color:${done?'#FFD700':'#8892b0'};margin-top:4px">${m.label}</div>
+      <div style="font-size:11px;color:#8892b0;margin-top:2px">${done?'✅ Unlocked!':'🔒 '+m.sats.toLocaleString()+' sats'}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════════ */
+updateWallet();
+nextQuestion();
+// Restore diff button state
+const diffBtn=document.querySelector('.diff-btn.diff-'+diff);
+if(diffBtn){
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  diffBtn.classList.add('active');
+}
+</script>
+<div id="btcHint" style="display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;z-index:500">
+  <div style="background:rgba(7,7,16,.97);border:1px solid rgba(247,147,26,.35);border-radius:20px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.5)">
+    <span style="font-size:22px;flex-shrink:0">🤖</span>
+    <p id="btcHintText" style="color:#E8E4FF;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif"></p>
+  </div>
+</div>
+<script src="cosmo-hints.js"></script>
+<script>
+async function askCosmoWhy(cardTitle) {
+  const hint = await getCosmoHint(`Cassian wants to know more about: "${cardTitle}". Explain it in 2-3 sentences for a 6-year-old who loves math and economics.`);
+  if (hint) {
+    document.getElementById('btcHintText').textContent = hint;
+    document.getElementById('btcHint').style.display = 'block';
+    setTimeout(() => document.getElementById('btcHint').style.display = 'none', 8000);
+  }
+}
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

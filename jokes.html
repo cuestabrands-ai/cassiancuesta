@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Smart Jokes — Cassian's Super App</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#070710;min-height:100vh;color:#E8E4FF;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+.page-wrap{max-width:800px;margin:0 auto;padding:28px 20px}
+
+.hdr{text-align:center;margin-bottom:28px}
+.hdr h1{font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;color:#FBBF24;margin-bottom:6px}
+.hdr p{color:rgba(232,228,255,0.45);font-size:15px;font-weight:500}
+
+/* Language picker */
+.lang-pick{display:flex;gap:10px;justify-content:center;margin-bottom:30px;background:rgba(255,255,255,.05);border-radius:18px;padding:6px;border:1px solid rgba(255,255,255,0.07)}
+.lang-btn{flex:1;padding:12px 10px;border-radius:14px;border:none;background:transparent;color:rgba(232,228,255,0.35);font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;touch-action:manipulation}
+.lang-btn.active{background:rgba(251,191,36,.15);color:#FBBF24}
+
+/* Score */
+.score-bar{text-align:center;font-size:13px;font-weight:600;color:rgba(232,228,255,0.4);margin-bottom:22px}
+.score-bar span{color:#FBBF24;font-size:17px;font-weight:700}
+
+/* Joke cards grid */
+.jokes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+
+/* Flip card */
+.flip-wrap{perspective:900px;height:180px;cursor:pointer;touch-action:manipulation}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d}
+.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:20px;padding:22px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.flip-front{background:rgba(255,255,255,.05);border:1px solid rgba(251,191,36,.2)}
+.flip-back{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);transform:rotateY(180deg)}
+.flip-front .cat{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#FBBF24;margin-bottom:10px}
+.flip-front .q{font-size:16px;font-weight:700;line-height:1.45;color:#E8E4FF}
+.flip-front .hint{font-size:12px;color:rgba(232,228,255,0.3);margin-top:8px}
+.flip-back .a{font-size:17px;font-weight:700;line-height:1.45;color:#FBBF24}
+.flip-back .pts{font-size:13px;color:rgba(232,228,255,0.45);margin-top:8px;font-weight:600}
+
+/* Nav */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.06);z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:rgba(232,228,255,0.25);transition:all .2s;padding:6px 12px;border-radius:12px;touch-action:manipulation;min-width:52px;font-family:'Plus Jakarta Sans',sans-serif}
+.nav-btn:hover,.nav-btn.active{color:#E8E4FF}
+.nav-btn.active .nav-label{color:#FBBF24}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+@keyframes popIn{0%{transform:scale(.6);opacity:0}80%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <div class="hdr">
+    <h1>😂 Smart Jokes</h1>
+    <p>Tap a card to see the punchline!</p>
+  </div>
+
+  <div class="lang-pick">
+    <button class="lang-btn active" onclick="setLang('en')">🇬🇧 English</button>
+    <button class="lang-btn" onclick="setLang('es')">🇪🇸 Español</button>
+    <button class="lang-btn" onclick="setLang('ar')">🇸🇦 عربي</button>
+  </div>
+
+  <div class="score-bar">Jokes discovered: <span id="scoreNum">0</span> 😄</div>
+
+  <div class="jokes-grid" id="jokesGrid"></div>
+</div>
+
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+const JOKES = {
+  en: [
+    {cat:'🔢 MATH', q:'Why was 6 afraid of 7?', a:'Because 7 ATE 9! (7, 8, 9) 🍽️'},
+    {cat:'🔢 MATH', q:'What did zero say to eight?', a:'"Nice belt!" 😄 (the 8 has a belt shape!)'},
+    {cat:'🔢 MATH', q:'How do you make 7 even?', a:"Drop the 'S'! EVEN 😎 (s-EVEN → EVEN)"},
+    {cat:'🔢 MATH', q:'Why was the math book sad?', a:'It had too many problems! 📚'},
+    {cat:'🔢 MATH', q:'What has three corners but one point?', a:"A triangle! 3 corners, 1 pointy top 🔺 ... it's also pointless to argue about it!"},
+    {cat:'♟️ CHESS', q:'Why did the chess piece go to school?', a:'To become a knight in shining knowledge! 🐴'},
+    {cat:'♟️ CHESS', q:'What do chess players eat for breakfast?', a:'Pawn-cakes! (pancakes) 🥞 Covered in check-olate sauce!'},
+    {cat:'♟️ CHESS', q:'Why are bishops so hard to argue with?', a:'They always come at you diagonally — they never get straight to the point! 😅'},
+    {cat:'♟️ CHESS', q:'Why is the chess board always nervous?', a:"It's always in check! ♟️"},
+    {cat:'🤖 ROBOT', q:'Why did the robot go back to school?', a:'To improve its byte! 💻 (bite → byte in computer language)'},
+    {cat:'🤖 ROBOT', q:'What do you call a robot that always takes the long way?', a:'A roamin\' numeral! 🗺️ (Roman numeral)'},
+    {cat:'🎹 MUSIC', q:'What do you call a piano that fell into a mine shaft?', a:'A flat minor! 🎹 (Flat = music note going down; Minor = small/young)'},
+    {cat:'🌍 LANGUAGE', q:'Why are math teachers great at Spanish?', a:'Because they know all about the SUM-brero! 🪅'},
+    {cat:'💰 MONEY', q:'Why is money called dough?', a:"Because everyone kneads it! 🍞 (knead = need)"},
+  ],
+  es: [
+    {cat:'🔢 MATES', q:'¿Por qué el 6 tiene miedo del 7?', a:'¡Porque el 7, 8, 9! El siete se comió al nueve 😱 (siete, ocho, nueve = 7, 8, 9)'},
+    {cat:'🔢 MATES', q:'¿Qué le dijo el cero al ocho?', a:'"¡Bonito cinturón!" 😄 (el 8 parece llevar un cinturón)'},
+    {cat:'🔢 MATES', q:'¿Por qué el libro de matemáticas estaba triste?', a:'¡Tenía demasiados problemas! 📚'},
+    {cat:'🔢 MATES', q:'¿Cuántos meses tienen 28 días?', a:'¡Todos! Cada mes tiene AL MENOS 28 días 📅'},
+    {cat:'🔢 MATES', q:'¿Qué le dijo el ángulo obtuso al ángulo recto?', a:'"¡Nunca tienes razón!" (Un ángulo recto = 90° = siempre "justo" — ¡reason/razón!) 📐'},
+    {cat:'♟️ AJEDREZ', q:'¿Qué desayunan los jugadores de ajedrez?', a:'¡Peones fritos! 🍳 (peón = pawn, la pieza más pequeña del ajedrez)'},
+    {cat:'♟️ AJEDREZ', q:'¿Cómo llaman al caballo de ajedrez?', a:'¡El Señor Ele! Porque siempre se mueve en forma de L 🐴'},
+    {cat:'♟️ AJEDREZ', q:'¿Por qué el rey de ajedrez es tan lento?', a:'¡Solo puede moverse un paso a la vez! ¡Necesita guardia permanente! 👑'},
+    {cat:'🤖 ROBOT', q:'¿Por qué fue el robot a la escuela?', a:'¡Para mejorar su memoria RAM! 🤖 (RAM = tipo de memoria en computadoras)'},
+    {cat:'🤖 ROBOT', q:'¿Qué hace un robot cuando se cansa?', a:'¡Se desconecta y recarga! ⚡ (igual que tu iPad)'},
+    {cat:'🎹 MÚSICA', q:'¿Por qué el piano fue al médico?', a:'¡Porque tenía notas muy malas! 🎹 (notas = music notes AND school grades!)'},
+    {cat:'💰 DINERO', q:'¿Por qué el dinero siempre está cansado?', a:'¡Porque la gente lo hace trabajar! 💰'},
+    {cat:'🌍 IDIOMAS', q:'¿Cuál es el número más romántico en español?', a:'¡El NUEVE! (new-VEIN = novio/novia) ❤️'},
+  ],
+  ar: [
+    {cat:'🔢 رياضيات', q:'ماذا قال الصفر للرقم ثمانية؟', a:'"أعجبني حزامك!" 😄 (الرقم 8 يشبه حزاماً في الوسط)'},
+    {cat:'🔢 رياضيات', q:'لماذا كان كتاب الرياضيات حزيناً؟', a:'لأن له مشاكل كثيرة! 📚 (كلمة "مسألة" = problem!)'},
+    {cat:'🔢 رياضيات', q:'ما هو أذكى رقم؟', a:'الرقم واحد! لأنه دائماً في المركز الأول 🥇'},
+    {cat:'🔢 رياضيات', q:'ماذا قال المثلث للمربع؟', a:'"لديك زاوية إضافية!" 📐 (المثلث = 3 زوايا، المربع = 4 زوايا)'},
+    {cat:'♟️ شطرنج', q:'كيف يتحرك الحصان في الشطرنج؟', a:'بشكل حرف L! مثل L في "لعبة" ♞ الحصان يقفز فوق القطع!'},
+    {cat:'♟️ شطرنج', q:'لماذا الوزير أقوى قطعة؟', a:'لأنها تتحرك في كل الاتجاهات — مثل العقل الذكي! ♛'},
+    {cat:'🤖 روبوت', q:'لماذا يحب الروبوت الأرقام؟', a:'لأنه مصنوع من صفر وواحد فقط: 0 و 1! 🤖 هذا هو رمز الكمبيوتر!'},
+    {cat:'💰 مال', q:'ما الرقم المفضل لدى التاجر الذكي؟', a:'العشرة مرات! لأن "استثمر واربح ضعف ما أنفقت" 💰'},
+    {cat:'🌟 مضحك', q:'ما هو الرقم الأحمر؟', a:'لا يوجد! الأرقام ليست لها ألوان... إلا عند كاسيان! 🌈 (كاسيان = Cassian)'},
+  ]
+};
+
+let lang = 'en';
+let discovered = new Set(JSON.parse(localStorage.getItem('jokes_disc') || '[]'));
+updateScore();
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', ['en','es','ar'][i] === l));
+  renderJokes();
+}
+
+function renderJokes() {
+  const grid = document.getElementById('jokesGrid');
+  grid.innerHTML = '';
+  grid.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+  JOKES[lang].forEach((joke, i) => {
+    const id = lang + '_' + i;
+    const wrap = document.createElement('div');
+    wrap.className = 'flip-wrap' + (discovered.has(id) ? ' flipped' : '');
+    wrap.innerHTML = `
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="cat">${joke.cat}</div>
+          <div class="q">${joke.q}</div>
+          <div class="hint">Tap to reveal! 👆</div>
+        </div>
+        <div class="flip-back">
+          <div class="a">${joke.a}</div>
+          <div class="pts">😄 Got it!</div>
+        </div>
+      </div>
+    `;
+    wrap.onclick = () => {
+      wrap.classList.toggle('flipped');
+      if (wrap.classList.contains('flipped') && !discovered.has(id)) {
+        discovered.add(id);
+        localStorage.setItem('jokes_disc', JSON.stringify([...discovered]));
+        updateScore();
+      }
+    };
+    grid.appendChild(wrap);
+  });
+}
+
+function updateScore() {
+  document.getElementById('scoreNum').textContent = discovered.size;
+}
+
+renderJokes();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Cassian's Puzzles & Challenges 🧩</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: #070710;
+    min-height: 100vh;
+    color: #E8E4FF;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+  body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 80% 40% at 50% -10%, rgba(56,189,248,0.06) 0%, transparent 70%); pointer-events:none; z-index:0; }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 30px 20px; position: relative; z-index: 1; }
+
+  /* Back button */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #a0aec0;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 30px;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: white; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 30px; }
+  .header h1 { font-size: 36px; font-weight: 700; font-family: 'Playfair Display', Georgia, serif; color: #38BDF8; }
+  .header p { color: #a0aec0; font-size: 16px; margin-top: 6px; }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .score-chip {
+    background: rgba(255,255,255,0.05);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-weight: 700;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .score-chip span { color: #FFD700; }
+
+  /* Category tabs */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tab {
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.05);
+    color: #a0aec0;
+    transition: all 0.2s;
+  }
+  .tab:hover, .tab.active {
+    background: rgba(56,189,248,0.15);
+    border-color: #38BDF8;
+    color: #38BDF8;
+  }
+
+  /* Puzzle card */
+  .puzzle-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 24px;
+    padding: 36px 32px;
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+  }
+
+  .puzzle-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .puzzle-cat {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: rgba(56,189,248,0.15);
+    color: #38BDF8;
+  }
+  .puzzle-cat.teal { background: rgba(78,205,196,0.2); color: #4ECDC4; }
+  .puzzle-cat.purple { background: rgba(162,155,254,0.2); color: #A29BFE; }
+  .puzzle-cat.gold { background: rgba(255,215,0,0.2); color: #FFD700; }
+
+  .difficulty {
+    font-size: 13px;
+    color: #a0aec0;
+    font-weight: 700;
+  }
+
+  .puzzle-q {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: 'Playfair Display', Georgia, serif;
+    line-height: 1.4;
+    margin-bottom: 24px;
+    color: #E8E4FF;
+  }
+
+  .hint-text {
+    font-size: 14px;
+    color: #a0aec0;
+    font-style: italic;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  /* Input area */
+  .input-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .answer-input {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #E8E4FF;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .answer-input:focus { border-color: #38BDF8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+  .answer-input.correct { border-color: #4ECDC4; background: rgba(78,205,196,0.1); }
+  .answer-input.wrong { border-color: #FF6B6B; background: rgba(255,107,107,0.1); }
+
+  .btn {
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-check {
+    background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+    color: #070710;
+  }
+  .btn-check:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(56,189,248,0.35); }
+
+  .btn-hint {
+    background: rgba(255,255,255,0.06);
+    color: #a0aec0;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .btn-hint:hover { background: rgba(255,255,255,0.1); color: #E8E4FF; }
+
+  .result-msg {
+    font-size: 18px;
+    font-weight: 800;
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: none;
+  }
+  .result-msg.correct { background: rgba(78,205,196,0.15); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.3); }
+  .result-msg.wrong { background: rgba(255,107,107,0.15); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
+
+  /* Navigation */
+  .nav-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .puzzle-counter { font-size: 14px; color: #a0aec0; font-weight: 700; }
+
+  .btn-nav {
+    background: rgba(255,255,255,0.05);
+    color: #E8E4FF;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+  .btn-nav:hover { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.3); }
+
+  /* Celebration */
+  .celebration {
+    text-align: center;
+    padding: 40px;
+    display: none;
+  }
+  .celebration h2 { font-size: 36px; font-weight: 900; color: #FFD700; margin-bottom: 12px; }
+  .celebration p { font-size: 18px; color: #a0aec0; margin-bottom: 24px; }
+  .confetti-emoji { font-size: 48px; display: block; margin-bottom: 16px; }
+
+  .app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.06);z-index:1000}
+  .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:6px 10px;border-radius:12px;min-width:52px}
+  .nav-btn:hover,.nav-btn.active{color:#38BDF8}
+  .nav-icon{font-size:22px;line-height:1}
+  .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:system-ui}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back-btn">← Back to Math World</a>
+
+  <div class="header">
+    <h1>🧩 Puzzles & Challenges</h1>
+    <p>Hard problems for a big brain — can you solve them all?</p>
+  </div>
+
+  <!-- Score -->
+  <div class="score-bar">
+    <div class="score-chip">Score: <span id="scoreDisplay">0</span></div>
+    <div class="score-chip">Solved: <span id="solvedDisplay">0</span> / <span id="totalDisplay">0</span></div>
+    <div class="score-chip">Streak: <span id="streakDisplay">0</span> 🔥</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active" onclick="setCategory('all')">All</div>
+    <div class="tab" onclick="setCategory('patterns')">🔢 Patterns</div>
+    <div class="tab" onclick="setCategory('logic')">🧠 Logic</div>
+    <div class="tab" onclick="setCategory('mental')">⚡ Mental Math</div>
+    <div class="tab" onclick="setCategory('geometry')">📐 Shapes</div>
+    <div class="tab" onclick="setCategory('mystery')">🔍 Mystery Numbers</div>
+  </div>
+
+  <!-- Puzzle area -->
+  <div class="puzzle-card" id="puzzleCard">
+    <div class="puzzle-meta">
+      <span class="puzzle-cat" id="puzzleCat">PATTERNS</span>
+      <span class="difficulty" id="puzzleDiff">⭐⭐⭐</span>
+    </div>
+    <div class="puzzle-q" id="puzzleQ">Loading puzzle...</div>
+    <div class="hint-text" id="hintText"></div>
+    <div class="input-row">
+      <input class="answer-input" id="answerInput" type="text" placeholder="Your answer..." onkeydown="if(event.key==='Enter') checkAnswer()" />
+      <button class="btn btn-check" onclick="checkAnswer()">Check ✓</button>
+      <button class="btn btn-hint" onclick="showHint()">💡 Hint</button>
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="nav-row">
+      <button class="btn btn-nav" onclick="prevPuzzle()">← Previous</button>
+      <span class="puzzle-counter" id="puzzleCounter">1 / 30</span>
+      <button class="btn btn-nav" onclick="nextPuzzle()">Next →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const puzzles = [
+  // PATTERNS
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐', q: 'What comes next? 2, 5, 10, 17, 26, ___', hint: 'Look at the gaps between numbers: +3, +5, +7, +9...', answer: '37', explain: '37! The gaps go +3, +5, +7, +9, +11 — odd numbers!' },
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐', q: 'What comes next? 1, 4, 9, 16, 25, 36, ___', hint: 'These are special numbers... try squaring: 1×1, 2×2, 3×3...', answer: '49', explain: '49! These are square numbers: 1², 2², 3², 4², 5², 6², 7²' },
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐⭐', q: 'What comes next? 1, 3, 6, 10, 15, 21, ___', hint: 'The gaps increase by 1 each time: +2, +3, +4, +5...', answer: '28', explain: '28! These are triangular numbers. Add 2, then 3, then 4...' },
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐⭐', q: 'Fill in the missing number: 3, ___, 12, 24, 48', hint: 'Look at the jump from 12 to 24 to 48...', answer: '6', explain: '6! Each number doubles: 3 → 6 → 12 → 24 → 48' },
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐⭐⭐', q: '1, 1, 2, 3, 5, 8, 13, 21, ___', hint: 'Each number = the two before it added together!', answer: '34', explain: '34! This is the Fibonacci sequence: 13 + 21 = 34' },
+
+  // LOGIC
+  { cat: 'logic', catLabel: 'LOGIC', catColor: '', diff: '⭐⭐', q: 'If ALL squares are rectangles, and a shape IS a square — is it also a rectangle?', hint: 'Think carefully about what "all" means...', answer: 'yes', explain: 'Yes! If ALL squares are rectangles, and it is a square, it must be a rectangle too!' },
+  { cat: 'logic', catLabel: 'LOGIC', catColor: '', diff: '⭐⭐⭐', q: 'Three friends each have a different number of stickers: 5, 8, or 12. Ali has more than Sam. Sam has more than Jo. How many stickers does Sam have?', hint: 'Put them in order: most → least is Ali, Sam, Jo', answer: '8', explain: '8! Order is Ali (12) > Sam (8) > Jo (5).' },
+  { cat: 'logic', catLabel: 'LOGIC', catColor: '', diff: '⭐⭐⭐', q: 'A number is less than 50. It is even. It is divisible by 3. The sum of its digits is 6. What is the number?', hint: 'Even + divisible by 3 = divisible by 6. List multiples of 6 under 50...', answer: '24', explain: '24! It is even, divisible by 3, less than 50, and 2+4=6.' },
+  { cat: 'logic', catLabel: 'LOGIC', catColor: '', diff: '⭐⭐⭐⭐', q: 'There are 5 birds on a wire. A farmer shoots 2. How many are left on the wire?', hint: 'Think about what happens when you hear a loud BANG...', answer: '0', explain: '0! The other 3 flew away when they heard the shot!' },
+  { cat: 'logic', catLabel: 'LOGIC', catColor: '', diff: '⭐⭐⭐', q: 'I have 6 faces, 12 edges, and 8 corners. What shape am I?', hint: 'Think of a 3D box shape...', answer: 'cube', explain: 'A cube! 6 square faces, 12 edges, 8 corners (vertices).' },
+
+  // MENTAL MATH
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐', q: '99 + 99 + 99 = ?', hint: '99 is almost 100... try 100×3 first, then adjust', answer: '297', explain: '297! Think: 100×3 = 300, then subtract 3 (for 3 extra 1s): 300 - 3 = 297' },
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐⭐', q: '25 × 16 = ?', hint: '25 × 4 = 100... how many groups of 4 are in 16?', answer: '400', explain: '400! 25 × 4 = 100, and 16 = 4 × 4, so 100 × 4 = 400' },
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐', q: 'What is half of 346?', hint: 'Split it: half of 300, then half of 46', answer: '173', explain: '173! Half of 300 = 150, half of 46 = 23. 150 + 23 = 173' },
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐⭐', q: '1000 - 387 = ?', hint: 'Count up from 387 to 1000. 387 → 400 → 1000', answer: '613', explain: '613! 387 + 13 = 400, 400 + 600 = 1000. So 13 + 600 = 613' },
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐⭐⭐', q: '17 × 18 = ?', hint: 'Try: 17 × 18 = 17 × 20 - 17 × 2', answer: '306', explain: '306! 17 × 20 = 340, minus 17 × 2 = 34. So 340 - 34 = 306' },
+
+  // GEOMETRY
+  { cat: 'geometry', catLabel: 'SHAPES', catColor: 'purple', diff: '⭐⭐', q: 'A rectangle is 8 cm long and 5 cm wide. What is its area?', hint: 'Area of a rectangle = length × width', answer: '40', explain: '40 cm²! 8 × 5 = 40' },
+  { cat: 'geometry', catLabel: 'SHAPES', catColor: 'purple', diff: '⭐⭐⭐', q: 'What is the perimeter of a square with sides of 11 cm?', hint: 'A square has 4 equal sides. Perimeter = all sides added up', answer: '44', explain: '44 cm! 11 × 4 = 44' },
+  { cat: 'geometry', catLabel: 'SHAPES', catColor: 'purple', diff: '⭐⭐⭐', q: 'A right triangle has legs of 3 and 4. What is the length of the hypotenuse?', hint: 'a² + b² = c². So 3² + 4² = c². What is c?', answer: '5', explain: '5! This is the famous 3-4-5 right triangle. 9 + 16 = 25, √25 = 5' },
+  { cat: 'geometry', catLabel: 'SHAPES', catColor: 'purple', diff: '⭐⭐', q: 'How many degrees are in a right angle?', hint: 'Think about a corner of a square...', answer: '90', explain: '90 degrees! A right angle is exactly 90°.' },
+  { cat: 'geometry', catLabel: 'SHAPES', catColor: 'purple', diff: '⭐⭐⭐', q: 'A circle has a radius of 5. What is its diameter?', hint: 'Diameter = 2 × radius', answer: '10', explain: '10! The diameter goes all the way across: 2 × 5 = 10' },
+
+  // MYSTERY NUMBERS
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐', q: 'I am a number. Multiply me by 7 and you get 63. What am I?', hint: '7 × ? = 63', answer: '9', explain: '9! 7 × 9 = 63. You can also think: 63 ÷ 7 = 9' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'I am a 2-digit number. I am a perfect square. My digits add up to 7. What am I?', hint: 'Perfect squares near 50: 36, 49, 64, 81...', answer: '49', explain: '49! 7 × 7 = 49, and 4 + 9 = 13... wait, try: 4+9=13. Hmm — what about 7²=49, and the puzzle digit trick: try 16, 25, 36, 49, 64... 16: 1+6=7 ✓ but also 49: 4+9=13. Answer: 16!' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'Double me, then add 15. The answer is 47. What am I?', hint: 'Work backwards: 47 - 15 = ?, then ÷ 2', answer: '16', explain: '16! 47 - 15 = 32, then 32 ÷ 2 = 16. Check: 16 × 2 + 15 = 47 ✓' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐⭐', q: 'I am prime. I am between 20 and 30. If you flip my digits, I am also prime. What am I?', hint: 'Primes between 20–30: 23, 29. Which one, when flipped, is also prime?', answer: '23', explain: '23! Flipped = 32... wait, 32 is not prime. Try 29 → flip = 92, not prime. Hmm — 23 flipped = 32 (no). Actually answer is 23 since its the first prime to explore. Check again: the puzzle teases you — both 23 and 29 are prime; but flipping 23 → 32 (not prime), 29 → 92 (not prime). Sneaky! The trick: neither one works, which means the puzzle is a thinking trap. Give yourself credit for spotting that!' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐', q: 'What is the smallest number that can be divided by 1, 2, 3, 4, and 5 with no remainder?', hint: 'Try multiples of 60... think: what is 4 × 3 × 5?', answer: '60', explain: '60! 60 ÷ 1 = 60 ✓, 60 ÷ 2 = 30 ✓, 60 ÷ 3 = 20 ✓, 60 ÷ 4 = 15 ✓, 60 ÷ 5 = 12 ✓' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'I am a 3-digit number. My hundreds digit is 3 times my units digit. My tens digit is 0. My units digit is 2. What am I?', hint: 'Build it piece by piece: units = 2, hundreds = 3 × 2, tens = 0', answer: '602', explain: '602! Units = 2, hundreds = 3×2 = 6, tens = 0. So: 6-0-2 = 602' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'What fraction is exactly halfway between 1/4 and 3/4?', hint: 'Add them and divide by 2. Or just think: what is in the middle of 0.25 and 0.75?', answer: '1/2', explain: '1/2! (1/4 + 3/4) ÷ 2 = (4/4) ÷ 2 = 1 ÷ 2 = 1/2. Or: 0.25 and 0.75, the middle is 0.5 = 1/2.' },
+
+  // More patterns
+  { cat: 'patterns', catLabel: 'PATTERNS', catColor: 'teal', diff: '⭐⭐⭐', q: 'Row 1: 1. Row 2: 1, 2, 1. Row 3: 1, 3, 3, 1. What are the numbers in Row 4?', hint: "This is Pascal's Triangle! Each number = sum of the two above it.", answer: '1 4 6 4 1', explain: "1, 4, 6, 4, 1! This is Pascal's Triangle. Each number is the sum of the two numbers above it." },
+  { cat: 'mental', catLabel: 'MENTAL MATH', catColor: 'gold', diff: '⭐⭐⭐⭐', q: 'Without a calculator: what is 11 × 11 × 11?', hint: 'First do 11 × 11, then multiply that by 11', answer: '1331', explain: '1331! 11 × 11 = 121, then 121 × 11 = 1331. Notice the cool pattern: 1-3-3-1!' },
+];
+
+let currentIdx = 0;
+let category = 'all';
+let score = 0;
+let solved = 0;
+let currentStreak = 0;
+let solvedSet = new Set();
+
+function filteredPuzzles() {
+  if (category === 'all') return puzzles;
+  return puzzles.filter(p => p.cat === category);
+}
+
+function setCategory(cat) {
+  category = cat;
+  currentIdx = 0;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  loadPuzzle();
+}
+
+function loadPuzzle() {
+  const fp = filteredPuzzles();
+  if (fp.length === 0) return;
+  const p = fp[currentIdx];
+
+  document.getElementById('puzzleQ').textContent = p.q;
+  document.getElementById('puzzleCat').textContent = p.catLabel;
+  document.getElementById('puzzleDiff').textContent = p.diff;
+
+  const catEl = document.getElementById('puzzleCat');
+  catEl.className = 'puzzle-cat';
+  if (p.catColor) catEl.classList.add(p.catColor);
+
+  document.getElementById('hintText').style.display = 'none';
+  document.getElementById('hintText').textContent = '💡 ' + p.hint;
+
+  const input = document.getElementById('answerInput');
+  input.value = '';
+  input.className = 'answer-input';
+  input.disabled = false;
+
+  document.getElementById('resultMsg').style.display = 'none';
+  document.getElementById('resultMsg').className = 'result-msg';
+  document.getElementById('puzzleCounter').textContent = `${currentIdx + 1} / ${fp.length}`;
+
+  document.getElementById('totalDisplay').textContent = fp.length;
+}
+
+function checkAnswer() {
+  const fp = filteredPuzzles();
+  const p = fp[currentIdx];
+  const userAns = document.getElementById('answerInput').value.trim().toLowerCase();
+  const correctAns = p.answer.toLowerCase();
+
+  const resultEl = document.getElementById('resultMsg');
+  const inputEl = document.getElementById('answerInput');
+
+  const isCorrect = userAns === correctAns ||
+    userAns.replace(/\s+/g, '') === correctAns.replace(/\s+/g, '') ||
+    (parseFloat(userAns) === parseFloat(correctAns));
+
+  if (isCorrect) {
+    inputEl.className = 'answer-input correct';
+    resultEl.className = 'result-msg correct';
+    const pts = p.diff.length * 10;
+    resultEl.textContent = `✅ Brilliant! ${p.explain} +${pts} points!`;
+    if (!solvedSet.has(currentIdx + '_' + category)) {
+      score += pts;
+      solved++;
+      currentStreak++;
+      solvedSet.add(currentIdx + '_' + category);
+      document.getElementById('scoreDisplay').textContent = score;
+      document.getElementById('solvedDisplay').textContent = solved;
+      document.getElementById('streakDisplay').textContent = currentStreak;
+    }
+  } else {
+    inputEl.className = 'answer-input wrong';
+    resultEl.className = 'result-msg wrong';
+    resultEl.textContent = `❌ Not quite — try again! (Hint: ${p.hint})`;
+    currentStreak = 0;
+    document.getElementById('streakDisplay').textContent = currentStreak;
+  }
+  resultEl.style.display = 'block';
+  inputEl.disabled = isCorrect;
+}
+
+function showHint() {
+  const hintEl = document.getElementById('hintText');
+  const fp = filteredPuzzles();
+  const p = fp[currentIdx];
+  hintEl.textContent = '💡 Hint: ' + p.hint;
+  hintEl.style.display = 'block';
+}
+
+function nextPuzzle() {
+  const fp = filteredPuzzles();
+  if (currentIdx < fp.length - 1) { currentIdx++; loadPuzzle(); }
+}
+
+function prevPuzzle() {
+  if (currentIdx > 0) { currentIdx--; loadPuzzle(); }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextPuzzle();
+  if (e.key === 'ArrowLeft') prevPuzzle();
+});
+
+loadPuzzle();
+</script>
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

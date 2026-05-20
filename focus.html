@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Focus & Flow — Cassian</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#070710;min-height:100vh;color:#E8E4FF;padding-bottom:calc(80px + env(safe-area-inset-bottom));overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% -10%, rgba(74,222,128,0.04) 0%, transparent 70%);pointer-events:none;z-index:0}
+
+/* ── Tab system ── */
+.tabs{display:flex;gap:4px;padding:16px 18px 0;max-width:680px;margin:0 auto;position:relative;z-index:2}
+.tab-btn{flex:1;padding:10px 6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);border-radius:14px 14px 0 0;color:#718096;font-size:14px;font-weight:800;font-family:'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.2px}
+.tab-btn.active{background:rgba(74,222,128,0.15);border-color:rgba(74,222,128,0.35);color:#4ADE80}
+.tab-panel{display:none;max-width:680px;margin:0 auto;padding:16px 18px;position:relative;z-index:1}
+.tab-panel.active{display:block}
+
+/* ── Cards ── */
+.card{background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:22px;padding:24px;margin-bottom:18px}
+.card:hover{border-color:rgba(255,255,255,0.18)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:50px;border:none;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:17px;font-weight:900;cursor:pointer;transition:all .2s;letter-spacing:.2px}
+.btn:hover{transform:scale(1.04)}
+.btn:active{transform:scale(0.97)}
+.btn-teal{background:linear-gradient(135deg,#059669,#4ADE80);color:#070710}
+.btn-purple{background:linear-gradient(135deg,#8b5cf6,#5533DD);color:white}
+.btn-ghost{background:rgba(255,255,255,0.07);color:#a0aec0;border:1px solid rgba(255,255,255,0.12)}
+.btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.25)}
+.btn-sm{padding:10px 20px;font-size:14px}
+.btn-lg{padding:18px 40px;font-size:20px;width:100%;margin-top:8px}
+
+/* ── Setup screen ── */
+#setupScreen{}
+.setup-title{font-size:28px;font-weight:900;margin-bottom:6px;color:white}
+.setup-sub{font-size:14px;color:#718096;margin-bottom:24px}
+.task-input{width:100%;padding:16px 20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;color:white;font-size:18px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:700;outline:none;transition:border-color .2s}
+.task-input:focus{border-color:rgba(74,222,128,0.5)}
+.task-input::placeholder{color:#4a5568}
+.duration-label{font-size:13px;font-weight:800;color:#718096;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px}
+.dur-btns{display:flex;gap:10px;flex-wrap:wrap}
+.dur-btn{padding:10px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:#a0aec0;font-size:15px;font-weight:800;font-family:'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;transition:all .2s}
+.dur-btn.selected{border-color:rgba(74,222,128,0.6);background:rgba(74,222,128,0.12);color:#4ADE80}
+.custom-dur-wrap{display:none;margin-top:12px;align-items:center;gap:10px}
+.custom-dur-wrap.show{display:flex}
+.custom-dur-input{width:80px;padding:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:12px;color:white;font-size:16px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;text-align:center;outline:none}
+.custom-dur-input:focus{border-color:rgba(74,222,128,0.5)}
+
+/* ── Active session (full-screen focus) ── */
+#activeSession{display:none;min-height:100vh;background:#070710;position:fixed;inset:0;z-index:500;padding:24px 20px;flex-direction:column;align-items:center;justify-content:center}
+#activeSession.show{display:flex}
+
+.timer-ring-wrap{position:relative;width:260px;height:260px;margin:0 auto 24px}
+.timer-ring-svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:14}
+.ring-progress{fill:none;stroke:#4ADE80;stroke-width:14;stroke-linecap:round;stroke-dasharray:722;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .5s}
+.ring-progress.break-mode{stroke:#a78bfa}
+.timer-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.timer-display{font-size:52px;font-weight:900;color:white;letter-spacing:-2px;line-height:1}
+.timer-task{font-size:14px;font-weight:800;color:#718096;margin-top:8px;max-width:160px;word-break:break-word;line-height:1.3}
+
+.zone-status{font-size:18px;font-weight:900;color:#4ADE80;margin-bottom:20px;min-height:28px;text-align:center}
+.session-controls{display:flex;gap:14px;margin-bottom:24px}
+.cosmo-bar{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.15);border-radius:50px;padding:10px 20px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#4ADE80}
+.cosmo-dot{width:8px;height:8px;border-radius:50%;background:#4ADE80;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(0.8)}}
+
+/* ── Paused overlay ── */
+#pausedScreen{display:none;position:fixed;inset:0;z-index:600;background:rgba(7,7,16,0.97);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+#pausedScreen.show{display:flex}
+.paused-title{font-size:36px;font-weight:900;margin-bottom:12px}
+.paused-sub{font-size:16px;color:#718096;margin-bottom:30px}
+
+/* ── Break screen ── */
+#breakScreen{display:none;position:fixed;inset:0;z-index:550;background:linear-gradient(180deg,#070710,#0b0714);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+#breakScreen.show{display:flex}
+.break-title{font-size:28px;font-weight:900;color:#a78bfa;margin-bottom:8px}
+.break-sub{font-size:15px;color:#718096;margin-bottom:30px}
+.breathing-circle{width:120px;height:120px;border-radius:50%;background:rgba(74,222,128,0.1);border:2px solid rgba(74,222,128,0.25);margin:0 auto 30px;animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.45);opacity:1}}
+.breathe-label{font-size:13px;font-weight:800;color:#4ADE80;margin-bottom:30px;letter-spacing:.5px}
+.break-timer{font-size:42px;font-weight:900;color:white;margin-bottom:28px}
+.break-controls{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+/* ── Complete screen ── */
+#completeScreen{display:none;position:fixed;inset:0;z-index:600;background:#070710;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;overflow:hidden}
+#completeScreen.show{display:flex}
+.complete-title{font-size:32px;font-weight:900;margin-bottom:10px}
+.complete-sub{font-size:16px;color:#a0aec0;margin-bottom:8px}
+.pb-msg{font-size:14px;color:#4ADE80;font-weight:800;margin-bottom:28px;min-height:22px}
+.complete-controls{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+#cosmoTipArea{margin-top:10px}
+#cosmoTipBtn{display:none}
+#cosmoTipText{margin-top:14px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);border-radius:16px;padding:14px 18px;font-size:15px;color:#c4b5fd;font-weight:700;display:none;text-align:left}
+
+/* ── Confetti ── */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:700}
+.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;border-radius:2px;animation:confetti-fall var(--dur) var(--delay) ease-in forwards}
+@keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--drift));opacity:0}}
+
+/* ── Stats tab ── */
+.stats-header{font-size:22px;font-weight:900;margin-bottom:4px}
+.stats-sub{font-size:13px;color:#718096;margin-bottom:18px}
+.stat-row{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.stat-box{flex:1;min-width:120px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;text-align:center}
+.stat-num{font-size:34px;font-weight:900;color:#4ADE80;line-height:1}
+.stat-label{font-size:12px;font-weight:800;color:#718096;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+.chart-label{font-size:13px;font-weight:800;color:#718096;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:100px;padding:0 4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar-fill{width:100%;background:linear-gradient(180deg,#4ADE80,#059669);border-radius:6px 6px 0 0;min-height:4px;transition:height .6s ease}
+.bar-day{font-size:10px;font-weight:800;color:#4a5568}
+.bar-val{font-size:10px;font-weight:900;color:#4ADE80}
+
+.sessions-label{font-size:13px;font-weight:800;color:#718096;text-transform:uppercase;letter-spacing:.6px;margin:18px 0 10px}
+.session-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);margin-bottom:8px;gap:10px}
+.session-task{font-size:14px;font-weight:800;color:white;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.session-meta{font-size:12px;color:#718096;font-weight:700;white-space:nowrap}
+.session-dur{font-size:13px;font-weight:900;color:#4ADE80;white-space:nowrap}
+.no-sessions{text-align:center;color:#4a5568;font-size:15px;font-weight:700;padding:30px 0}
+
+/* ── Plan tab ── */
+.plan-title{font-size:22px;font-weight:900;margin-bottom:4px}
+.plan-sub{font-size:13px;color:#718096;margin-bottom:18px}
+.plan-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;color:white;font-size:16px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:700;outline:none;margin-bottom:10px;transition:border-color .2s;resize:none}
+.plan-input:focus{border-color:rgba(74,222,128,0.4)}
+.plan-input::placeholder{color:#4a5568}
+.task-slots{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.task-slot{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px 14px}
+.slot-check{width:22px;height:22px;border:2px solid rgba(255,255,255,0.2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:14px}
+.slot-check.done{background:#4ADE80;border-color:#4ADE80;color:#070710}
+.slot-subject{flex:1;background:transparent;border:none;color:white;font-size:15px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:700;outline:none;min-width:0}
+.slot-subject::placeholder{color:#4a5568}
+.slot-time{width:70px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#718096;font-size:13px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;padding:6px 8px;outline:none;text-align:center}
+.slot-time::placeholder{color:#4a5568}
+.plan-save-btn{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#8b5cf6,#5533DD);color:white;font-size:16px;font-weight:900;font-family:'Plus Jakarta Sans',system-ui,sans-serif;cursor:pointer;margin-top:4px;transition:transform .2s}
+.plan-save-btn:hover{transform:scale(1.02)}
+.plan-saved-msg{text-align:center;color:#4ADE80;font-size:14px;font-weight:800;margin-top:10px;min-height:22px}
+
+/* ── Nav ── */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn:hover,.nav-btn.active{color:#4ADE80}
+.nav-icon{font-size:22px;line-height:1}
+.nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
+.nav-hidden .app-nav{display:none}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TABS ══════════════ -->
+<div class="tabs" id="mainTabs">
+  <button class="tab-btn active" onclick="showTab('focus')">🎯 Focus</button>
+  <button class="tab-btn" onclick="showTab('stats')">📊 My Focus</button>
+  <button class="tab-btn" onclick="showTab('plan')">🗓️ Plan</button>
+</div>
+
+<!-- ══════════════ FOCUS TAB ══════════════ -->
+<div class="tab-panel active" id="tabFocus">
+  <div id="setupScreen">
+    <div class="card">
+      <div class="setup-title">🎯 Focus Session</div>
+      <div class="setup-sub">One thing at a time. Let's go deep.</div>
+      <input type="text" class="task-input" id="taskInput" placeholder="What are we working on today?" maxlength="60">
+      <div class="duration-label">Session length</div>
+      <div class="dur-btns">
+        <button class="dur-btn selected" onclick="setDur(8, this)">8 min</button>
+        <button class="dur-btn" onclick="setDur(10, this)">10 min</button>
+        <button class="dur-btn" onclick="setDur(12, this)">12 min</button>
+        <button class="dur-btn" onclick="toggleCustom(this)">Custom</button>
+      </div>
+      <div class="custom-dur-wrap" id="customWrap">
+        <input type="number" class="custom-dur-input" id="customMin" min="1" max="60" placeholder="min" oninput="setDur(+this.value||8)">
+        <span style="color:#718096;font-size:14px;font-weight:800">minutes</span>
+      </div>
+      <button class="btn btn-teal btn-lg" onclick="startSession()">▶ START</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ STATS TAB ══════════════ -->
+<div class="tab-panel" id="tabStats">
+  <div class="stats-header">📊 My Focus</div>
+  <div class="stats-sub">Your focus history and personal bests</div>
+
+  <div class="stat-row" id="todayStats"></div>
+
+  <div class="card">
+    <div class="chart-label">Last 7 days — minutes focused</div>
+    <div class="bar-chart" id="barChart"></div>
+  </div>
+
+  <div class="stat-row" id="allTimeStats"></div>
+
+  <div class="sessions-label">Recent sessions</div>
+  <div id="sessionsList"></div>
+</div>
+
+<!-- ══════════════ PLAN TAB ══════════════ -->
+<div class="tab-panel" id="tabPlan">
+  <div class="card">
+    <div class="plan-title">🗓️ Plan My Day</div>
+    <div class="plan-sub">Set your intentions. Make it count.</div>
+
+    <div class="chart-label" style="margin-bottom:8px">Today I want to learn about...</div>
+    <input type="text" class="plan-input" id="planIntention" placeholder="e.g. prime numbers, knight moves..." maxlength="100">
+
+    <div class="chart-label" style="margin-bottom:8px;margin-top:8px">My 3 focus tasks</div>
+    <div class="task-slots" id="taskSlots"></div>
+
+    <div class="chart-label" style="margin-bottom:8px;margin-top:8px">What did I discover today? ✨</div>
+    <textarea class="plan-input" id="planReflection" rows="3" placeholder="Write anything cool you learned..."></textarea>
+
+    <button class="plan-save-btn" onclick="savePlan()">💾 Save My Plan</button>
+    <div class="plan-saved-msg" id="planSavedMsg"></div>
+  </div>
+</div>
+
+<!-- ══════════════ ACTIVE SESSION (fixed fullscreen) ══════════════ -->
+<div id="activeSession">
+  <div class="zone-status" id="zoneStatus"></div>
+
+  <div class="timer-ring-wrap">
+    <svg class="timer-ring-svg" viewBox="0 0 230 230">
+      <circle class="ring-track" cx="115" cy="115" r="100"/>
+      <circle class="ring-progress" id="ringProgress" cx="115" cy="115" r="100"/>
+    </svg>
+    <div class="timer-center">
+      <div class="timer-display" id="timerDisplay">00:00</div>
+      <div class="timer-task" id="timerTask"></div>
+    </div>
+  </div>
+
+  <div class="session-controls">
+    <button class="btn btn-ghost" onclick="pauseSession()">⏸ Pause</button>
+    <button class="btn btn-danger btn-sm" onclick="confirmEnd()">✕ End</button>
+  </div>
+  <div class="cosmo-bar">
+    <div class="cosmo-dot"></div>
+    <span>🤖 COSMO is here with you</span>
+  </div>
+</div>
+
+<!-- ══════════════ PAUSED SCREEN ══════════════ -->
+<div id="pausedScreen">
+  <div class="paused-title">⏸ Paused</div>
+  <div class="paused-sub">Take a breath 🌬️ You're doing great.<br>A 3-minute break might help.</div>
+  <div style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px">
+    <button class="btn btn-teal" onclick="resumeSession()">▶ Resume</button>
+    <button class="btn btn-purple" onclick="startBreak()">☕ Take 3-min break</button>
+    <button class="btn btn-danger btn-sm" onclick="endSessionEarly()">✕ End session</button>
+  </div>
+</div>
+
+<!-- ══════════════ BREAK SCREEN ══════════════ -->
+<div id="breakScreen">
+  <div class="break-title">☕ Rest Your Brain</div>
+  <div class="break-sub">Great work! Let your mind breathe.</div>
+  <div class="breathing-circle" id="breathCircle"></div>
+  <div class="breathe-label" id="breathLabel">Breathe in... 🌬️</div>
+  <div class="break-timer" id="breakTimer">3:00</div>
+  <div class="break-controls">
+    <button class="btn btn-teal" onclick="skipBreak()">Keep going →</button>
+  </div>
+</div>
+
+<!-- ══════════════ COMPLETE SCREEN ══════════════ -->
+<div id="completeScreen">
+  <div class="confetti-wrap" id="confettiWrap"></div>
+  <div style="font-size:64px;margin-bottom:16px">🎉</div>
+  <div class="complete-title" id="completeTitle">Session complete!</div>
+  <div class="complete-sub" id="completeSub"></div>
+  <div class="pb-msg" id="pbMsg"></div>
+  <div class="complete-controls">
+    <button class="btn btn-teal" onclick="resetToSetup()">Again →</button>
+    <button class="btn btn-ghost" onclick="goHome()">🏠 Home</button>
+  </div>
+  <div id="cosmoTipArea">
+    <button class="btn btn-purple btn-sm" id="cosmoTipBtn" onclick="fetchCosmoTip()">🤖 Ask COSMO for a tip</button>
+    <div id="cosmoTipText"></div>
+  </div>
+</div>
+
+<!-- ══════════════ NAV ══════════════ -->
+<nav class="app-nav" id="appNav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn active"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let selectedDuration = 8; // minutes
+let sessionTask = '';
+let timerInterval = null;
+let breakInterval = null;
+let secondsLeft = 0;
+let totalSeconds = 0;
+let sessionStartTime = null;
+let elapsedAtPause = 0;
+let zoneTimer = null; // tracks seconds elapsed for "in the zone"
+let zoneSeconds = 0;
+let breakSecondsLeft = 180; // 3 min
+
+const CIRCUMFERENCE = 2 * Math.PI * 100; // r=100 → ~628.3
+
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function showTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (tab === 'stats') renderStats();
+  if (tab === 'plan') renderPlan();
+}
+
+// ══════════════════════════════════════════════
+//  DURATION PICKER
+// ══════════════════════════════════════════════
+function setDur(min, btn) {
+  selectedDuration = Math.max(1, Math.min(60, min || 8));
+  if (btn) {
+    document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('customWrap').classList.remove('show');
+  }
+}
+
+function toggleCustom(btn) {
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const wrap = document.getElementById('customWrap');
+  wrap.classList.add('show');
+  document.getElementById('customMin').focus();
+}
+
+// ══════════════════════════════════════════════
+//  SESSION START
+// ══════════════════════════════════════════════
+function startSession() {
+  const input = document.getElementById('taskInput').value.trim();
+  if (!input) {
+    document.getElementById('taskInput').focus();
+    document.getElementById('taskInput').style.borderColor = 'rgba(239,68,68,0.5)';
+    setTimeout(() => document.getElementById('taskInput').style.borderColor = '', 1500);
+    return;
+  }
+  sessionTask = input;
+  totalSeconds = selectedDuration * 60;
+  secondsLeft = totalSeconds;
+  elapsedAtPause = 0;
+  zoneSeconds = 0;
+  sessionStartTime = new Date();
+
+  document.getElementById('timerTask').textContent = sessionTask;
+  updateRing(1);
+  updateTimerDisplay(secondsLeft);
+  setZoneStatus('');
+
+  showActiveSession();
+  startCountdown();
+}
+
+function showActiveSession() {
+  document.getElementById('activeSession').classList.add('show');
+  document.getElementById('appNav').style.display = 'none';
+  document.getElementById('mainTabs').style.display = 'none';
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+}
+
+function hideActiveSession() {
+  document.getElementById('activeSession').classList.remove('show');
+  document.getElementById('appNav').style.display = '';
+  document.getElementById('mainTabs').style.display = '';
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = '');
+  // Restore active tab
+  document.getElementById('tabFocus').style.display = 'block';
+}
+
+// ══════════════════════════════════════════════
+//  COUNTDOWN
+// ══════════════════════════════════════════════
+function startCountdown() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    zoneSeconds++;
+    elapsedAtPause++;
+    updateTimerDisplay(secondsLeft);
+    updateRing(secondsLeft / totalSeconds);
+    updateZoneStatus();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      completeSession(true);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(secs) {
+  const m = Math.floor(Math.max(secs, 0) / 60);
+  const s = Math.max(secs, 0) % 60;
+  document.getElementById('timerDisplay').textContent =
+    String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function updateRing(fraction) {
+  const offset = CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, fraction)));
+  document.getElementById('ringProgress').style.strokeDashoffset = offset;
+}
+
+function setZoneStatus(msg) {
+  document.getElementById('zoneStatus').textContent = msg;
+}
+
+function updateZoneStatus() {
+  if (zoneSeconds >= 120) {
+    setZoneStatus('🔥 In the zone');
+  } else if (zoneSeconds >= 60) {
+    setZoneStatus('⚡ Getting focused...');
+  } else {
+    setZoneStatus('');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PAUSE / RESUME / END
+// ══════════════════════════════════════════════
+function pauseSession() {
+  clearInterval(timerInterval);
+  zoneSeconds = 0; // reset zone counter on pause
+  setZoneStatus('');
+  document.getElementById('pausedScreen').classList.add('show');
+}
+
+function resumeSession() {
+  document.getElementById('pausedScreen').classList.remove('show');
+  startCountdown();
+}
+
+function confirmEnd() {
+  if (confirm('End this session early?')) endSessionEarly();
+}
+
+function endSessionEarly() {
+  clearInterval(timerInterval);
+  clearInterval(breakInterval);
+  document.getElementById('pausedScreen').classList.remove('show');
+  document.getElementById('breakScreen').classList.remove('show');
+  const minutesDone = Math.floor(elapsedAtPause / 60);
+  saveSession(minutesDone, false);
+  showCompleteScreen(minutesDone, false);
+}
+
+// ══════════════════════════════════════════════
+//  BREAK
+// ══════════════════════════════════════════════
+function startBreak() {
+  document.getElementById('pausedScreen').classList.remove('show');
+  breakSecondsLeft = 180;
+  updateBreakTimer();
+  document.getElementById('breakScreen').classList.add('show');
+  updateBreathLabel(0);
+
+  clearInterval(breakInterval);
+  let tick = 0;
+  breakInterval = setInterval(() => {
+    tick++;
+    breakSecondsLeft--;
+    updateBreakTimer();
+    updateBreathLabel(tick);
+    if (breakSecondsLeft <= 0) {
+      clearInterval(breakInterval);
+      skipBreak();
+    }
+  }, 1000);
+}
+
+function updateBreakTimer() {
+  const m = Math.floor(breakSecondsLeft / 60);
+  const s = breakSecondsLeft % 60;
+  document.getElementById('breakTimer').textContent =
+    String(m).padStart(1, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function updateBreathLabel(tick) {
+  // 8s cycle: 4s inhale, 4s exhale
+  const phase = Math.floor(tick % 8);
+  document.getElementById('breathLabel').textContent =
+    phase < 4 ? 'Breathe in... 🌬️' : 'Breathe out... 😌';
+}
+
+function skipBreak() {
+  clearInterval(breakInterval);
+  document.getElementById('breakScreen').classList.remove('show');
+  resumeSession();
+}
+
+// ══════════════════════════════════════════════
+//  SESSION COMPLETE
+// ══════════════════════════════════════════════
+function completeSession(full) {
+  const minutesDone = selectedDuration;
+  saveSession(minutesDone, true);
+  showCompleteScreen(minutesDone, true);
+}
+
+function showCompleteScreen(minutes, full) {
+  document.getElementById('activeSession').classList.remove('show');
+  document.getElementById('pausedScreen').classList.remove('show');
+
+  const screen = document.getElementById('completeScreen');
+  document.getElementById('completeTitle').textContent =
+    full ? `You did it! ${minutes} minutes of pure focus! 🎉` : `Nice work — ${minutes} min focused!`;
+  document.getElementById('completeSub').textContent =
+    `"${sessionTask}"`;
+
+  // Personal best check
+  const sessions = getSessions();
+  const pb = sessions.reduce((max, s) => Math.max(max, s.durationMinutes), 0);
+  const pbMsg = document.getElementById('pbMsg');
+  if (minutes > 0 && minutes >= pb) {
+    pbMsg.textContent = full ? '🏆 New personal best!' : '';
+  } else {
+    pbMsg.textContent = pb > 0 ? `Personal best: ${pb} min` : '';
+  }
+
+  // COSMO tip button
+  const cosmoUrl = localStorage.getItem('cosmo_worker_url');
+  document.getElementById('cosmoTipBtn').style.display = cosmoUrl ? 'inline-flex' : 'none';
+  document.getElementById('cosmoTipText').style.display = 'none';
+
+  screen.classList.add('show');
+  launchConfetti();
+}
+
+function resetToSetup() {
+  document.getElementById('completeScreen').classList.remove('show');
+  hideActiveSession();
+  document.getElementById('confettiWrap').innerHTML = '';
+}
+
+function goHome() {
+  window.location.href = 'index.html';
+}
+
+// ══════════════════════════════════════════════
+//  CONFETTI (pure CSS)
+// ══════════════════════════════════════════════
+const CONFETTI_COLORS = ['#00d4ff','#8b5cf6','#FFD700','#FF6B6B','#4ECDC4','#FF8C00','#A29BFE','#6BCB77'];
+function launchConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    const left = Math.random() * 100;
+    const dur = 1.8 + Math.random() * 1.6;
+    const delay = Math.random() * 1.2;
+    const drift = (Math.random() - 0.5) * 200;
+    const size = 8 + Math.random() * 8;
+    el.style.cssText = `
+      left:${left}%;
+      background:${color};
+      width:${size}px;height:${size}px;
+      --dur:${dur}s;
+      --delay:${delay}s;
+      --drift:${drift}px;
+      animation-delay:${delay}s;
+      border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    wrap.appendChild(el);
+  }
+}
+
+// ══════════════════════════════════════════════
+//  DATA PERSISTENCE
+// ══════════════════════════════════════════════
+function getSessions() {
+  try { return JSON.parse(localStorage.getItem('focus_sessions') || '[]'); }
+  catch { return []; }
+}
+
+function saveSession(minutes, completed) {
+  if (minutes <= 0) return;
+  const sessions = getSessions();
+  const now = sessionStartTime || new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  sessions.push({
+    date: toDateStr(now),
+    task: sessionTask,
+    durationMinutes: minutes,
+    completed,
+    startTime: h + ':' + m
+  });
+  localStorage.setItem('focus_sessions', JSON.stringify(sessions));
+}
+
+function toDateStr(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+
+function todayStr() { return toDateStr(new Date()); }
+
+// ══════════════════════════════════════════════
+//  STATS RENDER
+// ══════════════════════════════════════════════
+function renderStats() {
+  const sessions = getSessions();
+  const today = todayStr();
+  const todaySessions = sessions.filter(s => s.date === today);
+  const todayMins = todaySessions.reduce((a,s) => a + s.durationMinutes, 0);
+  const allMins = sessions.reduce((a,s) => a + s.durationMinutes, 0);
+  const pb = sessions.reduce((max,s) => Math.max(max, s.durationMinutes), 0);
+
+  // Streak calculation
+  const dates = [...new Set(sessions.map(s => s.date))].sort();
+  let streak = 0;
+  let check = new Date();
+  for (let i = 0; i < 365; i++) {
+    const ds = toDateStr(check);
+    if (dates.includes(ds)) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  document.getElementById('todayStats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${todaySessions.length}</div><div class="stat-label">Sessions today</div></div>
+    <div class="stat-box"><div class="stat-num">${todayMins}</div><div class="stat-label">Minutes today</div></div>
+  `;
+
+  document.getElementById('allTimeStats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${pb}</div><div class="stat-label">Personal best (min)</div></div>
+    <div class="stat-box"><div class="stat-num">${streak}</div><div class="stat-label">Day streak 🔥</div></div>
+    <div class="stat-box"><div class="stat-num">${allMins}</div><div class="stat-label">All-time mins</div></div>
+  `;
+
+  // 7-day bar chart
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+  const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const dayMins = days.map(d => {
+    const ds = toDateStr(d);
+    return sessions.filter(s => s.date === ds).reduce((a,s) => a + s.durationMinutes, 0);
+  });
+  const maxMins = Math.max(...dayMins, 1);
+
+  const chart = document.getElementById('barChart');
+  chart.innerHTML = days.map((d, i) => {
+    const mins = dayMins[i];
+    const pct = Math.round((mins / maxMins) * 100);
+    const isToday = toDateStr(d) === today;
+    return `<div class="bar-col">
+      <div class="bar-val" style="opacity:${mins>0?1:0}">${mins||''}</div>
+      <div class="bar-fill" style="height:${Math.max(pct,0)}%;background:${isToday?'linear-gradient(180deg,#FFD700,#FF8C00)':'linear-gradient(180deg,#00d4ff,#0077aa)'}"></div>
+      <div class="bar-day" style="color:${isToday?'#FFD700':'#4a5568'}">${DAY_LABELS[d.getDay()]}</div>
+    </div>`;
+  }).join('');
+
+  // Recent sessions list
+  const list = document.getElementById('sessionsList');
+  const recent = [...sessions].reverse().slice(0, 10);
+  if (recent.length === 0) {
+    list.innerHTML = '<div class="no-sessions">No sessions yet — start your first one!</div>';
+    return;
+  }
+  list.innerHTML = recent.map(s => `
+    <div class="session-item">
+      <span class="session-task">${s.task}</span>
+      <span class="session-dur">${s.durationMinutes}min</span>
+      <span class="session-meta">${formatDate(s.date)}</span>
+    </div>
+  `).join('');
+}
+
+function formatDate(ds) {
+  if (ds === todayStr()) return 'Today';
+  const d = new Date(ds + 'T12:00:00');
+  return d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+
+// ══════════════════════════════════════════════
+//  PLAN RENDER & SAVE
+// ══════════════════════════════════════════════
+function renderPlan() {
+  const today = todayStr();
+  let plan = null;
+  try { plan = JSON.parse(localStorage.getItem('focus_plan') || 'null'); } catch {}
+  if (plan && plan.date !== today) plan = null; // stale plan, start fresh
+
+  document.getElementById('planIntention').value = plan ? (plan.intention || '') : '';
+  document.getElementById('planReflection').value = plan ? (plan.reflection || '') : '';
+  document.getElementById('planSavedMsg').textContent = '';
+
+  const slots = document.getElementById('taskSlots');
+  const tasks = plan ? plan.tasks : [{subject:'',time:'',done:false},{subject:'',time:'',done:false},{subject:'',time:'',done:false}];
+  slots.innerHTML = tasks.map((t, i) => `
+    <div class="task-slot">
+      <div class="slot-check ${t.done?'done':''}" id="check${i}" onclick="toggleSlot(${i})">
+        ${t.done ? '✓' : ''}
+      </div>
+      <input type="text" class="slot-subject" id="slotSubj${i}" placeholder="Subject or task..." value="${escapeAttr(t.subject)}" maxlength="50">
+      <input type="text" class="slot-time" id="slotTime${i}" placeholder="10 min" value="${escapeAttr(t.time)}" maxlength="10">
+    </div>
+  `).join('');
+}
+
+function escapeAttr(str) {
+  return (str || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+function toggleSlot(i) {
+  const check = document.getElementById('check' + i);
+  const done = !check.classList.contains('done');
+  check.classList.toggle('done', done);
+  check.textContent = done ? '✓' : '';
+}
+
+function getCurrentSlots() {
+  return [0,1,2].map(i => ({
+    subject: document.getElementById('slotSubj'+i)?.value.trim() || '',
+    time: document.getElementById('slotTime'+i)?.value.trim() || '',
+    done: document.getElementById('check'+i)?.classList.contains('done') || false
+  }));
+}
+
+function savePlan() {
+  const plan = {
+    date: todayStr(),
+    intention: document.getElementById('planIntention').value.trim(),
+    tasks: getCurrentSlots(),
+    reflection: document.getElementById('planReflection').value.trim()
+  };
+  localStorage.setItem('focus_plan', JSON.stringify(plan));
+  const msg = document.getElementById('planSavedMsg');
+  msg.textContent = '✓ Plan saved!';
+  setTimeout(() => msg.textContent = '', 2000);
+}
+
+// ══════════════════════════════════════════════
+//  COSMO TIP
+// ══════════════════════════════════════════════
+async function fetchCosmoTip() {
+  const workerUrl = localStorage.getItem('cosmo_worker_url');
+  if (!workerUrl) return;
+  const btn = document.getElementById('cosmoTipBtn');
+  btn.textContent = '🤖 Asking COSMO...';
+  btn.disabled = true;
+
+  const context = `Cassian just finished a ${selectedDuration}-minute focus session on '${sessionTask}'. Give him one quick tip for locking in what he learned — 2 sentences, fun and specific.`;
+  try {
+    const res = await fetch(`${workerUrl}/chat`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 150,
+        system: 'You are COSMO, a friendly and encouraging AI tutor for Cassian, age 6. Be warm, specific, and energetic. Never use more than 2 sentences.',
+        messages: [{role:'user', content: context}]
+      })
+    });
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || data?.choices?.[0]?.message?.content || 'Great job focusing! Review what you learned one more time tonight before bed.';
+    document.getElementById('cosmoTipText').textContent = text;
+    document.getElementById('cosmoTipText').style.display = 'block';
+    btn.style.display = 'none';
+  } catch {
+    btn.textContent = '🤖 Ask COSMO for a tip';
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  INIT PLAN SLOTS
+// ══════════════════════════════════════════════
+(function initPlanSlots() {
+  const slots = document.getElementById('taskSlots');
+  slots.innerHTML = [0,1,2].map(i => `
+    <div class="task-slot">
+      <div class="slot-check" id="check${i}" onclick="toggleSlot(${i})"></div>
+      <input type="text" class="slot-subject" id="slotSubj${i}" placeholder="Subject or task..." maxlength="50">
+      <input type="text" class="slot-time" id="slotTime${i}" placeholder="10 min" maxlength="10">
+    </div>
+  `).join('');
+})();
+</script>
+
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

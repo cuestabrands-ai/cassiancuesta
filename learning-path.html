@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Cassian's Learning Path 🗺️</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #070710;
+    min-height: 100vh;
+    color: #E8E4FF;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: rgba(232,228,255,0.4); text-decoration: none; font-weight: 600;
+    font-size: 14px; margin-bottom: 30px; transition: color 0.2s;
+  }
+  .back-btn:hover { color: #E8E4FF; }
+
+  .header { text-align: center; margin-bottom: 40px; }
+  .header .emoji { font-size: 56px; display: block; margin-bottom: 10px; }
+  .header h1 { font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #C084FC; }
+  .header p { color: rgba(232,228,255,0.45); font-size: 15px; margin-top: 8px; line-height: 1.5; }
+
+  /* Profile banner */
+  .profile-banner {
+    background: rgba(192,132,252,0.07);
+    border: 1px solid rgba(192,132,252,0.2);
+    border-radius: 24px;
+    padding: 24px 28px;
+    margin-bottom: 36px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .profile-avatar {
+    width: 70px; height: 70px;
+    background: linear-gradient(135deg, #C084FC, #7B6EF6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px;
+    flex-shrink: 0;
+  }
+
+  .profile-info h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #E8E4FF; }
+  .profile-info p { color: rgba(232,228,255,0.4); font-size: 13px; margin-top: 4px; }
+
+  .superpower-chips {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+  }
+  .chip {
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .chip-blue { background: rgba(78,205,196,0.15); color: #4ECDC4; border: 1px solid rgba(78,205,196,0.25); }
+  .chip-purple { background: rgba(192,132,252,0.15); color: #C084FC; border: 1px solid rgba(192,132,252,0.25); }
+  .chip-gold { background: rgba(251,191,36,0.15); color: #FBBF24; border: 1px solid rgba(251,191,36,0.25); }
+  .chip-red { background: rgba(255,107,107,0.15); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.25); }
+  .chip-green { background: rgba(107,203,119,0.15); color: #6BCB77; border: 1px solid rgba(107,203,119,0.25); }
+
+  /* Section headers */
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: #E8E4FF;
+    margin-bottom: 20px;
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Path items */
+  .path-container { position: relative; padding-left: 44px; }
+
+  .path-container::before {
+    content: '';
+    position: absolute;
+    left: 19px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #4ECDC4, #C084FC, rgba(255,255,255,0.1));
+    border-radius: 2px;
+  }
+
+  .path-item {
+    position: relative;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .path-dot {
+    position: absolute;
+    left: -34px;
+    top: 18px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .path-dot.done { background: #4ECDC4; color: #070710; }
+  .path-dot.current { background: #C084FC; color: #070710; box-shadow: 0 0 16px rgba(192,132,252,0.5); animation: pulse 1.5s infinite; }
+  .path-dot.soon { background: rgba(255,255,255,0.15); color: rgba(232,228,255,0.5); }
+  .path-dot.future { background: rgba(255,255,255,0.07); color: rgba(232,228,255,0.2); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(192,132,252,0.5); }
+    50% { box-shadow: 0 0 30px rgba(192,132,252,0.8); }
+  }
+
+  .path-content {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    padding: 18px 22px;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: all 0.2s;
+  }
+
+  .path-item:hover .path-content { background: rgba(192,132,252,0.06); transform: translateX(4px); border-color: rgba(192,132,252,0.2); }
+
+  .path-item.current .path-content {
+    background: rgba(192,132,252,0.07);
+    border-color: rgba(192,132,252,0.25);
+  }
+
+  .path-item.done .path-content {
+    background: rgba(78,205,196,0.05);
+    border-color: rgba(78,205,196,0.15);
+  }
+
+  .path-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px; flex-wrap: wrap; gap: 8px;
+  }
+
+  .path-title { font-size: 16px; font-weight: 700; }
+  .path-item.done .path-title { color: #4ECDC4; }
+  .path-item.current .path-title { color: #C084FC; }
+  .path-item.soon .path-title { color: #E8E4FF; }
+  .path-item.future .path-title { color: rgba(232,228,255,0.35); }
+
+  .path-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .tag-done { background: rgba(78,205,196,0.15); color: #4ECDC4; }
+  .tag-current { background: rgba(192,132,252,0.15); color: #C084FC; }
+  .tag-soon { background: rgba(255,255,255,0.08); color: rgba(232,228,255,0.5); }
+  .tag-future { background: rgba(255,255,255,0.05); color: rgba(232,228,255,0.25); }
+
+  .path-desc { font-size: 13px; color: rgba(232,228,255,0.5); line-height: 1.6; }
+  .path-item.future .path-desc { color: rgba(232,228,255,0.2); }
+
+  .path-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #C084FC;
+    text-decoration: none;
+  }
+  .path-link:hover { color: #E8E4FF; }
+
+  /* Cross-subject cards */
+  .cross-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 10px;
+  }
+
+  .cross-card {
+    background: rgba(255,255,255,0.04);
+    border-radius: 18px;
+    padding: 22px 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: all 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: #E8E4FF;
+  }
+  .cross-card:hover { background: rgba(192,132,252,0.07); transform: translateY(-2px); border-color: rgba(192,132,252,0.2); box-shadow: 0 12px 28px rgba(0,0,0,0.4); }
+
+  .cross-card .icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .cross-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #E8E4FF; }
+  .cross-card p { font-size: 13px; color: rgba(232,228,255,0.45); line-height: 1.5; }
+
+  /* Checkbox toggle */
+  .checkbox-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 10px;
+  }
+  .checkbox-row input { width: 18px; height: 18px; cursor: pointer; accent-color: #C084FC; }
+  .checkbox-row label { font-size: 13px; color: rgba(232,228,255,0.45); cursor: pointer; }
+
+  /* Quote */
+  .quote-box {
+    background: rgba(192,132,252,0.06);
+    border-left: 3px solid rgba(192,132,252,0.5);
+    border-radius: 0 14px 14px 0;
+    padding: 18px 22px;
+    margin: 30px 0;
+  }
+  .quote-box p { font-family: 'Playfair Display', Georgia, serif; font-size: 16px; color: rgba(232,228,255,0.75); font-style: italic; line-height: 1.7; }
+  .quote-box cite { font-size: 12px; color: rgba(232,228,255,0.35); font-style: normal; display: block; margin-top: 8px; font-weight: 600; letter-spacing: 0.3px; }
+
+  .app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.06);z-index:1000}
+  .nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:rgba(232,228,255,0.25);transition:all .2s;padding:6px 10px;border-radius:12px;min-width:52px;font-family:'Plus Jakarta Sans',sans-serif}
+  .nav-btn:hover,.nav-btn.active{color:#E8E4FF}
+  .nav-btn.active .nav-label{color:#C084FC}
+  .nav-icon{font-size:22px;line-height:1}
+  .nav-label{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back-btn">← Back to Math World</a>
+
+  <div class="header">
+    <span class="emoji">🗺️</span>
+    <h1>Cassian's Learning Path</h1>
+    <p>Your personal adventure map through math — and all the cool things it connects to.</p>
+  </div>
+
+  <!-- Profile -->
+  <div class="profile-banner">
+    <div class="profile-avatar">👦</div>
+    <div class="profile-info">
+      <h2>Cassian · Age 6 · Math Adventurer</h2>
+      <p>Homeschooled · 2e Gifted · IQ 150</p>
+      <div class="superpower-chips">
+        <span class="chip chip-gold">🔢 Number Lover</span>
+        <span class="chip chip-purple">🎹 Perfect Pitch</span>
+        <span class="chip chip-blue">🤖 Robotics</span>
+        <span class="chip chip-red">🌍 Arabic & Spanish</span>
+        <span class="chip chip-green">📺 Numberblocks Fan</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p>"Mathematics is not about numbers, equations, or algorithms — it's about understanding."</p>
+    <cite>— William Paul Thurston, Fields Medal winner</cite>
+  </div>
+
+  <!-- MATH PATH -->
+  <div class="section-title">🔢 Math Journey — Where You Are Now</div>
+
+  <div class="path-container">
+
+    <div class="path-item done">
+      <div class="path-dot done">✓</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Counting, Addition & Subtraction</span>
+          <span class="path-tag tag-done">COMPLETE</span>
+        </div>
+        <p class="path-desc">Numbers 1–1000, basic addition and subtraction — you already crushed this! Numberblocks helped you see numbers as living things. 🎉</p>
+      </div>
+    </div>
+
+    <div class="path-item done">
+      <div class="path-dot done">✓</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Multiplication & Division Foundations</span>
+          <span class="path-tag tag-done">COMPLETE</span>
+        </div>
+        <p class="path-desc">Times tables, groups and sharing, the idea of equal parts. Seeing multiplication as repeated addition — big brain stuff.</p>
+      </div>
+    </div>
+
+    <div class="path-item current">
+      <div class="path-dot current">★</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Number Patterns & Sequences ← YOU ARE HERE</span>
+          <span class="path-tag tag-current">IN PROGRESS</span>
+        </div>
+        <p class="path-desc">Square numbers, triangular numbers, Fibonacci, doubling sequences. You're starting to see the hidden rules in numbers — this is real mathematics!</p>
+        <a class="path-link" href="puzzles.html">→ Try the Patterns puzzles</a>
+      </div>
+    </div>
+
+    <div class="path-item soon">
+      <div class="path-dot soon">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Fractions, Decimals & Percentages</span>
+          <span class="path-tag tag-soon">NEXT UP</span>
+        </div>
+        <p class="path-desc">What does 3/4 really mean? How do fractions, decimals (0.75) and percentages (75%) all say the same thing? Music helps — a quarter note is 1/4 of a whole note!</p>
+      </div>
+    </div>
+
+    <div class="path-item soon">
+      <div class="path-dot soon">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Algebra Thinking — Mystery Numbers</span>
+          <span class="path-tag tag-soon">COMING SOON</span>
+        </div>
+        <p class="path-desc">x + 5 = 12 — what is x? This is algebra: solving puzzles where a number is hiding. Robots use this! Every sensor value is an unknown waiting to be found.</p>
+        <a class="path-link" href="puzzles.html">→ Try the Mystery Number puzzles now!</a>
+      </div>
+    </div>
+
+    <div class="path-item future">
+      <div class="path-dot future">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Geometry & Spatial Reasoning</span>
+          <span class="path-tag tag-future">AHEAD</span>
+        </div>
+        <p class="path-desc">Shapes, area, perimeter, the Pythagorean theorem (3-4-5 triangles). Robotics needs this — programming a robot to turn 90° is geometry!</p>
+      </div>
+    </div>
+
+    <div class="path-item future">
+      <div class="path-dot future">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Prime Numbers, Factors & Divisibility</span>
+          <span class="path-tag tag-future">AHEAD</span>
+        </div>
+        <p class="path-desc">What makes a number prime? Why does the internet use prime numbers to keep passwords safe? Cryptography is all about primes!</p>
+      </div>
+    </div>
+
+    <div class="path-item future">
+      <div class="path-dot future">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Introduction to Algebra & Equations</span>
+          <span class="path-tag tag-future">AHEAD</span>
+        </div>
+        <p class="path-desc">Writing and solving real equations. Variables, balance, systems. The language of engineering and science.</p>
+      </div>
+    </div>
+
+    <div class="path-item future">
+      <div class="path-dot future">○</div>
+      <div class="path-content">
+        <div class="path-top">
+          <span class="path-title">Logic & Proof</span>
+          <span class="path-tag tag-future">FUTURE GENIUS</span>
+        </div>
+        <p class="path-desc">How do mathematicians KNOW something is true forever? Proofs, logical reasoning, and the beautiful structure underneath all of math.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Cross-subject connections -->
+  <div class="section-title">🌟 How Your Superpowers Connect to Math</div>
+  <div class="cross-grid">
+
+    <a class="cross-card" href="https://www.musictheory.net" target="_blank">
+      <span class="icon">🎹</span>
+      <h3>Piano & Math</h3>
+      <p>Music IS math. Rhythm = fractions. A 4/4 time signature means 4 quarter notes per bar. Your perfect pitch means you hear exact frequencies — that's logarithms and ratios in action!</p>
+    </a>
+
+    <a class="cross-card" href="https://scratch.mit.edu" target="_blank">
+      <span class="icon">🤖</span>
+      <h3>Robotics & Math</h3>
+      <p>Robots move using coordinates, angles, and equations. Programming a robot = writing instructions in math. Try Scratch to start coding your first robot ideas right now!</p>
+    </a>
+
+    <a class="cross-card" href="https://www.duolingo.com" target="_blank">
+      <span class="icon">🌍</span>
+      <h3>Arabic, Spanish & Math</h3>
+      <p>Arabic numerals (0-9) are the numbers we use today — Arabic mathematicians invented the number zero! And "algebra" is an Arabic word: al-jabr. You're already speaking math!</p>
+    </a>
+
+    <a class="cross-card" href="https://www.bbc.co.uk/cbeebies/shows/numberblocks" target="_blank">
+      <span class="icon">📺</span>
+      <h3>Numberblocks → Real Math</h3>
+      <p>Numberblocks taught you that numbers have structure. Square numbers make literal squares! That intuition is what mathematicians spend years trying to build. You started at 4!</p>
+    </a>
+
+  </div>
+
+  <!-- Weekly ideas -->
+  <div class="section-title">📅 Ideas for This Week</div>
+
+  <div class="path-container">
+
+    <div class="path-item soon">
+      <div class="path-dot soon">1</div>
+      <div class="path-content">
+        <div class="path-top"><span class="path-title">Piano + Fractions</span></div>
+        <p class="path-desc">Play a piece you know. Count: how many quarter notes, half notes, whole notes? Draw them as fractions. How much of the bar does each one fill?</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="w1" onchange="saveCheck(this)">
+          <label for="w1">Mark as done ✓</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="path-item soon">
+      <div class="path-dot soon">2</div>
+      <div class="path-content">
+        <div class="path-top"><span class="path-title">Pattern Hunt in Real Life</span></div>
+        <p class="path-desc">Find 3 patterns outside — in tiles, leaves, windows, or music. Write down the rule for each one. Can you create your own pattern?</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="w2" onchange="saveCheck(this)">
+          <label for="w2">Mark as done ✓</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="path-item soon">
+      <div class="path-dot soon">3</div>
+      <div class="path-content">
+        <div class="path-top"><span class="path-title">Robot Designer Challenge</span></div>
+        <p class="path-desc">Draw a robot on paper. If it needs to turn right, what angle is that? If it takes 5 steps forward and 3 back, where does it end up? Write the math for it!</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="w3" onchange="saveCheck(this)">
+          <label for="w3">Mark as done ✓</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="path-item soon">
+      <div class="path-dot soon">4</div>
+      <div class="path-content">
+        <div class="path-top"><span class="path-title">Arabic Number Detective</span></div>
+        <p class="path-desc">Research: what did Arabic mathematicians invent? Write 5 cool facts (in English, Spanish, or Arabic — your choice!). Bonus: learn to write numbers 1-10 in Arabic script.</p>
+        <div class="checkbox-row">
+          <input type="checkbox" id="w4" onchange="saveCheck(this)">
+          <label for="w4">Mark as done ✓</label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Resources -->
+  <div class="section-title">🔗 Best Resources for Cassian</div>
+  <div class="cross-grid">
+    <a class="cross-card" href="https://artofproblemsolving.com/beast-academy" target="_blank">
+      <span class="icon">🦁</span>
+      <h3>Beast Academy</h3>
+      <p>The gold standard for gifted young mathematicians. Comic book style, deep problems. Age 6–13. This is exactly right for you!</p>
+    </a>
+    <a class="cross-card" href="https://www.khanacademy.org/math" target="_blank">
+      <span class="icon">🎓</span>
+      <h3>Khan Academy</h3>
+      <p>Watch videos on any topic and practice with instant feedback. You can go as fast as you want — no grade limits!</p>
+    </a>
+    <a class="cross-card" href="https://nrich.maths.org/primary" target="_blank">
+      <span class="icon">🔬</span>
+      <h3>NRICH Primary</h3>
+      <p>Cambridge University's hardest problems for young learners. Real research-style thinking, not just calculation.</p>
+    </a>
+    <a class="cross-card" href="https://www.splashlearn.com" target="_blank">
+      <span class="icon">🌊</span>
+      <h3>SplashLearn</h3>
+      <p>Interactive games that adapt to your level. Great for practicing what you're learning in a fun game format.</p>
+    </a>
+  </div>
+
+</div>
+
+<script>
+// Persist checkboxes
+document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+  const saved = localStorage.getItem('cassian_check_' + cb.id);
+  if (saved === 'true') cb.checked = true;
+});
+
+function saveCheck(el) {
+  localStorage.setItem('cassian_check_' + el.id, el.checked);
+}
+</script>
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
