@@ -239,20 +239,21 @@ body{display:flex;flex-direction:column;height:100dvh}
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
 
-<!-- ── Setup Screen ── -->
-<div id="setupScreen" style="display:none">
-  <div class="setup-robot">🤖</div>
-  <div class="setup-title">Hi Cassian! I'm COSMO ⭐</div>
-  <div class="setup-sub">Your personal AI tutor and learning friend! To get started, paste your Cloudflare Worker URL below.</div>
-  <input class="setup-input" type="url" id="workerUrlInput" placeholder="https://your-worker.workers.dev" autocomplete="off" autocapitalize="none">
-  <button class="setup-btn" onclick="saveWorkerUrl()">Let's Go! 🚀</button>
-  <div class="setup-note">🔒 COSMO uses a secure proxy so your API key stays safe and private.</div>
-  <button class="setup-demo-btn" onclick="startDemoMode()">💤 Try Demo Mode — no setup needed</button>
-  <div class="setup-note" style="margin-top:-10px">Demo mode answers math questions offline!</div>
+<!-- ── Settings Modal ── -->
+<div id="settingsModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(30,27,75,.45);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:white;border-radius:24px;padding:28px 24px;width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px;text-align:center;box-shadow:0 8px 40px rgba(99,102,241,.2)">
+    <div style="font-size:48px">🤖</div>
+    <div style="font-size:22px;font-weight:900;background:linear-gradient(90deg,#6366F1,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">COSMO Setup</div>
+    <div style="font-size:14px;color:#4B5563;font-weight:700;line-height:1.6">Paste your Cloudflare Worker URL so COSMO can think!</div>
+    <input class="setup-input" type="url" id="workerUrlInput" placeholder="https://your-worker.workers.dev" autocomplete="off" autocapitalize="none" style="text-align:left">
+    <button class="setup-btn" onclick="saveWorkerUrl()">Save & Connect 🚀</button>
+    <div style="font-size:11px;color:#9CA3AF;font-weight:700">🔒 Your API key stays private — never stored here</div>
+    <button onclick="closeSettings()" style="background:none;border:none;color:#9CA3AF;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;padding:4px">Cancel</button>
+  </div>
 </div>
 
 <!-- ── Main App ── -->
-<div id="mainApp" style="display:none">
+<div id="mainApp" style="display:flex">
   <div class="cosmo-header">
     <div class="header-left">
       <div class="cosmo-avatar-small" id="cosmoAvatar">🤖</div>
@@ -261,7 +262,7 @@ body{display:flex;flex-direction:column;height:100dvh}
         <div class="cosmo-status" id="cosmoStatus">Ready to learn! ✨</div>
       </div>
     </div>
-    <button class="settings-btn" onclick="resetWorker()" title="Change Worker URL">⚙️</button>
+    <button class="settings-btn" onclick="openSettings()" title="Change Worker URL">⚙️</button>
   </div>
 
   <div class="offline-banner" id="offlineBanner">⚡ No Worker URL set — COSMO is offline. Tap ⚙️ to set up.</div>
@@ -339,14 +340,11 @@ let demoMode = false;
 // ════════════════════════════════
 function init() {
   workerUrl = localStorage.getItem('cosmo_worker_url') || '';
+  // Always go straight to the app — no gate
   if (!workerUrl) {
-    document.getElementById('setupScreen').style.display = 'flex';
-    document.getElementById('mainApp').style.display = 'none';
-  } else {
-    document.getElementById('setupScreen').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'flex';
-    startApp();
+    document.getElementById('offlineBanner').classList.add('show');
   }
+  startApp();
 }
 
 function startApp() {
@@ -361,8 +359,7 @@ function startApp() {
 
 function startDemoMode() {
   demoMode = true;
-  document.getElementById('setupScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'flex';
+  closeSettings();
   startApp();
 }
 
@@ -439,24 +436,35 @@ function getDemoReply(text) {
   return defaults[Math.floor(Math.random() * defaults.length)];
 }
 
+function openSettings() {
+  document.getElementById('workerUrlInput').value = workerUrl || '';
+  const m = document.getElementById('settingsModal');
+  m.style.display = 'flex';
+  setTimeout(() => document.getElementById('workerUrlInput').focus(), 100);
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').style.display = 'none';
+}
+
 function saveWorkerUrl() {
   const url = document.getElementById('workerUrlInput').value.trim();
   if (!url) return;
   const clean = url.replace(/\/+$/, '');
   localStorage.setItem('cosmo_worker_url', clean);
   workerUrl = clean;
-  document.getElementById('setupScreen').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'flex';
-  startApp();
+  demoMode = false;
+  closeSettings();
+  document.getElementById('offlineBanner').classList.remove('show');
+  setStatus('Connected! ✨');
+  addMessageDisplay('cosmo', `I'm connected! Now I can answer ANYTHING! 🤖⭐`);
 }
 
 function resetWorker() {
   localStorage.removeItem('cosmo_worker_url');
   workerUrl = '';
   messages = [];
-  document.getElementById('mainApp').style.display = 'none';
-  document.getElementById('setupScreen').style.display = 'flex';
-  document.getElementById('workerUrlInput').value = '';
+  openSettings();
 }
 
 // ════════════════════════════════
