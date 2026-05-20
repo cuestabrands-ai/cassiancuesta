@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>AI Brain Trainer</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:linear-gradient(160deg,#F0F4FF 0%,#EEF9FF 55%,#F0FFF8 100%);
+  min-height:100dvh;color:#1E1B4B;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+.page{max-width:700px;margin:0 auto;padding:24px 16px 20px;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.header{text-align:center;margin-bottom:20px}
+.header-icon{font-size:56px;display:block;margin-bottom:8px;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.header-title{font-size:32px;font-weight:900;background:linear-gradient(90deg,#6366F1,#06B6D4,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:4px}
+.header-sub{font-size:14px;font-weight:700;color:rgba(30,27,75,.45)}
+
+/* ── XP STRIP ── */
+.xp-strip{background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:18px;padding:12px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(99,102,241,.25)}
+.xp-circle{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.xp-info{flex:1}
+.xp-label{font-size:12px;font-weight:900;color:rgba(255,255,255,.7);letter-spacing:.5px;margin-bottom:5px}
+.xp-bar{height:8px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,#FBBF24,#FCD34D);border-radius:4px;width:0;transition:width 1s cubic-bezier(.34,1.56,.64,1)}
+.xp-pts{font-size:11px;font-weight:800;color:rgba(255,255,255,.6);margin-top:4px}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ── CHOOSE SCREEN ── */
+.choose-intro{text-align:center;margin-bottom:20px}
+.choose-intro h2{font-size:22px;font-weight:900;color:#1E1B4B;margin-bottom:6px}
+.choose-intro p{font-size:14px;font-weight:700;color:rgba(30,27,75,.5);line-height:1.5}
+
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.rule-card{border-radius:20px;padding:20px 16px;cursor:pointer;text-align:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;box-shadow:0 4px 16px rgba(0,0,0,.06);border:2px solid transparent}
+.rule-card:active{transform:scale(.93)}
+.rule-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 10px 28px rgba(0,0,0,.1)}
+.rule-even{background:linear-gradient(145deg,#EFF6FF,#DBEAFE)}
+.rule-prime{background:linear-gradient(145deg,#FFFBEB,#FEF3C7)}
+.rule-big{background:linear-gradient(145deg,#FDF4FF,#FAE8FF)}
+.rule-triple{background:linear-gradient(145deg,#ECFDF5,#D1FAE5)}
+.rule-emoji{font-size:40px;margin-bottom:10px;display:block}
+.rule-name{font-size:16px;font-weight:900;color:#1E1B4B;margin-bottom:4px}
+.rule-desc{font-size:11px;font-weight:700;color:rgba(30,27,75,.45);line-height:1.4}
+
+/* ── HOW IT WORKS ── */
+.how-it-works{background:white;border-radius:18px;padding:16px 18px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.how-title{font-size:12px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:12px}
+.steps{display:flex;gap:8px}
+.step{flex:1;text-align:center}
+.step-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.step-txt{font-size:11px;font-weight:800;color:rgba(30,27,75,.5);line-height:1.3}
+
+/* ── TRAIN SCREEN ── */
+.train-header{text-align:center;margin-bottom:16px}
+.train-rule-tag{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white;padding:8px 18px;border-radius:50px;font-size:13px;font-weight:900;margin-bottom:12px}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.progress-label{font-size:12px;font-weight:800;color:rgba(30,27,75,.4)}
+.progress-track{flex:1;height:8px;background:rgba(30,27,75,.08);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#06B6D4,#6366F1);border-radius:4px;width:0;transition:width .5s ease}
+
+/* ── NUMBER DISPLAY ── */
+.number-stage{background:white;border-radius:24px;padding:32px 24px;text-align:center;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.06);position:relative;overflow:hidden;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.number-stage::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,.04),rgba(6,182,212,.04));pointer-events:none}
+.big-number{font-size:88px;font-weight:900;line-height:1;color:#1E1B4B;transition:all .3s cubic-bezier(.34,1.56,.64,1);letter-spacing:-2px}
+.big-number.pop{animation:numPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes numPop{0%{transform:scale(0.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.number-question{font-size:15px;font-weight:800;color:rgba(30,27,75,.45);margin-top:10px;line-height:1.4}
+
+/* ── YES / NO BUTTONS ── */
+.yn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.btn-yes{background:linear-gradient(135deg,#10B981,#34D399);border:none;color:white;padding:18px;border-radius:20px;font-size:22px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(16,185,129,.3);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-yes:active{transform:scale(.93);box-shadow:0 2px 8px rgba(16,185,129,.2)}
+.btn-no{background:linear-gradient(135deg,#EF4444,#F87171);border:none;color:white;padding:18px;border-radius:20px;font-size:22px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(239,68,68,.3);transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-no:active{transform:scale(.93);box-shadow:0 2px 8px rgba(239,68,68,.2)}
+
+/* ── BRAIN CONFIDENCE ── */
+.brain-panel{background:white;border-radius:20px;padding:16px 18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.brain-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.brain-emoji{font-size:32px;animation:think 1s ease-in-out infinite}
+@keyframes think{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.brain-label{font-size:13px;font-weight:900;color:#1E1B4B;flex:1}
+.brain-pct{font-size:22px;font-weight:900;color:#6366F1}
+.confidence-track{height:12px;background:rgba(30,27,75,.08);border-radius:6px;overflow:hidden}
+.confidence-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#EF4444,#FBBF24,#10B981);width:0;transition:width 1s cubic-bezier(.34,1.56,.64,1)}
+.brain-status{font-size:12px;font-weight:800;color:rgba(30,27,75,.4);margin-top:8px;text-align:center}
+
+/* ── FEEDBACK FLASH ── */
+.feedback{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:white;padding:20px 36px;border-radius:24px;text-align:center;font-size:28px;font-weight:900;z-index:500;box-shadow:0 16px 48px rgba(0,0,0,.15);pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.feedback.show{transform:translate(-50%,-50%) scale(1)}
+.feedback.correct{border:3px solid #10B981;color:#059669}
+.feedback.wrong{border:3px solid #EF4444;color:#DC2626}
+
+/* ── READY SCREEN ── */
+.ready-card{background:linear-gradient(135deg,#6366F1,#8B5CF6);border-radius:24px;padding:32px 24px;text-align:center;margin-bottom:20px;box-shadow:0 12px 40px rgba(99,102,241,.3)}
+.ready-brain{font-size:72px;margin-bottom:12px;display:block;animation:bounce 1.5s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.ready-title{font-size:26px;font-weight:900;color:white;margin-bottom:8px}
+.ready-sub{font-size:14px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:20px}
+.btn-test{background:white;border:none;color:#6366F1;padding:16px 36px;border-radius:50px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.15);transition:transform .15s}
+.btn-test:active{transform:scale(.95)}
+
+/* ── TEST SCREEN ── */
+.test-score-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.test-score-label{font-size:14px;font-weight:900;color:rgba(30,27,75,.5)}
+.test-score-val{font-size:22px;font-weight:900;color:#6366F1}
+
+.ai-prediction{background:white;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.ai-pred-label{font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:8px}
+.ai-pred-value{font-size:24px;font-weight:900;color:#1E1B4B;margin-bottom:10px}
+.ai-pred-conf{display:flex;align-items:center;gap:10px}
+.conf-bar{flex:1;height:10px;background:rgba(30,27,75,.08);border-radius:5px;overflow:hidden}
+.conf-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#06B6D4,#6366F1);transition:width 1s ease}
+.conf-label{font-size:12px;font-weight:800;color:#6366F1;min-width:36px;text-align:right}
+
+.reveal-btn{width:100%;background:linear-gradient(135deg,#F59E0B,#FBBF24);border:none;color:white;padding:16px;border-radius:18px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(245,158,11,.3);transition:transform .15s;margin-bottom:14px}
+.reveal-btn:active{transform:scale(.95)}
+.reveal-btn:disabled{background:#E5E7EB;color:#9CA3AF;box-shadow:none;cursor:default}
+
+.reveal-result{background:white;border-radius:20px;padding:16px 18px;margin-bottom:14px;text-align:center;display:none;animation:slideIn .3s ease}
+@keyframes slideIn{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.reveal-result.show{display:block}
+.result-verdict{font-size:28px;font-weight:900;margin-bottom:6px}
+.result-explain{font-size:14px;font-weight:700;color:rgba(30,27,75,.55);line-height:1.5}
+
+.btn-next{width:100%;background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(99,102,241,.3);transition:transform .15s;display:none}
+.btn-next.show{display:block}
+.btn-next:active{transform:scale(.95)}
+
+/* ── RESULTS SCREEN ── */
+.results-card{background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:24px;padding:28px 24px;text-align:center;margin-bottom:20px;box-shadow:0 12px 40px rgba(30,27,75,.3)}
+.results-trophy{font-size:72px;margin-bottom:12px;display:block}
+.results-title{font-size:24px;font-weight:900;color:white;margin-bottom:8px}
+.results-score{font-size:52px;font-weight:900;color:#FBBF24;line-height:1;margin-bottom:8px}
+.results-label{font-size:14px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:16px}
+.results-xp{background:rgba(255,255,255,.1);border-radius:14px;padding:12px 20px;display:inline-block;font-size:18px;font-weight:900;color:#FBBF24}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-box{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.stat-val{font-size:26px;font-weight:900;color:#6366F1;margin-bottom:2px}
+.stat-label{font-size:10px;font-weight:800;color:rgba(30,27,75,.4);letter-spacing:.5px;text-transform:uppercase}
+
+.btn-play-again{width:100%;background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:16px;border-radius:18px;font-size:17px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(99,102,241,.3);transition:transform .15s;margin-bottom:12px}
+.btn-play-again:active{transform:scale(.95)}
+.btn-change-rule{width:100%;background:white;border:2px solid #E5E7EB;color:#6366F1;padding:14px;border-radius:18px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s}
+.btn-change-rule:active{transform:scale(.95)}
+
+/* ── HINT ── */
+.hint-box{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:2px solid rgba(245,158,11,.2);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.hint-icon{font-size:22px;flex-shrink:0}
+.hint-txt{font-size:13px;font-weight:700;color:#92400E;line-height:1.5}
+
+/* ── NAV ── */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:2px solid #EEF2FF;z-index:1000;box-shadow:0 -4px 20px rgba(99,102,241,.06)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active,.nav-btn:hover{color:#6366F1}
+.nav-icon{font-size:22px;line-height:1;transition:transform .2s}
+.nav-btn.active .nav-icon{transform:scale(1.2)}
+.nav-label{font-size:9px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── COSMO ── */
+.cosmo-row{display:flex;gap:10px;margin-bottom:14px}
+.btn-cosmo{flex:1;background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border:2px solid rgba(139,92,246,.15);color:#6D28D9;padding:12px;border-radius:16px;font-size:13px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-cosmo:active{transform:scale(.95)}
+.cosmo-response{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-radius:16px;padding:14px 16px;margin-bottom:14px;font-size:13px;font-weight:700;color:#4C1D95;line-height:1.6;display:none;border:2px solid rgba(139,92,246,.15)}
+.cosmo-response.show{display:block;animation:slideIn .3s ease}
+</style>
+</head>
+<body>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <span class="header-icon">🧠</span>
+    <div class="header-title">AI Brain Trainer</div>
+    <div class="header-sub">Teach a robot to think! 🤖✨</div>
+  </header>
+
+  <!-- ── XP ── -->
+  <div class="xp-strip">
+    <div class="xp-circle">⭐</div>
+    <div class="xp-info">
+      <div class="xp-label">TRAINER XP</div>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+      <div class="xp-pts" id="xpPts">0 XP earned today</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SCREEN 1: CHOOSE A RULE               -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen active" id="screenChoose">
+
+    <div class="choose-intro">
+      <h2>Pick a rule to teach your AI! 🎓</h2>
+      <p>You show it numbers. It learns. Then you test it!</p>
+    </div>
+
+    <div class="rule-grid">
+      <div class="rule-card rule-even" onclick="startTraining('even')">
+        <span class="rule-emoji">🔵</span>
+        <div class="rule-name">Even Numbers</div>
+        <div class="rule-desc">Can it be split into 2 equal groups?</div>
+      </div>
+      <div class="rule-card rule-prime" onclick="startTraining('prime')">
+        <span class="rule-emoji">⭐</span>
+        <div class="rule-name">Prime Numbers</div>
+        <div class="rule-desc">Only divisible by 1 and itself!</div>
+      </div>
+      <div class="rule-card rule-big" onclick="startTraining('big')">
+        <span class="rule-emoji">🔴</span>
+        <div class="rule-name">Big Numbers</div>
+        <div class="rule-desc">Is the number bigger than 50?</div>
+      </div>
+      <div class="rule-card rule-triple" onclick="startTraining('triple')">
+        <span class="rule-emoji">🟢</span>
+        <div class="rule-name">Times 3 Club</div>
+        <div class="rule-desc">Is it in the 3 times table?</div>
+      </div>
+    </div>
+
+    <div class="how-it-works">
+      <div class="how-title">How It Works</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-txt">You label numbers YES or NO</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-txt">The AI brain learns from you</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-txt">Test the AI on mystery numbers!</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SCREEN 2: TRAINING                    -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screenTrain">
+
+    <div class="train-header">
+      <div class="train-rule-tag" id="trainRuleTag">⭐ Training: Prime Numbers</div>
+      <div class="progress-row">
+        <span class="progress-label" id="trainProgressLabel">0 / 8 examples</span>
+        <div class="progress-track"><div class="progress-fill" id="trainProgressFill"></div></div>
+      </div>
+    </div>
+
+    <div class="number-stage">
+      <div class="big-number" id="trainNumber">?</div>
+      <div class="number-question" id="trainQuestion">Is this a prime number?</div>
+    </div>
+
+    <div class="yn-row">
+      <button class="btn-yes" onclick="label(true)">✅ YES!</button>
+      <button class="btn-no" onclick="label(false)">❌ NO!</button>
+    </div>
+
+    <div class="brain-panel">
+      <div class="brain-row">
+        <span class="brain-emoji" id="brainEmoji">🧠</span>
+        <div class="brain-label">AI Brain Learning…</div>
+        <div class="brain-pct" id="brainPct">0%</div>
+      </div>
+      <div class="confidence-track"><div class="confidence-fill" id="confFill"></div></div>
+      <div class="brain-status" id="brainStatus">Show me more examples!</div>
+    </div>
+
+    <div class="hint-box" id="hintBox" style="display:none">
+      <span class="hint-icon">💡</span>
+      <div class="hint-txt" id="hintTxt"></div>
+    </div>
+
+    <div class="cosmo-row" id="cosmoRow" style="display:none">
+      <button class="btn-cosmo" onclick="askCosmo()">🤖 Ask COSMO for help!</button>
+    </div>
+    <div class="cosmo-response" id="cosmoResp"></div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SCREEN 3: READY TO TEST               -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screenReady">
+    <div class="ready-card">
+      <span class="ready-brain">🧠</span>
+      <div class="ready-title">Your AI has learned!</div>
+      <div class="ready-sub" id="readyMessage">You taught it 8 examples. Now let's see if it can predict new numbers on its own!</div>
+      <button class="btn-test" onclick="startTest()">🎯 Test My AI!</button>
+    </div>
+
+    <div class="brain-panel">
+      <div class="brain-row">
+        <span class="brain-emoji">🧠</span>
+        <div class="brain-label">Final Confidence</div>
+        <div class="brain-pct" id="readyPct">0%</div>
+      </div>
+      <div class="confidence-track"><div class="confidence-fill" id="readyConfFill"></div></div>
+      <div class="brain-status" id="readyStatus">Ready to be tested!</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SCREEN 4: TEST THE AI                 -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screenTest">
+
+    <div class="test-score-row">
+      <div class="test-score-label">🎯 Test <span id="testNum">1</span> of 5</div>
+      <div class="test-score-val">✅ <span id="testCorrect">0</span> correct</div>
+    </div>
+
+    <div class="number-stage">
+      <div class="big-number pop" id="testNumber">?</div>
+      <div class="number-question" id="testQuestion">What does the AI think?</div>
+    </div>
+
+    <div class="ai-prediction" id="aiPrediction">
+      <div class="ai-pred-label">🤖 AI Prediction</div>
+      <div class="ai-pred-value" id="aiPredVal">Thinking…</div>
+      <div class="ai-pred-conf">
+        <div class="conf-bar"><div class="conf-fill" id="aiConfFill"></div></div>
+        <div class="conf-label" id="aiConfLabel">-</div>
+      </div>
+    </div>
+
+    <button class="reveal-btn" id="revealBtn" onclick="revealAnswer()">🔍 Reveal the Answer!</button>
+
+    <div class="reveal-result" id="revealResult">
+      <div class="result-verdict" id="resultVerdict"></div>
+      <div class="result-explain" id="resultExplain"></div>
+    </div>
+
+    <button class="btn-next show" id="btnNext" onclick="nextTest()" style="display:none">Next Number ➡️</button>
+
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- SCREEN 5: RESULTS                     -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="screen" id="screenResults">
+    <div class="results-card">
+      <span class="results-trophy" id="resultsTrophy">🏆</span>
+      <div class="results-title" id="resultsTitle">Amazing job!</div>
+      <div class="results-score" id="resultsScore">5/5</div>
+      <div class="results-label">AI got right</div>
+      <div class="results-xp" id="resultsXp">+50 ⭐ XP</div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val" id="stat1">8</div>
+        <div class="stat-label">Examples Trained</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat2">5/5</div>
+        <div class="stat-label">Test Score</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="stat3">🏅</div>
+        <div class="stat-label">Rank</div>
+      </div>
+    </div>
+
+    <div class="hint-box" id="resultsHint">
+      <span class="hint-icon">🤖</span>
+      <div class="hint-txt" id="resultsHintTxt">Real AI works exactly like this! Programmers show it millions of examples and it learns the pattern.</div>
+    </div>
+
+    <button class="btn-play-again" onclick="playAgain()">🔄 Train Again!</button>
+    <button class="btn-change-rule" onclick="changeRule()">🎲 Try a Different Rule</button>
+  </div>
+
+</div><!-- /page -->
+
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+const TRAIN_COUNT = 8;
+const TEST_COUNT  = 5;
+
+const RULES = {
+  even: {
+    name:'Even Numbers', emoji:'🔵',
+    question:'Is this number EVEN?',
+    hint:'Even numbers end in 0, 2, 4, 6, or 8! Like 2, 4, 6, 8...',
+    check: n => n % 2 === 0,
+    explain: n => n % 2 === 0 ? `${n} is even — you can split it into 2 equal groups!` : `${n} is odd — you get one left over when you try to split it!`,
+  },
+  prime: {
+    name:'Prime Numbers', emoji:'⭐',
+    question:'Is this a PRIME number?',
+    hint:'A prime can only be divided evenly by 1 and itself. Like 2, 3, 5, 7, 11...',
+    check: n => isPrime(n),
+    explain: n => isPrime(n) ? `${n} is prime — it can ONLY be divided by 1 and ${n}!` : `${n} is NOT prime — it has other divisors too!`,
+  },
+  big: {
+    name:'Big Numbers', emoji:'🔴',
+    question:'Is this number bigger than 50?',
+    hint:'Just compare: is the number more than fifty? 51, 52, 53... those are big!',
+    check: n => n > 50,
+    explain: n => n > 50 ? `${n} is bigger than 50 — it's a BIG number!` : `${n} is 50 or less — it's a small number!`,
+  },
+  triple: {
+    name:'Times 3 Club', emoji:'🟢',
+    question:'Is this in the 3 times table?',
+    hint:'Count by 3s: 3, 6, 9, 12, 15, 18, 21, 24... Does your number show up?',
+    check: n => n % 3 === 0,
+    explain: n => n % 3 === 0 ? `${n} IS in the 3× table — ${n/3} × 3 = ${n}!` : `${n} is NOT in the 3× table!`,
+  }
+};
+
+function isPrime(n){
+  if(n<2) return false;
+  if(n===2) return true;
+  if(n%2===0) return false;
+  for(let i=3;i<=Math.sqrt(n);i+=2) if(n%i===0) return false;
+  return true;
+}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let currentRule = null;
+let trainExamples = [];
+let testNumbers   = [];
+let testIndex     = 0;
+let testCorrect   = 0;
+let confidence    = 0;
+let sessionXp     = 0;
+let revealed      = false;
+
+// ── Generate numbers for training/testing ──
+function genTrainNumbers(rule){
+  const pool = [];
+  for(let i=2;i<=99;i++) pool.push(i);
+  // Ensure mix of YES and NO
+  const yes = pool.filter(n=>RULES[rule].check(n));
+  const no  = pool.filter(n=>!RULES[rule].check(n));
+  const picked = [];
+  const yesCount = Math.ceil(TRAIN_COUNT/2);
+  const noCount  = TRAIN_COUNT - yesCount;
+  for(let i=0;i<yesCount;i++) picked.push(yes[Math.floor(Math.random()*yes.length)]);
+  for(let i=0;i<noCount;i++)  picked.push(no[Math.floor(Math.random()*no.length)]);
+  return picked.sort(()=>Math.random()-.5);
+}
+
+function genTestNumbers(rule, trainNums){
+  const pool = [];
+  for(let i=2;i<=99;i++) pool.push(i);
+  const fresh = pool.filter(n=>!trainNums.includes(n));
+  const yes = fresh.filter(n=>RULES[rule].check(n));
+  const no  = fresh.filter(n=>!RULES[rule].check(n));
+  const picked = [];
+  const y = Math.ceil(TEST_COUNT/2), nn = TEST_COUNT-y;
+  for(let i=0;i<y;i++)  picked.push(yes[Math.floor(Math.random()*yes.length)]);
+  for(let i=0;i<nn;i++) picked.push(no[Math.floor(Math.random()*no.length)]);
+  return picked.sort(()=>Math.random()-.5);
+}
+
+// ══════════════════════════════════════════
+// XP
+// ══════════════════════════════════════════
+function loadXp(){
+  const xp = parseInt(localStorage.getItem('ai_trainer_xp')||'0');
+  sessionXp = 0;
+  updateXpBar(xp);
+}
+function addXp(pts){
+  sessionXp += pts;
+  const total = parseInt(localStorage.getItem('ai_trainer_xp')||'0') + pts;
+  localStorage.setItem('ai_trainer_xp', total);
+  updateXpBar(total);
+  // Also add to global XP
+  const gxp = parseInt(localStorage.getItem('xp_total')||'0') + pts;
+  localStorage.setItem('xp_total', gxp);
+}
+function updateXpBar(total){
+  const lvl   = Math.floor(total/100)+1;
+  const pct   = (total%100);
+  document.getElementById('xpFill').style.width = pct+'%';
+  document.getElementById('xpPts').textContent  = total+' XP total';
+}
+
+// ══════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════
+// TRAINING
+// ══════════════════════════════════════════
+function startTraining(ruleKey){
+  currentRule   = ruleKey;
+  const rule    = RULES[ruleKey];
+  trainExamples = [];
+  confidence    = 0;
+  testNumbers   = genTrainNumbers(ruleKey);
+
+  document.getElementById('trainRuleTag').textContent   = rule.emoji+' Teaching: '+rule.name;
+  document.getElementById('trainQuestion').textContent  = rule.question;
+
+  updateTrainProgress();
+  showTrainNumber();
+  showScreen('screenTrain');
+
+  // Show hint after 3s
+  setTimeout(()=>{
+    document.getElementById('hintBox').style.display='flex';
+    document.getElementById('hintTxt').textContent = rule.hint;
+    // Show COSMO if available
+    if(localStorage.getItem('cosmo_worker_url')) document.getElementById('cosmoRow').style.display='flex';
+  },3000);
+}
+
+function showTrainNumber(){
+  if(trainExamples.length >= TRAIN_COUNT){ finishTraining(); return; }
+  const n = testNumbers[trainExamples.length];
+  const el = document.getElementById('trainNumber');
+  el.textContent = n;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function label(answer){
+  const rule = RULES[currentRule];
+  const n    = testNumbers[trainExamples.length];
+  const correct = rule.check(n);
+  trainExamples.push({n, answer, correct});
+
+  // Update confidence
+  const rightCount = trainExamples.filter(e=>e.answer===e.correct).length;
+  confidence = Math.round((rightCount / trainExamples.length)*90 + (trainExamples.length/TRAIN_COUNT)*10);
+  confidence = Math.min(confidence, 96);
+
+  updateTrainProgress();
+  updateBrain();
+
+  // Flash feedback
+  const fb = document.getElementById('feedback');
+  if(answer === correct){
+    fb.className = 'feedback correct show';
+    fb.textContent = '✅ Correct!';
+  } else {
+    fb.className = 'feedback wrong show';
+    fb.textContent = '❌ Oops!';
+  }
+  setTimeout(()=> fb.classList.remove('show'), 800);
+
+  addXp(5);
+  setTimeout(showTrainNumber, 400);
+}
+
+function updateTrainProgress(){
+  const done = trainExamples.length;
+  document.getElementById('trainProgressLabel').textContent = done+' / '+TRAIN_COUNT+' examples';
+  document.getElementById('trainProgressFill').style.width = (done/TRAIN_COUNT*100)+'%';
+}
+
+function updateBrain(){
+  document.getElementById('brainPct').textContent = confidence+'%';
+  document.getElementById('confFill').style.width = confidence+'%';
+
+  const emoji = confidence < 30 ? '🧠' : confidence < 60 ? '🤔' : confidence < 80 ? '😮' : '😄';
+  document.getElementById('brainEmoji').textContent = emoji;
+
+  const statuses = [
+    'Show me more examples!',
+    'I\'m starting to see a pattern…',
+    'I think I understand…',
+    'Almost ready!',
+    'I\'ve got it! Test me!'
+  ];
+  const idx = Math.min(Math.floor(confidence/25), statuses.length-1);
+  document.getElementById('brainStatus').textContent = statuses[idx];
+}
+
+function finishTraining(){
+  const rule = RULES[currentRule];
+  testNumbers = genTestNumbers(currentRule, testNumbers);
+
+  document.getElementById('readyPct').textContent = confidence+'%';
+  document.getElementById('readyConfFill').style.width = confidence+'%';
+
+  const rightCount = trainExamples.filter(e=>e.answer===e.correct).length;
+  document.getElementById('readyMessage').textContent =
+    `You taught it ${TRAIN_COUNT} examples — ${rightCount} were correct! Now let's see if the AI learned the pattern. It will try to predict ${TEST_COUNT} new numbers it has NEVER seen before!`;
+
+  document.getElementById('readyStatus').textContent = confidence >= 80 ? 'Very confident — great teaching!' : 'Still learning — let\'s see what it can do!';
+
+  showScreen('screenReady');
+}
+
+// ══════════════════════════════════════════
+// TESTING
+// ══════════════════════════════════════════
+function startTest(){
+  testIndex   = 0;
+  testCorrect = 0;
+  revealed    = false;
+  showScreen('screenTest');
+  loadTestQuestion();
+}
+
+function loadTestQuestion(){
+  revealed = false;
+  const n    = testNumbers[testIndex];
+  const rule = RULES[currentRule];
+
+  document.getElementById('testNum').textContent     = testIndex+1;
+  document.getElementById('testCorrect').textContent = testCorrect;
+  document.getElementById('testNumber').textContent  = n;
+  document.getElementById('testQuestion').textContent= rule.question;
+
+  // AI prediction (uses the actual rule — the AI IS smart once trained!)
+  const aiAnswer = rule.check(n);
+  // Confidence varies by how well Cassian trained it
+  const aiConf   = Math.max(confidence + Math.floor(Math.random()*10-5), 20);
+  const predLabel= aiAnswer ? 'YES — it fits the rule! ✅' : 'NO — it doesn\'t fit! ❌';
+
+  setTimeout(()=>{
+    document.getElementById('aiPredVal').textContent = predLabel;
+    document.getElementById('aiConfFill').style.width = aiConf+'%';
+    document.getElementById('aiConfLabel').textContent = aiConf+'%';
+  }, 500);
+
+  document.getElementById('aiPredVal').textContent   = '🤔 Thinking…';
+  document.getElementById('aiConfFill').style.width  = '0%';
+  document.getElementById('aiConfLabel').textContent = '-';
+
+  document.getElementById('revealBtn').disabled = false;
+  document.getElementById('revealBtn').style.display = 'block';
+  document.getElementById('revealResult').classList.remove('show');
+  document.getElementById('btnNext').style.display = 'none';
+
+  const el = document.getElementById('testNumber');
+  el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
+}
+
+function revealAnswer(){
+  revealed = true;
+  const n    = testNumbers[testIndex];
+  const rule = RULES[currentRule];
+  const real = rule.check(n);
+  const aiAns= real; // AI uses correct rule since it was trained
+
+  // Was AI right? (Yes — if training confidence >= 50, AI always uses correct rule)
+  const aiWasRight = confidence >= 50 || Math.random() < (confidence/100);
+
+  if(aiWasRight) testCorrect++;
+
+  document.getElementById('revealResult').classList.add('show');
+
+  if(aiWasRight){
+    document.getElementById('resultVerdict').textContent = '🎉 AI got it right!';
+    document.getElementById('resultVerdict').style.color = '#059669';
+  } else {
+    document.getElementById('resultVerdict').textContent = '🤔 AI was wrong…';
+    document.getElementById('resultVerdict').style.color = '#DC2626';
+  }
+  document.getElementById('resultExplain').textContent = rule.explain(n);
+
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('btnNext').style.display   = 'block';
+  document.getElementById('testCorrect').textContent = testCorrect;
+
+  addXp(aiWasRight ? 10 : 5);
+}
+
+function nextTest(){
+  testIndex++;
+  if(testIndex >= TEST_COUNT){ showResults(); return; }
+  loadTestQuestion();
+}
+
+// ══════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════
+function showResults(){
+  const score = testCorrect;
+  const pct   = Math.round(score/TEST_COUNT*100);
+  const xpEarned = 20 + score*10;
+  addXp(xpEarned);
+
+  const trophy = score===TEST_COUNT ? '🏆' : score>=3 ? '🥇' : score>=2 ? '🥈' : '🥉';
+  const title  = score===TEST_COUNT ? 'Perfect AI! You\'re a genius trainer!' :
+                 score>=4 ? 'Incredible! Your AI is super smart!' :
+                 score>=3 ? 'Great job! Your AI learned a lot!' : 'Good start! Try training more carefully!';
+  const rank   = score===TEST_COUNT ? '🏆' : score>=4 ? '🥇' : score>=3 ? '🥈' : '🥉';
+
+  document.getElementById('resultsTrophy').textContent = trophy;
+  document.getElementById('resultsTitle').textContent  = title;
+  document.getElementById('resultsScore').textContent  = score+'/'+TEST_COUNT;
+  document.getElementById('resultsXp').textContent     = '+'+xpEarned+' ⭐ XP';
+  document.getElementById('stat1').textContent         = TRAIN_COUNT;
+  document.getElementById('stat2').textContent         = score+'/'+TEST_COUNT;
+  document.getElementById('stat3').textContent         = rank;
+
+  const hints = {
+    even:'Real AIs learn to spot even numbers by seeing patterns in thousands of examples — just like you did!',
+    prime:'Finding primes is so hard that computers use them to protect your passwords! That\'s real cryptography!',
+    big:'AIs use rules like "bigger than X" in image recognition — to tell apart big objects from small ones!',
+    triple:'Pattern recognition is the #1 skill of AI! The 3× table is just the beginning of infinite patterns!'
+  };
+  document.getElementById('resultsHintTxt').textContent = hints[currentRule];
+
+  // Save best score
+  const best = parseInt(localStorage.getItem('ai_trainer_best_'+currentRule)||'0');
+  if(score > best) localStorage.setItem('ai_trainer_best_'+currentRule, score);
+
+  showScreen('screenResults');
+}
+
+function playAgain(){
+  startTraining(currentRule);
+}
+function changeRule(){
+  currentRule = null;
+  showScreen('screenChoose');
+}
+
+// ══════════════════════════════════════════
+// COSMO
+// ══════════════════════════════════════════
+async function askCosmo(){
+  const url = localStorage.getItem('cosmo_worker_url');
+  if(!url) return;
+  const rule = RULES[currentRule];
+  const resp = document.getElementById('cosmoResp');
+  resp.className = 'cosmo-response show';
+  resp.textContent = '🤖 COSMO is thinking…';
+  try{
+    const r = await fetch(url+'/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:200,
+        system:'You are COSMO, a friendly AI tutor for Cassian who is 6 years old and very smart (IQ 150). Give a fun, clear explanation in 2-3 sentences. Use simple words and one emoji.',
+        messages:[{role:'user',content:'Can you explain '+rule.name+' to me in a fun way?'}]
+      })
+    });
+    const d = await r.json();
+    resp.textContent = '🤖 ' + (d.content?.[0]?.text || 'Ask me again!');
+  }catch(e){
+    resp.textContent = '🤖 '+rule.hint;
+  }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+loadXp();
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>

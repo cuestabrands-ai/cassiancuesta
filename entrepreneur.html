@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Cassian">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>Build Your Empire</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:linear-gradient(160deg,#FFFBEB 0%,#FFF7F0 55%,#F0FFF8 100%);
+  min-height:100dvh;color:#1E1B4B;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+.page{max-width:700px;margin:0 auto;padding:24px 16px 20px;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.header{text-align:center;margin-bottom:20px}
+.header-icon{font-size:56px;display:block;margin-bottom:8px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.header-title{font-size:32px;font-weight:900;background:linear-gradient(90deg,#F59E0B,#EF4444,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px;margin-bottom:4px}
+.header-sub{font-size:14px;font-weight:700;color:rgba(30,27,75,.45)}
+
+/* ── COINS STRIP ── */
+.coins-strip{background:linear-gradient(135deg,#F59E0B,#FBBF24);border-radius:18px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 24px rgba(245,158,11,.3)}
+.coins-icon{font-size:32px;flex-shrink:0}
+.coins-info{flex:1}
+.coins-label{font-size:11px;font-weight:900;color:rgba(255,255,255,.75);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.coins-value{font-size:24px;font-weight:900;color:white}
+.coins-xp{font-size:11px;font-weight:800;color:rgba(255,255,255,.7);margin-top:2px}
+
+/* ── LEVEL PROGRESS ── */
+.level-row{display:flex;gap:8px;margin-bottom:20px}
+.level-pill{flex:1;border-radius:14px;padding:10px 12px;text-align:center;cursor:pointer;transition:transform .15s;position:relative}
+.level-pill.unlocked{background:white;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.level-pill.locked{background:rgba(30,27,75,.05);opacity:.6;cursor:default}
+.level-pill.active-level{box-shadow:0 4px 20px rgba(99,102,241,.2);border:2px solid #6366F1}
+.level-pill.unlocked:hover{transform:translateY(-2px)}
+.level-pill:active.unlocked{transform:scale(.95)}
+.level-num{font-size:9px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:rgba(30,27,75,.4);margin-bottom:3px}
+.level-emoji{font-size:22px;margin-bottom:2px}
+.level-name{font-size:10px;font-weight:900;color:#1E1B4B}
+.lock-icon{position:absolute;top:6px;right:8px;font-size:12px}
+
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ══════════════════════════════════════════
+   LEVEL 1 — MONEY MASTER
+══════════════════════════════════════════ */
+.level-header{text-align:center;margin-bottom:18px}
+.level-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#F59E0B,#FBBF24);color:white;padding:8px 20px;border-radius:50px;font-size:14px;font-weight:900;margin-bottom:10px;box-shadow:0 4px 16px rgba(245,158,11,.3)}
+.level-title{font-size:24px;font-weight:900;color:#1E1B4B;margin-bottom:6px}
+.level-desc{font-size:13px;font-weight:700;color:rgba(30,27,75,.45);line-height:1.5}
+
+/* Activity progress dots */
+.activity-dots{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.dot{width:12px;height:12px;border-radius:50%;background:rgba(30,27,75,.1);transition:all .3s}
+.dot.done{background:linear-gradient(135deg,#10B981,#34D399)}
+.dot.current{background:linear-gradient(135deg,#F59E0B,#FBBF24);transform:scale(1.3)}
+
+/* Concept cards */
+.concept-card{border-radius:22px;padding:22px 20px;margin-bottom:14px;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;box-shadow:0 4px 16px rgba(0,0,0,.06);position:relative;overflow:hidden}
+.concept-card:active{transform:scale(.95)}
+.concept-card.done-card{opacity:.7}
+.concept-card::after{content:attr(data-xp);position:absolute;top:12px;right:14px;background:rgba(255,255,255,.85);color:#F59E0B;font-size:11px;font-weight:900;padding:3px 8px;border-radius:20px}
+.card-earn{background:linear-gradient(145deg,#ECFDF5,#D1FAE5)}
+.card-save{background:linear-gradient(145deg,#EFF6FF,#DBEAFE)}
+.card-grow{background:linear-gradient(145deg,#FFFBEB,#FEF3C7)}
+.cc-emoji{font-size:42px;margin-bottom:10px;display:block}
+.cc-title{font-size:18px;font-weight:900;margin-bottom:4px}
+.cc-sub{font-size:12px;font-weight:700;color:rgba(30,27,75,.5);line-height:1.4}
+
+/* Save or Spend game */
+.sos-game{background:white;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.sos-title{font-size:16px;font-weight:900;margin-bottom:4px}
+.sos-sub{font-size:12px;font-weight:700;color:rgba(30,27,75,.45);margin-bottom:16px}
+.sos-jar{text-align:center;margin-bottom:16px}
+.jar-emoji{font-size:56px;display:block;margin-bottom:6px}
+.jar-amount{font-size:36px;font-weight:900;color:#F59E0B}
+.jar-label{font-size:12px;font-weight:700;color:rgba(30,27,75,.4);margin-top:2px}
+.sos-scene{font-size:13px;font-weight:800;color:#1E1B4B;background:rgba(30,27,75,.04);border-radius:14px;padding:12px;margin-bottom:14px;text-align:center;line-height:1.5}
+.sos-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-save{background:linear-gradient(135deg,#10B981,#34D399);border:none;color:white;padding:16px;border-radius:16px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s}
+.btn-save:active{transform:scale(.94)}
+.btn-spend{background:linear-gradient(135deg,#EF4444,#F87171);border:none;color:white;padding:16px;border-radius:16px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s}
+.btn-spend:active{transform:scale(.94)}
+.sos-result{font-size:14px;font-weight:800;color:#1E1B4B;background:rgba(30,27,75,.04);border-radius:12px;padding:10px 14px;margin-top:12px;text-align:center;display:none;line-height:1.5}
+.sos-result.show{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Magic Money slider */
+.magic-card{background:white;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.magic-title{font-size:16px;font-weight:900;margin-bottom:4px}
+.magic-sub{font-size:12px;font-weight:700;color:rgba(30,27,75,.45);margin-bottom:16px}
+.magic-display{text-align:center;margin-bottom:16px;background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:16px;padding:20px}
+.magic-amount{font-size:48px;font-weight:900;color:#F59E0B;transition:all .4s cubic-bezier(.34,1.56,.64,1)}
+.magic-coins-label{font-size:12px;font-weight:700;color:rgba(30,27,75,.4)}
+.magic-years{font-size:13px;font-weight:800;color:rgba(30,27,75,.5);margin-bottom:4px}
+input[type=range]{width:100%;accent-color:#F59E0B;cursor:pointer;margin-bottom:8px}
+.magic-labels{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:rgba(30,27,75,.35)}
+.magic-lesson{font-size:13px;font-weight:700;color:#92400E;background:rgba(245,158,11,.1);border-radius:12px;padding:10px 14px;margin-top:12px;text-align:center;line-height:1.5;display:none}
+.magic-lesson.show{display:block;animation:fadeIn .3s ease}
+
+/* Unlock button */
+.btn-unlock{width:100%;background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(99,102,241,.3);transition:transform .15s;margin-top:4px;display:none}
+.btn-unlock.show{display:block}
+.btn-unlock:active{transform:scale(.95)}
+
+/* ══════════════════════════════════════════
+   LEVEL 2 — BUSINESS BUILDER
+══════════════════════════════════════════ */
+.biz-intro{text-align:center;margin-bottom:18px;padding:18px;background:white;border-radius:22px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.biz-steps{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.biz-step{width:24px;height:24px;border-radius:50%;background:rgba(30,27,75,.08);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;color:rgba(30,27,75,.4)}
+.biz-step.done{background:#10B981;color:white}
+.biz-step.active{background:#6366F1;color:white}
+
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.product-card{border-radius:18px;padding:16px;text-align:center;cursor:pointer;transition:transform .2s;border:3px solid transparent;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.product-card:active{transform:scale(.93)}
+.product-card.selected{border-color:#6366F1;box-shadow:0 6px 20px rgba(99,102,241,.2)}
+.product-card.card-lemon{background:linear-gradient(145deg,#FFFBEB,#FEF9C3)}
+.product-card.card-robot{background:linear-gradient(145deg,#F0FDFA,#CCFBF1)}
+.product-card.card-book{background:linear-gradient(145deg,#F0F9FF,#E0F2FE)}
+.product-card.card-app{background:linear-gradient(145deg,#F5F3FF,#EDE9FE)}
+.product-emoji{font-size:38px;margin-bottom:6px}
+.product-name{font-size:14px;font-weight:900;margin-bottom:2px}
+.product-cost{font-size:11px;font-weight:700;color:rgba(30,27,75,.45)}
+
+.price-setter{background:white;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.price-label{font-size:14px;font-weight:900;margin-bottom:4px}
+.price-sub{font-size:12px;font-weight:700;color:rgba(30,27,75,.4);margin-bottom:14px}
+.price-display{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.price-value{font-size:32px;font-weight:900;color:#6366F1}
+.demand-indicator{text-align:right}
+.demand-label{font-size:10px;font-weight:900;color:rgba(30,27,75,.35);letter-spacing:1px;text-transform:uppercase}
+.demand-value{font-size:14px;font-weight:900;color:#10B981}
+.demand-bar{height:8px;background:rgba(30,27,75,.08);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.demand-fill{height:100%;background:linear-gradient(90deg,#EF4444,#FBBF24,#10B981);border-radius:4px;transition:width .5s ease}
+
+/* Shop simulation */
+.shop-sim{background:white;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.day-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.day-label{font-size:16px;font-weight:900}
+.day-profit{font-size:14px;font-weight:900;color:#10B981}
+.shop-scene{font-size:13px;font-weight:700;color:rgba(30,27,75,.5);line-height:1.5;margin-bottom:12px;min-height:40px;text-align:center;padding:8px;background:rgba(30,27,75,.03);border-radius:10px}
+.shop-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.shop-stat{background:rgba(30,27,75,.04);border-radius:12px;padding:10px;text-align:center}
+.ss-val{font-size:20px;font-weight:900;color:#1E1B4B}
+.ss-label{font-size:9px;font-weight:900;color:rgba(30,27,75,.35);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.ss-val.profit-pos{color:#10B981}
+.ss-val.profit-neg{color:#EF4444}
+.btn-open-shop{width:100%;background:linear-gradient(135deg,#F59E0B,#FBBF24);border:none;color:white;padding:14px;border-radius:16px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;margin-bottom:8px}
+.btn-open-shop:active{transform:scale(.95)}
+.btn-open-shop:disabled{background:#E5E7EB;color:#9CA3AF;cursor:default}
+
+/* ══════════════════════════════════════════
+   LEVEL 3 — INVENTOR
+══════════════════════════════════════════ */
+.inventor-form{background:white;border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.inventor-form label{display:block;font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:rgba(30,27,75,.4);margin-bottom:6px;margin-top:14px}
+.inventor-form label:first-child{margin-top:0}
+.inventor-form input,.inventor-form textarea,.inventor-form select{width:100%;border:2px solid rgba(30,27,75,.1);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;color:#1E1B4B;background:rgba(30,27,75,.02);transition:border-color .2s;outline:none}
+.inventor-form input:focus,.inventor-form textarea:focus,.inventor-form select:focus{border-color:#6366F1}
+.inventor-form textarea{resize:none;height:72px}
+.price-cost-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slider-box{background:rgba(30,27,75,.03);border-radius:12px;padding:12px}
+.slider-label{font-size:11px;font-weight:900;color:rgba(30,27,75,.4);margin-bottom:6px}
+.slider-val{font-size:22px;font-weight:900;color:#6366F1;margin-bottom:6px}
+input[type=range]{width:100%;accent-color:#6366F1}
+
+.btn-pitch{width:100%;background:linear-gradient(135deg,#8B5CF6,#6366F1);border:none;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(139,92,246,.3);transition:transform .15s;margin-bottom:14px}
+.btn-pitch:active{transform:scale(.95)}
+.btn-pitch:disabled{background:#E5E7EB;color:#9CA3AF;box-shadow:none;cursor:default}
+
+/* Pitch result */
+.pitch-result{background:linear-gradient(135deg,#1E1B4B,#312E81);border-radius:22px;padding:22px 20px;margin-bottom:14px;display:none}
+.pitch-result.show{display:block;animation:fadeIn .4s ease}
+.pitch-investor{font-size:13px;font-weight:900;color:rgba(255,255,255,.6);margin-bottom:8px}
+.pitch-verdict{font-size:32px;font-weight:900;color:white;margin-bottom:8px}
+.pitch-feedback{font-size:13px;font-weight:700;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:16px}
+.pitch-coins{font-size:16px;font-weight:900;color:#FBBF24;background:rgba(255,255,255,.1);border-radius:12px;padding:10px 16px;display:inline-block}
+
+/* Patent */
+.patent{background:linear-gradient(145deg,#FFFBEB,#FEF3C7);border:3px solid #F59E0B;border-radius:22px;padding:24px;text-align:center;margin-bottom:14px;display:none;position:relative;overflow:hidden}
+.patent.show{display:block;animation:fadeIn .5s ease}
+.patent::before{content:'★ ★ ★';position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(245,158,11,.4);letter-spacing:4px}
+.patent-title{font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:rgba(245,158,11,.6);margin-bottom:6px;margin-top:8px}
+.patent-name{font-size:26px;font-weight:900;color:#1E1B4B;margin-bottom:4px}
+.patent-inventor{font-size:14px;font-weight:700;color:rgba(30,27,75,.5);margin-bottom:14px}
+.patent-seal{font-size:52px}
+.patent-date{font-size:11px;font-weight:700;color:rgba(30,27,75,.35);margin-top:8px}
+
+/* Shared */
+.hint-box{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border:2px solid rgba(245,158,11,.2);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.hint-icon{font-size:20px;flex-shrink:0}
+.hint-txt{font-size:13px;font-weight:700;color:#92400E;line-height:1.5}
+
+.btn-primary{width:100%;background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(99,102,241,.3);transition:transform .15s;margin-bottom:12px}
+.btn-primary:active{transform:scale(.95)}
+.btn-secondary{width:100%;background:white;border:2px solid #E5E7EB;color:#6366F1;padding:14px;border-radius:18px;font-size:14px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:transform .15s;margin-bottom:8px}
+.btn-secondary:active{transform:scale(.95)}
+
+/* ── NAV ── */
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:2px solid #EEF2FF;z-index:1000;box-shadow:0 -4px 20px rgba(99,102,241,.06)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active,.nav-btn:hover{color:#6366F1}
+.nav-icon{font-size:22px;line-height:1;transition:transform .2s}
+.nav-btn.active .nav-icon{transform:scale(1.2)}
+.nav-label{font-size:9px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── COSMO ── */
+.cosmo-response{background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-radius:16px;padding:14px 16px;margin-bottom:14px;font-size:13px;font-weight:700;color:#4C1D95;line-height:1.6;display:none;border:2px solid rgba(139,92,246,.15)}
+.cosmo-response.show{display:block;animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <span class="header-icon">💼</span>
+    <div class="header-title">Build Your Empire</div>
+    <div class="header-sub">Money • Business • Invention 🚀</div>
+  </header>
+
+  <!-- ── COINS ── -->
+  <div class="coins-strip">
+    <div class="coins-icon">🪙</div>
+    <div class="coins-info">
+      <div class="coins-label">Empire Coins</div>
+      <div class="coins-value" id="coinsDisplay">0 coins</div>
+      <div class="coins-xp" id="coinsXp">Keep learning to earn more!</div>
+    </div>
+  </div>
+
+  <!-- ── LEVEL PILLS ── -->
+  <div class="level-row">
+    <div class="level-pill unlocked active-level" id="pill1" onclick="switchLevel(1)">
+      <div class="level-num">Level 1</div>
+      <div class="level-emoji">💰</div>
+      <div class="level-name">Money Master</div>
+    </div>
+    <div class="level-pill locked" id="pill2" onclick="tryLevel(2)">
+      <div class="level-num">Level 2</div>
+      <div class="level-emoji">🏪</div>
+      <div class="level-name">Business Builder</div>
+      <span class="lock-icon" id="lock2">🔒</span>
+    </div>
+    <div class="level-pill locked" id="pill3" onclick="tryLevel(3)">
+      <div class="level-num">Level 3</div>
+      <div class="level-emoji">💡</div>
+      <div class="level-name">Inventor</div>
+      <span class="lock-icon" id="lock3">🔒</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: LEVEL 1 — MONEY MASTER            -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="screen active" id="screenL1">
+
+    <div class="level-header">
+      <div class="level-badge">💰 Level 1 — Money Master</div>
+      <div class="level-title">Learn how money works!</div>
+      <div class="level-desc">Complete 3 activities to unlock your Business 🏪</div>
+    </div>
+
+    <div class="activity-dots" id="l1Dots">
+      <div class="dot current" id="dot0"></div>
+      <div class="dot" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+    </div>
+
+    <!-- ACTIVITY 1: What is money? -->
+    <div id="act1">
+      <div class="concept-card card-earn" data-xp="+20 coins" onclick="completeActivity1()" id="conceptCard1">
+        <span class="cc-emoji">🤝</span>
+        <div class="cc-title">What is Money?</div>
+        <div class="cc-sub">Money is a tool we invented so people can trade without carrying cows and chickens! 🐄 Tap to learn more.</div>
+      </div>
+      <div class="hint-box" id="money1hint" style="display:none">
+        <span class="hint-icon">💡</span>
+        <div class="hint-txt">Long ago, people traded things directly — a fish for some bread. Money made trading easy! Today money can even be digital, like Bitcoin. The rule is simple: <strong>you earn money by helping others.</strong></div>
+      </div>
+      <button class="btn-primary" id="btn1next" style="display:none" onclick="showActivity2()">Next: Save or Spend? ➡️</button>
+    </div>
+
+    <!-- ACTIVITY 2: Save or Spend? -->
+    <div id="act2" style="display:none">
+      <div class="sos-game" id="sosGame">
+        <div class="sos-title">Save or Spend? 🤔</div>
+        <div class="sos-sub">You get 20 coins. Each round: save them or spend them. See what happens!</div>
+        <div class="sos-jar">
+          <span class="jar-emoji">🏦</span>
+          <div class="jar-amount" id="jarAmount">20</div>
+          <div class="jar-label">coins in your jar</div>
+        </div>
+        <div class="sos-scene" id="sosScene">You just got 20 coins! What will you do?</div>
+        <div class="sos-btns">
+          <button class="btn-save" id="btnSave" onclick="sosChoice('save')">💾 SAVE IT</button>
+          <button class="btn-spend" id="btnSpend" onclick="sosChoice('spend')">🛍️ SPEND IT</button>
+        </div>
+        <div class="sos-result" id="sosResult"></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY 3: Magic Money Machine -->
+    <div id="act3" style="display:none">
+      <div class="magic-card">
+        <div class="magic-title">🪄 Magic Money Machine</div>
+        <div class="magic-sub">What if your money GREW every month? Move the slider to see!</div>
+        <div class="magic-display">
+          <div class="magic-amount" id="magicAmount">100</div>
+          <div class="magic-coins-label">coins</div>
+        </div>
+        <div class="magic-years" id="magicYearsLabel">After 0 months</div>
+        <input type="range" min="0" max="24" value="0" id="magicSlider" oninput="updateMagic(this.value)">
+        <div class="magic-labels"><span>Start</span><span>1 year</span><span>2 years</span></div>
+        <div class="magic-lesson" id="magicLesson"></div>
+      </div>
+      <button class="btn-primary" id="btnMagicDone" style="display:none" onclick="completeMagic()">I get it! 🎉</button>
+    </div>
+
+    <!-- Unlock Level 2 button -->
+    <button class="btn-unlock" id="btnUnlock2" onclick="unlockLevel(2)">
+      🔓 Unlock Business Builder!
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: LEVEL 2 — BUSINESS BUILDER        -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="screen" id="screenL2">
+    <div class="level-header">
+      <div class="level-badge" style="background:linear-gradient(135deg,#10B981,#34D399)">🏪 Level 2 — Business Builder</div>
+      <div class="level-title">Run your own shop!</div>
+      <div class="level-desc">Pick a product → Set your price → Open for business!</div>
+    </div>
+
+    <div class="biz-intro">
+      <div class="biz-steps">
+        <div class="biz-step active" id="bstep1">1</div>
+        <div class="biz-step" id="bstep2">2</div>
+        <div class="biz-step" id="bstep3">3</div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:rgba(30,27,75,.45)" id="bizStepLabel">Step 1: Pick your product</div>
+    </div>
+
+    <!-- Step 1: Pick product -->
+    <div id="bizStep1">
+      <div class="product-grid">
+        <div class="product-card card-lemon" onclick="selectProduct('lemon')" id="prod-lemon">
+          <div class="product-emoji">🍋</div>
+          <div class="product-name">Lemonade</div>
+          <div class="product-cost">Costs 2 coins to make</div>
+        </div>
+        <div class="product-card card-robot" onclick="selectProduct('robot')" id="prod-robot">
+          <div class="product-emoji">🤖</div>
+          <div class="product-name">Robot Toy</div>
+          <div class="product-cost">Costs 8 coins to make</div>
+        </div>
+        <div class="product-card card-book" onclick="selectProduct('book')" id="prod-book">
+          <div class="product-emoji">📚</div>
+          <div class="product-name">Maths Book</div>
+          <div class="product-cost">Costs 4 coins to make</div>
+        </div>
+        <div class="product-card card-app" onclick="selectProduct('app')" id="prod-app">
+          <div class="product-emoji">📱</div>
+          <div class="product-name">Fun App</div>
+          <div class="product-cost">Costs 10 coins to make</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Set price -->
+    <div id="bizStep2" style="display:none">
+      <div class="price-setter">
+        <div class="price-label" id="priceLabel">Set your price</div>
+        <div class="price-sub" id="priceSub">How much will you charge customers?</div>
+        <div class="price-display">
+          <div class="price-value" id="priceVal">🪙5</div>
+          <div class="demand-indicator">
+            <div class="demand-label">Customers</div>
+            <div class="demand-value" id="demandVal">—</div>
+          </div>
+        </div>
+        <div class="demand-bar"><div class="demand-fill" id="demandFill" style="width:50%"></div></div>
+        <input type="range" min="1" max="30" value="5" id="priceSlider" oninput="updatePrice(this.value)" style="margin-bottom:6px">
+        <div class="magic-labels"><span>🪙1</span><span>🪙15</span><span>🪙30</span></div>
+        <div class="sos-result show" id="demandExplain" style="display:block;margin-top:12px">Move the slider to set your price!</div>
+      </div>
+      <button class="btn-primary" onclick="startShop()">Open My Shop! 🏪</button>
+      <button class="btn-secondary" onclick="backToProducts()">← Change Product</button>
+    </div>
+
+    <!-- Step 3: Shop simulation -->
+    <div id="bizStep3" style="display:none">
+      <div class="shop-sim">
+        <div class="day-header">
+          <div class="day-label" id="dayLabel">Day 1 of 5</div>
+          <div class="day-profit" id="totalProfit">Profit: 🪙0</div>
+        </div>
+        <div class="shop-scene" id="shopScene">Your shop is about to open… 🎪</div>
+        <div class="shop-stats">
+          <div class="shop-stat">
+            <div class="ss-val" id="statRevenue">🪙0</div>
+            <div class="ss-label">Revenue</div>
+          </div>
+          <div class="shop-stat">
+            <div class="ss-val" id="statCost">🪙0</div>
+            <div class="ss-label">Cost</div>
+          </div>
+          <div class="shop-stat">
+            <div class="ss-val profit-pos" id="statProfit">🪙0</div>
+            <div class="ss-label">Profit</div>
+          </div>
+        </div>
+        <button class="btn-open-shop" id="btnOpenShop" onclick="runDay()">🛎️ Open for Business!</button>
+      </div>
+
+      <div class="hint-box">
+        <span class="hint-icon">💡</span>
+        <div class="hint-txt">Revenue = what you earn selling. Cost = what you spend making it. <strong>Profit = Revenue − Cost.</strong> That's the golden rule of business!</div>
+      </div>
+
+      <button class="btn-unlock" id="btnUnlock3" style="display:none" onclick="unlockLevel(3)">🔓 Unlock Inventor!</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- SCREEN: LEVEL 3 — INVENTOR                -->
+  <!-- ══════════════════════════════════════════ -->
+  <div class="screen" id="screenL3">
+    <div class="level-header">
+      <div class="level-badge" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)">💡 Level 3 — Inventor</div>
+      <div class="level-title">Invent something amazing!</div>
+      <div class="level-desc">Name it, describe it, then pitch it to get your Patent! 📜</div>
+    </div>
+
+    <div class="inventor-form">
+      <label>What's your invention called?</label>
+      <input type="text" id="invName" placeholder="e.g. RoboCalc 3000, Math Helmet..." maxlength="40">
+
+      <label>What does it do?</label>
+      <textarea id="invDesc" placeholder="Describe your invention in a few sentences... What problem does it solve?"></textarea>
+
+      <label>Who needs it most?</label>
+      <select id="invCustomer">
+        <option value="">Pick someone...</option>
+        <option value="kids">Kids who love learning 🧒</option>
+        <option value="parents">Parents who want to help 👨‍👩‍👧</option>
+        <option value="teachers">Teachers 👩‍🏫</option>
+        <option value="athletes">Athletes and sports players ⚽</option>
+        <option value="anyone">Everyone in the world! 🌍</option>
+      </select>
+
+      <label>Price &amp; Cost</label>
+      <div class="price-cost-row">
+        <div class="slider-box">
+          <div class="slider-label">Sell price</div>
+          <div class="slider-val" id="invPriceVal">🪙20</div>
+          <input type="range" min="1" max="200" value="20" id="invPrice" oninput="document.getElementById('invPriceVal').textContent='🪙'+this.value">
+        </div>
+        <div class="slider-box">
+          <div class="slider-label">Make cost</div>
+          <div class="slider-val" id="invCostVal">🪙5</div>
+          <input type="range" min="1" max="100" value="5" id="invCost" oninput="document.getElementById('invCostVal').textContent='🪙'+this.value">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-pitch" id="btnPitch" onclick="pitchInvention()">🎤 Pitch to the Board!</button>
+
+    <div class="pitch-result" id="pitchResult">
+      <div class="pitch-investor" id="pitchInvestor">🤖 COSMO & The Board say:</div>
+      <div class="pitch-verdict" id="pitchVerdict">🎉 We love it!</div>
+      <div class="pitch-feedback" id="pitchFeedback">Amazing idea! Here's our feedback...</div>
+      <div class="pitch-coins" id="pitchCoins">+50 🪙 Empire Coins earned!</div>
+    </div>
+
+    <div class="patent" id="patent">
+      <div class="patent-title">Official Patent Certificate</div>
+      <div class="patent-name" id="patentName">RoboCalc 3000</div>
+      <div class="patent-inventor">Invented by <strong>Cassian Cuesta</strong></div>
+      <div class="patent-seal">🏅</div>
+      <div class="patent-date" id="patentDate">May 2026</div>
+    </div>
+
+    <div id="postPitchBtns" style="display:none">
+      <button class="btn-primary" onclick="newInvention()">💡 Invent Something Else!</button>
+      <button class="btn-secondary" onclick="switchLevel(1)">🏠 Back to Money Master</button>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<nav class="app-nav">
+  <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+  <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
+  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
+  <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
+</nav>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let coins      = parseInt(localStorage.getItem('entrepreneur_coins')||'0');
+let empLevel   = parseInt(localStorage.getItem('entrepreneur_level')||'1');
+let l1Done     = JSON.parse(localStorage.getItem('entrepreneur_l1')||'[]');
+let l2Done     = parseInt(localStorage.getItem('entrepreneur_l2_profit')||'0');
+
+// SOS state
+let sosRound=0, sosJar=20, sosTotal=0;
+const SOS_ROUNDS = 3;
+const SOS_SCENES = [
+  {spend:"You bought cool stickers! 🎨 Fun but gone.",save:"You kept it safe in the jar. 🏦 Growing!"},
+  {spend:"Ice cream time! 🍦 Yummy but spent.",save:"Your jar grows bigger! 🌱 Keep saving!"},
+  {spend:"You got a toy — great but all gone now! 🎯",save:"You saved it ALL! 💰 Smart move!"}
+];
+
+// Biz state
+let selectedProduct=null, shopDay=0, shopRevenue=0, shopCost=0;
+const PRODUCTS = {
+  lemon:{name:'Lemonade',emoji:'🍋',cost:2,maxPrice:15,maxDemand:12},
+  robot:{name:'Robot Toy',emoji:'🤖',cost:8,maxPrice:40,maxDemand:6},
+  book:{name:'Maths Book',emoji:'📚',cost:4,maxPrice:25,maxDemand:8},
+  app:{name:'Fun App',emoji:'📱',cost:10,maxPrice:50,maxDemand:5}
+};
+
+// ══════════════════════════════════════════
+// COINS & XP
+// ══════════════════════════════════════════
+function addCoins(n){
+  coins += n;
+  localStorage.setItem('entrepreneur_coins', coins);
+  const gxp = parseInt(localStorage.getItem('xp_total')||'0') + Math.round(n/2);
+  localStorage.setItem('xp_total', gxp);
+  updateCoinsUI();
+}
+function updateCoinsUI(){
+  document.getElementById('coinsDisplay').textContent = coins+' coins';
+  document.getElementById('coinsXp').textContent = 'Level '+empLevel+' Empire Builder 🏆';
+}
+
+// ══════════════════════════════════════════
+// SCREENS & LEVELS
+// ══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function switchLevel(n){
+  if(n>empLevel){ tryLevel(n); return; }
+  document.querySelectorAll('.level-pill').forEach((p,i)=>{
+    p.classList.toggle('active-level', i===n-1);
+  });
+  showScreen('screenL'+n);
+}
+
+function tryLevel(n){
+  if(n>empLevel){
+    const needed = n===2 ? 'complete Level 1 first!' : 'complete Level 2 first!';
+    alert('🔒 You need to '+needed);
+    return;
+  }
+  switchLevel(n);
+}
+
+function unlockLevel(n){
+  if(empLevel < n){
+    empLevel = n;
+    localStorage.setItem('entrepreneur_level', n);
+  }
+  const pill = document.getElementById('pill'+n);
+  pill.classList.remove('locked');
+  pill.classList.add('unlocked');
+  document.getElementById('lock'+n).style.display='none';
+  addCoins(50);
+  alert('🎉 Level '+n+' unlocked! You earned 50 Empire Coins!');
+  switchLevel(n);
+}
+
+// ══════════════════════════════════════════
+// LEVEL 1
+// ══════════════════════════════════════════
+function markL1Done(idx){
+  if(!l1Done.includes(idx)) l1Done.push(idx);
+  localStorage.setItem('entrepreneur_l1', JSON.stringify(l1Done));
+  // Update dots
+  l1Done.forEach(i=>{
+    document.getElementById('dot'+i).classList.add('done');
+    document.getElementById('dot'+i).classList.remove('current');
+  });
+  const next = [0,1,2].find(i=>!l1Done.includes(i));
+  if(next!==undefined) document.getElementById('dot'+next).classList.add('current');
+  // Show unlock if all done
+  if(l1Done.length >= 3) document.getElementById('btnUnlock2').classList.add('show');
+}
+
+function completeActivity1(){
+  const card = document.getElementById('conceptCard1');
+  card.classList.add('done-card');
+  card.onclick = null;
+  document.getElementById('money1hint').style.display='flex';
+  document.getElementById('btn1next').style.display='block';
+  addCoins(20);
+  markL1Done(0);
+}
+
+function showActivity2(){
+  document.getElementById('act1').style.display='none';
+  document.getElementById('act2').style.display='block';
+  sosRound=0; sosJar=20; sosTotal=0;
+  updateSOS();
+}
+
+function updateSOS(){
+  document.getElementById('jarAmount').textContent=sosJar;
+  if(sosRound>=SOS_ROUNDS){ finishSOS(); return; }
+  const scenes=['You got 20 coins as your allowance! What will you do?','Another 20 coins! Your choice again…','Last round — 20 more coins! What\'s the smart move?'];
+  document.getElementById('sosScene').textContent=scenes[sosRound];
+  document.getElementById('btnSave').disabled=false;
+  document.getElementById('btnSpend').disabled=false;
+  document.getElementById('sosResult').classList.remove('show');
+}
+
+function sosChoice(action){
+  const scene = SOS_SCENES[sosRound];
+  const coinsGained = action==='save' ? 4 : 1;
+  sosTotal += coinsGained;
+
+  if(action==='save'){
+    sosJar += 20;
+    document.getElementById('sosResult').textContent = '✅ '+scene.save+' You kept 20 coins! (+4 Empire coins)';
+  } else {
+    document.getElementById('sosResult').textContent = '🛍️ '+scene.spend+' You spent 20 coins. (+1 Empire coin)';
+  }
+  document.getElementById('sosResult').classList.add('show');
+  document.getElementById('btnSave').disabled=true;
+  document.getElementById('btnSpend').disabled=true;
+  document.getElementById('jarAmount').textContent=sosJar;
+
+  sosRound++;
+  setTimeout(()=>{
+    if(sosRound<SOS_ROUNDS) updateSOS();
+    else finishSOS();
+  }, 2000);
+}
+
+function finishSOS(){
+  addCoins(sosTotal);
+  markL1Done(1);
+  document.getElementById('sosGame').innerHTML = `
+    <div style="text-align:center;padding:16px">
+      <div style="font-size:48px;margin-bottom:10px">🏦</div>
+      <div style="font-size:20px;font-weight:900;margin-bottom:6px">Jar total: ${sosJar} coins!</div>
+      <div style="font-size:13px;font-weight:700;color:rgba(30,27,75,.5);margin-bottom:16px;line-height:1.5">Savers end up with more! That's the #1 money rule. Every rich person saves first, then spends. 💡</div>
+      <button class="btn-primary" onclick="showActivity3()">Next: Magic Money! ➡️</button>
+    </div>`;
+}
+
+function showActivity3(){
+  document.getElementById('act2').style.display='none';
+  document.getElementById('act3').style.display='block';
+}
+
+let magicTouched = false;
+function updateMagic(val){
+  val = parseInt(val);
+  const amount = Math.round(100 * Math.pow(1.1, val));
+  document.getElementById('magicAmount').textContent = amount.toLocaleString();
+  document.getElementById('magicYearsLabel').textContent = val===0 ? 'Right now, you start with:' : `After ${val} month${val===1?'':'s'} at 10% growth:`;
+
+  const lessons = ['Move the slider to see your money grow!','A little growth already!','Your money is growing! 📈','Over 150 already — magic!','The secret: time + interest = 💰','This is called COMPOUND INTEREST!','Every month it grows by 10%…','Bitcoin and stocks work like this!','200 coins from just 100!','This is why rich people invest!','Time is your superpower! ⏰','','','','','','300 coins! That\'s 3× your money!','','','','','400 coins — the longer, the bigger!','','More than 700 coins!','Keep going!','Over 900 coins! 🚀'];
+
+  const lesson = lessons[val] || `🤑 ${amount.toLocaleString()} coins from just 100!`;
+  if(lesson){
+    document.getElementById('magicLesson').textContent=lesson;
+    document.getElementById('magicLesson').classList.add('show');
+  }
+
+  if(!magicTouched && val>0){
+    magicTouched=true;
+    setTimeout(()=>{ document.getElementById('btnMagicDone').style.display='block'; }, 3000);
+  }
+}
+
+function completeMagic(){
+  addCoins(30);
+  markL1Done(2);
+  document.getElementById('act3').innerHTML=`
+    <div style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border-radius:20px;padding:20px;text-align:center;margin-bottom:14px">
+      <div style="font-size:42px;margin-bottom:8px">🎓</div>
+      <div style="font-size:18px;font-weight:900;margin-bottom:6px">Money Master unlocked!</div>
+      <div style="font-size:13px;font-weight:700;color:rgba(30,27,75,.5);line-height:1.5">You learned: Earn it • Save it • Grow it. These 3 rules are what every successful entrepreneur knows!</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// LEVEL 2
+// ══════════════════════════════════════════
+function selectProduct(key){
+  selectedProduct = key;
+  document.querySelectorAll('.product-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('prod-'+key).classList.add('selected');
+  setTimeout(()=>{
+    document.getElementById('bizStep1').style.display='none';
+    document.getElementById('bizStep2').style.display='block';
+    document.getElementById('bstep1').classList.remove('active');
+    document.getElementById('bstep1').classList.add('done');
+    document.getElementById('bstep2').classList.add('active');
+    document.getElementById('bizStepLabel').textContent='Step 2: Set your price';
+    const p=PRODUCTS[key];
+    document.getElementById('priceLabel').textContent='Price for your '+p.emoji+' '+p.name;
+    document.getElementById('priceSub').textContent='It costs you '+p.cost+' coins to make each one.';
+    document.getElementById('priceSlider').value=p.cost*2;
+    updatePrice(p.cost*2);
+  },300);
+}
+
+function backToProducts(){
+  document.getElementById('bizStep2').style.display='none';
+  document.getElementById('bizStep1').style.display='block';
+  document.getElementById('bstep1').classList.add('active');
+  document.getElementById('bstep1').classList.remove('done');
+  document.getElementById('bstep2').classList.remove('active');
+  document.getElementById('bizStepLabel').textContent='Step 1: Pick your product';
+}
+
+function updatePrice(val){
+  val=parseInt(val);
+  const p=PRODUCTS[selectedProduct];
+  if(!p) return;
+  document.getElementById('priceVal').textContent='🪙'+val;
+  // Demand: inverse relationship with price vs maxPrice
+  const demandRatio = Math.max(0, 1 - (val-p.cost)/(p.maxPrice-p.cost));
+  const customers   = Math.max(0, Math.round(p.maxDemand * demandRatio));
+  const profit      = (val - p.cost) * customers;
+  document.getElementById('demandVal').textContent = customers+' customers/day';
+  document.getElementById('demandFill').style.width = (customers/p.maxDemand*100)+'%';
+
+  let msg='';
+  if(val<=p.cost) msg='⚠️ Selling for less than it costs — you\'ll LOSE money!';
+  else if(customers===0) msg='😬 Price too high — no one will buy! Lower it.';
+  else if(profit<0) msg='🔴 You\'d lose money. Lower your price.';
+  else if(customers<=2) msg='👑 High price, few customers. Profit per sale is great!';
+  else if(customers>=p.maxDemand*0.8) msg='🟢 Lots of customers! But profit per sale is smaller.';
+  else msg='🎯 Nice balance of customers and profit!';
+  document.getElementById('demandExplain').textContent=msg;
+}
+
+function startShop(){
+  shopDay=0; shopRevenue=0; shopCost=0;
+  document.getElementById('bizStep2').style.display='none';
+  document.getElementById('bizStep3').style.display='block';
+  document.getElementById('bstep2').classList.remove('active');
+  document.getElementById('bstep2').classList.add('done');
+  document.getElementById('bstep3').classList.add('active');
+  document.getElementById('bizStepLabel').textContent='Step 3: Run your shop!';
+  document.getElementById('statRevenue').textContent='🪙0';
+  document.getElementById('statCost').textContent='🪙0';
+  document.getElementById('statProfit').textContent='🪙0';
+  document.getElementById('totalProfit').textContent='Profit: 🪙0';
+  document.getElementById('dayLabel').textContent='Day 1 of 5';
+  document.getElementById('shopScene').textContent='Your shop is about to open… 🎪';
+  document.getElementById('btnOpenShop').textContent='🛎️ Open for Business!';
+  document.getElementById('btnOpenShop').disabled=false;
+}
+
+function runDay(){
+  shopDay++;
+  const p      = PRODUCTS[selectedProduct];
+  const price  = parseInt(document.getElementById('priceSlider').value);
+  const demandR= Math.max(0,1-(price-p.cost)/(p.maxPrice-p.cost));
+  const base   = Math.round(p.maxDemand*demandR);
+  const customers = Math.max(0, base + Math.floor(Math.random()*3)-1);
+  const rev    = price * customers;
+  const cost   = p.cost * customers;
+  shopRevenue += rev;
+  shopCost    += cost;
+  const profit = shopRevenue - shopCost;
+
+  const scenes = [
+    customers===0 ? `Day ${shopDay}: No one came today 😢 Price might be too high!` :
+    customers<3   ? `Day ${shopDay}: ${customers} customer${customers>1?'s':''} came. Quiet day. Revenue: 🪙${rev}` :
+                    `Day ${shopDay}: Busy! ${customers} customers bought your ${p.emoji}. Revenue: 🪙${rev}`
+  ];
+  document.getElementById('shopScene').textContent=scenes[0];
+  document.getElementById('statRevenue').textContent='🪙'+shopRevenue;
+  document.getElementById('statCost').textContent='🪙'+shopCost;
+  document.getElementById('statProfit').textContent=(profit>=0?'🪙':'−🪙')+Math.abs(profit);
+  document.getElementById('statProfit').className='ss-val '+(profit>=0?'profit-pos':'profit-neg');
+  document.getElementById('totalProfit').textContent='Total Profit: '+(profit>=0?'🪙':'−🪙')+Math.abs(profit);
+  document.getElementById('dayLabel').textContent='Day '+shopDay+' of 5';
+
+  if(shopDay>=5){
+    document.getElementById('btnOpenShop').disabled=true;
+    document.getElementById('btnOpenShop').textContent='Shop Closed! 🏁';
+    const finalProfit = shopRevenue - shopCost;
+    const coinsEarned = Math.max(10, Math.abs(finalProfit));
+    addCoins(coinsEarned);
+    localStorage.setItem('entrepreneur_l2_profit', finalProfit);
+    setTimeout(()=>{
+      document.getElementById('shopScene').textContent=`🏁 Week over! You made ${finalProfit>=0?'a profit':'a loss'} of 🪙${Math.abs(finalProfit)}. ${finalProfit>=0?'Great business!':'Try a different price next time!'} You earned ${coinsEarned} Empire Coins!`;
+      if(empLevel<3) document.getElementById('btnUnlock3').style.display='block';
+    },500);
+  }
+}
+
+// ══════════════════════════════════════════
+// LEVEL 3
+// ══════════════════════════════════════════
+async function pitchInvention(){
+  const name = document.getElementById('invName').value.trim();
+  const desc = document.getElementById('invDesc').value.trim();
+  const cust = document.getElementById('invCustomer').value;
+  const price= parseInt(document.getElementById('invPrice').value);
+  const cost = parseInt(document.getElementById('invCost').value);
+
+  if(!name||!desc||!cust){
+    alert('Fill in all the fields first! 📝');
+    return;
+  }
+
+  const btn = document.getElementById('btnPitch');
+  btn.disabled=true;
+  btn.textContent='🤔 Pitching…';
+
+  const profit = price - cost;
+  let verdict, feedback, coins_earned;
+
+  // Try COSMO
+  const workerUrl = localStorage.getItem('cosmo_worker_url');
+  if(workerUrl){
+    try{
+      const r = await fetch(workerUrl+'/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-haiku-4-5-20251001',
+          max_tokens:200,
+          system:'You are a fun investor called "The Board" reviewing inventions by Cassian, age 6, IQ 150. Give exciting, encouraging feedback in 2 sentences. Start with either 🎉 WE LOVE IT or 🤔 INTERESTING... then give one strength and one tip to improve. Keep it simple and exciting!',
+          messages:[{role:'user',content:`My invention is called "${name}". It ${desc}. It's for ${cust}. I sell it for ${price} coins, it costs ${cost} to make, so I earn ${profit} per sale.`}]
+        })
+      });
+      const d = await r.json();
+      const txt = d.content?.[0]?.text || '';
+      verdict  = txt.startsWith('🎉') ? '🎉 We love it!' : '🤔 Interesting…';
+      feedback = txt.replace(/^🎉.*?\n?|^🤔.*?\n?/,'').trim() || txt;
+      coins_earned = profit>0 ? 80 : 40;
+    }catch(e){ useFallback(); return; }
+  } else {
+    useFallback();
+    return;
+  }
+
+  showPitchResult(verdict, feedback, coins_earned, name);
+
+  function useFallback(){
+    verdict = profit>5 ? '🎉 We love it!' : profit>0 ? '🤔 Interesting…' : '⚠️ Risky…';
+    const feedbacks = [
+      `"${name}" is a brilliant idea! Every ${cust} will want one. Pro tip: if you lower your cost, your profit goes up!`,
+      `We can see ${cust} lining up for this! The profit margin of 🪙${profit} per sale is ${profit>10?'excellent':'okay — see if you can grow it!'}`,
+      `Love the creativity! "${name}" solves a real problem. Make sure your cost stays below your price!`
+    ];
+    feedback = feedbacks[Math.floor(Math.random()*feedbacks.length)];
+    coins_earned = Math.max(30, profit*3);
+    showPitchResult(verdict, feedback, coins_earned, name);
+  }
+}
+
+function showPitchResult(verdict, feedback, coins_earned, name){
+  addCoins(coins_earned);
+  document.getElementById('pitchVerdict').textContent=verdict;
+  document.getElementById('pitchFeedback').textContent=feedback;
+  document.getElementById('pitchCoins').textContent='+'+coins_earned+' 🪙 Empire Coins earned!';
+  document.getElementById('pitchResult').classList.add('show');
+
+  // Patent
+  document.getElementById('patentName').textContent=name;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d=new Date();
+  document.getElementById('patentDate').textContent=months[d.getMonth()]+' '+d.getFullYear();
+  document.getElementById('patent').classList.add('show');
+  document.getElementById('postPitchBtns').style.display='block';
+
+  document.getElementById('btnPitch').textContent='Pitched! ✅';
+}
+
+function newInvention(){
+  document.getElementById('invName').value='';
+  document.getElementById('invDesc').value='';
+  document.getElementById('invCustomer').value='';
+  document.getElementById('invPrice').value=20;
+  document.getElementById('invCost').value=5;
+  document.getElementById('invPriceVal').textContent='🪙20';
+  document.getElementById('invCostVal').textContent='🪙5';
+  document.getElementById('pitchResult').classList.remove('show');
+  document.getElementById('patent').classList.remove('show');
+  document.getElementById('postPitchBtns').style.display='none';
+  document.getElementById('btnPitch').disabled=false;
+  document.getElementById('btnPitch').textContent='🎤 Pitch to the Board!';
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+function init(){
+  updateCoinsUI();
+
+  // Restore level unlock state
+  for(let lvl=2;lvl<=3;lvl++){
+    if(empLevel>=lvl){
+      const pill=document.getElementById('pill'+lvl);
+      pill.classList.remove('locked');
+      pill.classList.add('unlocked');
+      const lock=document.getElementById('lock'+lvl);
+      if(lock) lock.style.display='none';
+    }
+  }
+
+  // Restore L1 done state
+  l1Done.forEach(i=>{
+    const dot=document.getElementById('dot'+i);
+    if(dot){ dot.classList.add('done'); dot.classList.remove('current'); }
+  });
+  if(l1Done.length>=3) document.getElementById('btnUnlock2').classList.add('show');
+
+  // Show appropriate L1 activity
+  if(l1Done.includes(0)){
+    document.getElementById('act1').style.display='none';
+    if(l1Done.includes(1)){
+      document.getElementById('act2').style.display='none';
+      document.getElementById('act3').style.display='block';
+    } else {
+      document.getElementById('act2').style.display='block';
+    }
+  }
+}
+
+init();
+</script>
+<script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
