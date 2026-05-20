@@ -364,67 +364,124 @@ body::before{
 </nav>
 
 <script>
-const CHALLENGES=[
+// ── HOURLY SPARKS — 3 Topics ──
+const MATH_SPARKS=[
   {q:"2, 4, 8, 16, 32 — what comes next? 🤔",a:"64! Each number doubles. Powers of 2! 2¹ 2² 2³..."},
   {q:"Triple a number, subtract 6, get 21. What's the number? 🔢",a:"9! Because 9×3=27, then 27−6=21 ✓"},
   {q:"How many seconds are in one hour? ⏰",a:"3,600! That's 60 seconds × 60 minutes 🕐"},
-  {q:"What is 25 × 4? Quick! ⚡",a:"100! 25×4 = 100. Easy way: 25×4 = 100÷1 🚀"},
+  {q:"What is 25 × 4? Quick! ⚡",a:"100! 25×4 = 100 🚀"},
   {q:"What comes next? 1, 4, 9, 16, 25, ___ 🌟",a:"36! These are square numbers: 6×6=36 📐"},
-  {q:"A chess knight moves in an L-shape. From the centre, how many squares can it reach? ♞",a:"8 different squares! The sneakiest piece on the board 😏"},
-  {q:"A piano has 88 keys and 12 notes per octave. How many full octaves? 🎹",a:"7 full octaves + 4 extra keys! 88 ÷ 12 = 7 remainder 4 🎵"},
   {q:"What is the sum of angles inside any triangle? 📐",a:"180°! Always — no matter what shape the triangle is 🔺"},
   {q:"1, 1, 2, 3, 5, 8 — what comes next? 🌀",a:"13! Fibonacci: add the last two numbers. 5+8=13 🐚"},
-  {q:"What is 100 ÷ 4 ÷ 5? Do it step by step! 🧠",a:"5! First 100÷4=25, then 25÷5=5 ✅"},
-  {q:"What is the only even prime number? 🌟",a:"2! All other even numbers can be divided by 2, so they're not prime 👑"},
-  {q:"uno + dos + tres + cuatro + cinco = ? 🇪🇸",a:"15! (1+2+3+4+5=15) Great Spanish counting! 🎉"},
-  {q:"What number is both square AND triangular (under 50)? 🔲🔺",a:"1 and 36! 36=6² and 1+2+3+4+5+6+7+8=36 🤯"},
+  {q:"What is 100 ÷ 4 ÷ 5? Step by step! 🧠",a:"5! First 100÷4=25, then 25÷5=5 ✅"},
+  {q:"What is the only even prime number? 🌟",a:"2! All other even numbers divide by 2 — not prime 👑"},
+  {q:"What number is both square AND triangular (under 50)? 🔲",a:"1 and 36! 36=6² and 1+2+...+8=36 🤯"},
   {q:"What's 111 × 111? 🔢",a:"12,321! See the palindrome? 1, 121, 12321... magic! 🪄"},
-  {q:"How many faces does a cube have? And how many edges? 🎲",a:"6 faces, 12 edges, and 8 corners! Every time ✓"},
-  {q:"If a robot arm is 10cm long and turns 180°, how far does the tip travel? 🦾",a:"About 31.4cm! Arc = radius × π. 10 × 3.14159 ≈ 31.4cm"},
-  {q:"What are the first 5 prime numbers? 🔢",a:"2, 3, 5, 7, 11! Primes can only be divided by 1 and themselves 💎"},
-  {q:"What is 12 × 12? (No calculator!) ⚡",a:"144! It's called a gross. 12 dozen = 144 🎯"},
-  {q:"How many sides does a hexagon have? And a heptagon? 📐",a:"Hexagon = 6, Heptagon = 7! Hex means 6, Hept means 7 in Greek 🏛️"},
-  {q:"Gear A has 8 teeth, Gear B has 32 teeth. What is the gear ratio? ⚙️",a:"4:1! Gear B turns 4× slower but 4× stronger. B÷A = 32÷8 = 4"},
-  {q:"What is 2⁸? (2 to the power of 8) 💻",a:"256! That's how many colours your computer can make with 8 bits!"},
-  {q:"What fraction of an hour is 15 minutes? ⏰",a:"One quarter! 15÷60 = ¼. So 15 minutes = ¼ hour 🕐"},
-  {q:"Count in Arabic: واحد، اثنان، ثلاثة... what is four in Arabic? 🇸🇦",a:"أربعة (Arba'a)! 1=واحد 2=اثنان 3=ثلاثة 4=أربعة 5=خمسة"},
-  {q:"What is the perimeter of a square with sides of 7cm? 📐",a:"28cm! Perimeter = 4 × side. 4 × 7 = 28cm. All 4 sides added up"},
-  {q:"A wheel has diameter 6cm. How far does it roll in one full turn? 🚗",a:"About 18.85cm! Circumference = π × diameter. 3.14159 × 6 ≈ 18.85cm"},
-  {q:"What is the biggest 2-digit prime number? 🔢",a:"97! Check: not divisible by 2,3,5,7. Next prime is 101 (3 digits!) 💎"},
-  {q:"How many zeros are in one million? 🤯",a:"6 zeros! 1,000,000. Million = 10⁶. Billion has 9 zeros! 😱"},
-  {q:"What's the area of a rectangle 8cm wide and 5cm tall? 📏",a:"40cm²! Area = width × height. 8 × 5 = 40 square centimetres"},
-  {q:"Bitcoin has a fixed supply. How many Bitcoin will EVER exist? ₿",a:"21 million! That's the maximum, ever. Right now about 19.7 million exist 🔐"},
+  {q:"How many faces does a cube have? And edges? 🎲",a:"6 faces, 12 edges, 8 corners! Every time ✓"},
+  {q:"What are the first 5 prime numbers? 🔢",a:"2, 3, 5, 7, 11! Primes only divide by 1 and themselves 💎"},
+  {q:"What is 12 × 12? (No calculator!) ⚡",a:"144! 12 dozen = 144. Also called a gross 🎯"},
+  {q:"Hexagon sides? Heptagon sides? 📐",a:"Hexagon = 6, Heptagon = 7! Hex=6, Hept=7 in Greek 🏛️"},
+  {q:"What is 2⁸? (2 to the power of 8) 💻",a:"256! That's how many values 8 computer bits can hold!"},
+  {q:"What fraction of an hour is 15 minutes? ⏰",a:"One quarter! 15÷60 = ¼ 🕐"},
+  {q:"Perimeter of a square with sides 7cm? 📐",a:"28cm! Perimeter = 4 × side. 4 × 7 = 28cm"},
+  {q:"Biggest 2-digit prime number? 🔢",a:"97! Not divisible by 2,3,5,7. Next prime is 101 💎"},
+  {q:"How many zeros in one million? 🤯",a:"6 zeros! 1,000,000 = 10⁶. Billion has 9! 😱"},
+  {q:"Area of a rectangle 8cm × 5cm? 📏",a:"40cm²! Area = width × height. 8 × 5 = 40"},
   {q:"What is the square root of 144? 🧮",a:"12! Because 12 × 12 = 144. √144 = 12 ✓"},
+  {q:"What is 15% of 200? 💡",a:"30! 10% of 200=20, 5% of 200=10. 20+10=30 🎯"},
+  {q:"A triangle has sides 3, 4, 5. Is it a right triangle? 📐",a:"Yes! 3²+4²=5². 9+16=25 ✓ Pythagorean triple! 🔺"},
+  {q:"What is 7 × 8? Quick! ⚡",a:"56! 7×8=56. Remember: 5,6,7,8 → 56=7×8 🎪"},
+  {q:"How many minutes in a day? ⏰",a:"1,440! 60 × 24 = 1,440 minutes every day 🌍"},
+  {q:"What is the next prime after 23? 🔢",a:"29! Check: 24 no, 25 no, 26 no, 27 no, 28 no, 29 yes! 💎"},
+  {q:"Round 3.7 × 4.2 to the nearest whole number? 🧮",a:"About 15! Exactly 15.54. Round to 16 ✓"},
+  {q:"What is (-5) + (-3)? ❄️",a:"-8! Negative plus negative goes further negative. −5−3=−8"},
+  {q:"What is 2⁰? Any number to the power of zero? 🌟",a:"1! Any number to the power 0 = 1. Always! 2⁰=1, 100⁰=1 🤯"},
+];
+const BITCOIN_SPARKS=[
+  {q:"How many Bitcoin will EVER exist? ₿",a:"Only 21 million! That's the max, forever. ~19.7M exist today 🔐"},
+  {q:"What is a Satoshi? 🔬",a:"The tiniest piece of Bitcoin! 1 Bitcoin = 100 million Satoshis 🔢"},
+  {q:"Who invented Bitcoin? 🕵️",a:"A mystery person called Satoshi Nakamoto — nobody knows who they really are! 🧩"},
+  {q:"What does 'mining' Bitcoin mean? ⛏️",a:"Computers solve super-hard math puzzles to create new Bitcoin and keep the network safe 🖥️"},
+  {q:"What is a blockchain? 🔗",a:"A chain of blocks — each holds transactions, locked so nobody can cheat 🔒"},
+  {q:"If 1 Bitcoin = $100,000, how much is 0.5 Bitcoin? 💰",a:"$50,000! You can own tiny pieces of Bitcoin 🤑"},
+  {q:"What is 'supply and demand'? 📊",a:"Rare things many people want cost MORE. Bitcoin is rare — only 21M! 📈"},
+  {q:"What is a Bitcoin wallet? 👛",a:"An app holding your Bitcoin keys — a bank account only YOU control 🔑"},
+  {q:"What is inflation? 💸",a:"When money loses value — $10 today buys less than $10 did 10 years ago 📉"},
+  {q:"Why can't anyone just make more Bitcoin? 🚫",a:"The code has strict rules — only 21M can ever exist. Math enforces it! 🔐"},
+  {q:"What is a Bitcoin transaction? 💱",a:"Sending Bitcoin from one person to another — recorded forever on the blockchain ✅"},
+  {q:"What does 'decentralized' mean? 🌐",a:"No single person controls it — thousands of computers worldwide run it 🤝"},
+  {q:"1,000 Satoshis = what fraction of Bitcoin? 🧮",a:"0.00001 BTC — one hundred-thousandth! 100M Satoshis = 1 Bitcoin 🔢"},
+  {q:"What is a Bitcoin 'halving'? ✂️",a:"Every 4 years, mining rewards are cut in HALF — making Bitcoin even rarer 📅"},
+  {q:"What is an entrepreneur? 💼",a:"Someone who builds a business solving problems — a superhero of ideas! 🦸"},
+  {q:"What does ROI mean? 📈",a:"Return On Investment — how much you earn back from money you put in 💹"},
+  {q:"What is scarcity? 💎",a:"When there isn't much of something it becomes more valuable — like Bitcoin! 🌟"},
+  {q:"Bitcoin at $50,000 goes up 10%. New price? 📊",a:"$55,000! 10% of $50,000 = $5,000 added 🎯"},
+  {q:"What is the Lightning Network? ⚡",a:"A super-fast layer on top of Bitcoin for tiny instant payments ⚡🛣️"},
+  {q:"What is a 'private key' in Bitcoin? 🔐",a:"A secret that proves Bitcoin is yours — NEVER share it! 🛡️"},
+];
+const SCIENCE_SPARKS=[
+  {q:"How far is the Sun from Earth? ☀️",a:"About 150 million km! Light takes 8 minutes to reach us 🌍"},
+  {q:"What is gravity? 🍎",a:"A force pulling things together — keeps you on Earth and Earth around the Sun 🌏"},
+  {q:"How many planets in our Solar System? 🪐",a:"8! Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune 🚀"},
+  {q:"What is DNA? 🧬",a:"The instruction manual in every cell — it makes you uniquely YOU! 👤"},
+  {q:"What is the speed of light? ⚡",a:"300,000 km per second — circles Earth 7.5 times in one second! 🌍"},
+  {q:"How many bones in the human body? 🦴",a:"206! Babies have ~270, but many fuse together as you grow 👶"},
+  {q:"What is photosynthesis? 🌱",a:"How plants make food from sunlight, water, and air — solar factories! ☀️"},
+  {q:"Biggest planet in the Solar System? 🔴",a:"Jupiter! All other planets could fit inside it 1,300 times 🌌"},
+  {q:"What is electricity? ⚡",a:"The flow of tiny particles called electrons — powers iPads to lightning! 🌩️"},
+  {q:"What is an atom? ⚛️",a:"The tiny building block of everything — you, air, screens — all atoms 🔬"},
+  {q:"Why is the sky blue? 🌤️",a:"Sunlight scatters in air — blue light scatters most, so we see blue! 🔵"},
+  {q:"What is a black hole? 🌀",a:"Gravity so strong not even light can escape — a cosmic vacuum 🕳️"},
+  {q:"How old is the universe? 🌌",a:"About 13.8 billion years! The Big Bang started it all ✨"},
+  {q:"Hardest natural material? 💎",a:"Diamond! Pure carbon atoms in a super-strong crystal pattern 🔬"},
+  {q:"How many cells in the human body? 🔬",a:"About 37 trillion! 37,000,000,000,000 all working together 🤯"},
+  {q:"What is a neuron? 🧠",a:"A brain cell! ~86 billion neurons send signals like tiny electric wires ⚡"},
+  {q:"What gas do plants release that we breathe? 🌿",a:"Oxygen! Plants absorb CO₂ and release O₂ — keeping us alive! 💚"},
+  {q:"What is the Milky Way? 🌌",a:"Our galaxy — 200-400 billion stars. The Sun is just one of them ☀️"},
+  {q:"Water boils at what temperature? 🫧",a:"100°C / 212°F at sea level. On mountains it boils cooler! 🏔️"},
+  {q:"Largest organ in the human body? 🧍",a:"Your SKIN! It covers your whole body and weighs about 3-4 kg 🌡️"},
 ];
 
-const today=new Date();
-const dayKey=today.getFullYear()*10000+(today.getMonth()+1)*100+today.getDate();
-const idx=dayKey%CHALLENGES.length;
-const ch=CHALLENGES[idx];
-document.getElementById('dq').textContent=ch.q;
+const SPARK_BANKS=[MATH_SPARKS,BITCOIN_SPARKS,SCIENCE_SPARKS];
+const now=new Date();
+const hourKey=now.getFullYear()*1000000+(now.getMonth()+1)*10000+now.getDate()*100+now.getHours();
+const today=now;
 
-const doneKey='daily_done_'+dayKey;
-if(localStorage.getItem(doneKey)){
-  document.getElementById('da').textContent=ch.a;
-  document.getElementById('da').style.display='block';
-  const btn=document.getElementById('dBtn');
-  btn.textContent='🎉 Come back tomorrow!';btn.disabled=true;
-}
+const sparkShown=[false,false,false];
+SPARK_BANKS.forEach((bank,i)=>{
+  const ch=bank[hourKey%bank.length];
+  document.getElementById('sq'+i).textContent=ch.q;
+  const dk='spark_done_'+i+'_'+hourKey;
+  if(localStorage.getItem(dk)){
+    document.getElementById('sa'+i).textContent=ch.a;
+    document.getElementById('sa'+i).style.display='block';
+    const btn=document.getElementById('sb'+i);
+    btn.textContent='✅ Next in 1h!';btn.disabled=true;
+  }
+});
 
-let dShown=false;
-function dailyClick(){
-  if(!dShown){
-    document.getElementById('da').textContent=ch.a;
-    document.getElementById('da').style.display='block';
-    document.getElementById('dBtn').textContent='Awesome! Claim +15 ⭐';
-    dShown=true;
+function sparkClick(i){
+  const ch=SPARK_BANKS[i][hourKey%SPARK_BANKS[i].length];
+  const dk='spark_done_'+i+'_'+hourKey;
+  const ansEl=document.getElementById('sa'+i);
+  const btn=document.getElementById('sb'+i);
+  if(!sparkShown[i]){
+    ansEl.textContent=ch.a;ansEl.style.display='block';
+    btn.textContent='Claim +10 ⭐';sparkShown[i]=true;
   }else{
-    addXP(15);confettiBurst();
-    localStorage.setItem(doneKey,'1');
-    const btn=document.getElementById('dBtn');
-    btn.textContent='🎉 Come back tomorrow!';btn.disabled=true;
+    addXP(10);confettiBurst();
+    localStorage.setItem(dk,'1');
+    btn.textContent='✅ Next in 1h!';btn.disabled=true;
   }
 }
+
+function updateSparkTimer(){
+  const n=new Date();
+  const m=59-n.getMinutes(),s=59-n.getSeconds();
+  const el=document.getElementById('sparkTimer');
+  if(el)el.textContent=`⏱ ${m}m ${s}s`;
+}
+updateSparkTimer();setInterval(updateSparkTimer,1000);
 
 let xp=+localStorage.getItem('c_xp')||0;
 let lvl=+localStorage.getItem('c_lvl')||1;
