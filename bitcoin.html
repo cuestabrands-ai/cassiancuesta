@@ -419,7 +419,7 @@ const QUESTIONS = {
     {q:'21,000,000 × 100,000,000 = ?\n(total satoshis ever)',a:2100000000000000, hint:'2.1 quadrillion!'},
     {q:'What is 999 × 999?',               a:998001,   hint:'(1000−1)² = 1,000,000−2,000+1'},
     {q:'What is 123 × 456?',               a:56088,    hint:'123×400 + 123×56'},
-    {q:'If mining reward started at 50 BTC\nand halves 5 times, what is it?', a:1, hint:'50→25→12.5→6.25→3.125→1.5625... wait, in sats that\'s exact: 50÷2⁵'},
+    {q:'If mining reward started at 50 BTC\nand halves 5 times, what is it?', a:1.5625, hint:'50→25→12.5→6.25→3.125→1.5625 — divide by 2 five times!'},
     {q:'What is 7 × 8 × 9?',              a:504,      hint:'7×8=56, 56×9=?'},
     {q:'What is 2^20 ÷ 2^10?',            a:1024,     hint:'2^(20−10) = 2^10'},
     {q:'What is the 10th Fibonacci number?',a:55,      hint:'1,1,2,3,5,8,13,21,34,55…'},
@@ -434,6 +434,7 @@ const QUESTIONS = {
 
 let currentQ = null;
 let wrongCount = 0;
+let _halvingOrigHTML = null; // saved before showHalving() wipes the card
 
 /* ══════════════════════════════════════════════════════════════
    TABS
@@ -542,7 +543,7 @@ function skipQ() {
 ══════════════════════════════════════════════════════════════ */
 function showHalving() {
   const card = document.getElementById('questionCard');
-  const orig = card.innerHTML;
+  _halvingOrigHTML = card.innerHTML; // save so continueAfterHalving can restore
   card.innerHTML = `
     <div style="text-align:center;padding:10px 0;animation:popIn .5s ease">
       <div style="font-size:56px;margin-bottom:14px">⛏️</div>
@@ -558,6 +559,12 @@ function showHalving() {
     </div>`;
 }
 function continueAfterHalving() {
+  // Restore the original card HTML before calling nextQuestion()
+  // (showHalving wipes the card entirely, breaking getElementById lookups)
+  if (_halvingOrigHTML) {
+    document.getElementById('questionCard').innerHTML = _halvingOrigHTML;
+    _halvingOrigHTML = null;
+  }
   nextQuestion();
 }
 

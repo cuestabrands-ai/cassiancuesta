@@ -511,6 +511,7 @@ async function sendMessage(text) {
       addMessage('cosmo', reply);
       speakReply(reply);
       setStatus('Ready to learn! ✨');
+      document.getElementById('quickRow').style.display = 'flex'; // restore chips after each reply
     } else {
       // Surface the real error so RC can debug
       const errMsg = data?.error?.message || data?.error || data?.message || JSON.stringify(data);

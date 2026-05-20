@@ -319,9 +319,9 @@ const puzzles = [
 
   // MYSTERY NUMBERS
   { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐', q: 'I am a number. Multiply me by 7 and you get 63. What am I?', hint: '7 × ? = 63', answer: '9', explain: '9! 7 × 9 = 63. You can also think: 63 ÷ 7 = 9' },
-  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'I am a 2-digit number. I am a perfect square. My digits add up to 7. What am I?', hint: 'Perfect squares near 50: 36, 49, 64, 81...', answer: '49', explain: '49! 7 × 7 = 49, and 4 + 9 = 13... wait, try: 4+9=13. Hmm — what about 7²=49, and the puzzle digit trick: try 16, 25, 36, 49, 64... 16: 1+6=7 ✓ but also 49: 4+9=13. Answer: 16!' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'I am a 2-digit perfect square less than 20. My digits add up to 7. What am I?', hint: 'Perfect squares less than 20: 16. What do 1 and 6 add up to?', answer: '16', explain: '16! 4 × 4 = 16, and 1 + 6 = 7 ✓. It is the only 2-digit perfect square under 20 whose digits sum to 7.' },
   { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'Double me, then add 15. The answer is 47. What am I?', hint: 'Work backwards: 47 - 15 = ?, then ÷ 2', answer: '16', explain: '16! 47 - 15 = 32, then 32 ÷ 2 = 16. Check: 16 × 2 + 15 = 47 ✓' },
-  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐⭐', q: 'I am prime. I am between 20 and 30. If you flip my digits, I am also prime. What am I?', hint: 'Primes between 20–30: 23, 29. Which one, when flipped, is also prime?', answer: '23', explain: '23! Flipped = 32... wait, 32 is not prime. Try 29 → flip = 92, not prime. Hmm — 23 flipped = 32 (no). Actually answer is 23 since its the first prime to explore. Check again: the puzzle teases you — both 23 and 29 are prime; but flipping 23 → 32 (not prime), 29 → 92 (not prime). Sneaky! The trick: neither one works, which means the puzzle is a thinking trap. Give yourself credit for spotting that!' },
+  { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐⭐', q: 'I am prime. I am between 10 and 20. Flip my two digits — the new number is also prime! What am I?', hint: 'Primes between 10–20: 11, 13, 17, 19. Flip each and check if the result is prime!', answer: '13', explain: '13! Flip the digits → 31. Is 31 prime? Yes! 31 is not divisible by 2, 3, or 5 ✓. (Bonus: 11 flipped = 11, also prime! But 13 is the more interesting answer.)' },
   { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐', q: 'What is the smallest number that can be divided by 1, 2, 3, 4, and 5 with no remainder?', hint: 'Try multiples of 60... think: what is 4 × 3 × 5?', answer: '60', explain: '60! 60 ÷ 1 = 60 ✓, 60 ÷ 2 = 30 ✓, 60 ÷ 3 = 20 ✓, 60 ÷ 4 = 15 ✓, 60 ÷ 5 = 12 ✓' },
   { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'I am a 3-digit number. My hundreds digit is 3 times my units digit. My tens digit is 0. My units digit is 2. What am I?', hint: 'Build it piece by piece: units = 2, hundreds = 3 × 2, tens = 0', answer: '602', explain: '602! Units = 2, hundreds = 3×2 = 6, tens = 0. So: 6-0-2 = 602' },
   { cat: 'mystery', catLabel: 'MYSTERY #', catColor: 'teal', diff: '⭐⭐⭐', q: 'What fraction is exactly halfway between 1/4 and 3/4?', hint: 'Add them and divide by 2. Or just think: what is in the middle of 0.25 and 0.75?', answer: '1/2', explain: '1/2! (1/4 + 3/4) ÷ 2 = (4/4) ÷ 2 = 1 ÷ 2 = 1/2. Or: 0.25 and 0.75, the middle is 0.5 = 1/2.' },
@@ -333,10 +333,17 @@ const puzzles = [
 
 let currentIdx = 0;
 let category = 'all';
-let score = 0;
-let solved = 0;
-let currentStreak = 0;
-let solvedSet = new Set();
+let score = +localStorage.getItem('pz_score') || 0;
+let solved = +localStorage.getItem('pz_solved') || 0;
+let currentStreak = +localStorage.getItem('pz_streak') || 0;
+let solvedSet = new Set(JSON.parse(localStorage.getItem('pz_solved_ids') || '[]'));
+
+function savePuzzleProgress() {
+  localStorage.setItem('pz_score', score);
+  localStorage.setItem('pz_solved', solved);
+  localStorage.setItem('pz_streak', currentStreak);
+  localStorage.setItem('pz_solved_ids', JSON.stringify([...solvedSet]));
+}
 
 function filteredPuzzles() {
   if (category === 'all') return puzzles;
@@ -405,6 +412,7 @@ function checkAnswer() {
       document.getElementById('scoreDisplay').textContent = score;
       document.getElementById('solvedDisplay').textContent = solved;
       document.getElementById('streakDisplay').textContent = currentStreak;
+      savePuzzleProgress();
     }
   } else {
     inputEl.className = 'answer-input wrong';
@@ -412,6 +420,7 @@ function checkAnswer() {
     resultEl.textContent = `❌ Not quite — try again! (Hint: ${p.hint})`;
     currentStreak = 0;
     document.getElementById('streakDisplay').textContent = currentStreak;
+    savePuzzleProgress();
   }
   resultEl.style.display = 'block';
   inputEl.disabled = isCorrect;
@@ -435,11 +444,17 @@ function prevPuzzle() {
 }
 
 document.addEventListener('keydown', (e) => {
+  // Don't hijack arrow keys while typing in the answer input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.key === 'ArrowRight') nextPuzzle();
   if (e.key === 'ArrowLeft') prevPuzzle();
 });
 
 loadPuzzle();
+// Restore persisted score/streak on load
+document.getElementById('scoreDisplay').textContent = score;
+document.getElementById('solvedDisplay').textContent = solved;
+document.getElementById('streakDisplay').textContent = currentStreak;
 </script>
 <nav class="app-nav">
   <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>

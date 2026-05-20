@@ -1016,8 +1016,9 @@ function executeMove(mv){
     }
     renderPlayBoard();return;
   }
-  if(gs.mode==='cosmo'&&gs.turn==='w'&&(captured&&captured!=='.'))showToast(randMsg(COSMO_CAP));
-  if(gs.mode==='cosmo'&&gs.turn==='w'&&inCheck(gs.board,'w'))showToast(randMsg(COSMO_CHECK));
+  // gs.turn already flipped: 'b' = White (Cassian) just moved, 'w' = Black (Cosmo) just moved
+  if(gs.mode==='cosmo'&&gs.turn==='b'&&(captured&&captured!=='.'))showToast(randMsg(COSMO_CAP));
+  if(gs.mode==='cosmo'&&gs.turn==='b'&&inCheck(gs.board,'b'))showToast(randMsg(COSMO_CHECK));
   renderPlayBoard();
   if(gs.mode==='cosmo'&&gs.turn==='b'&&!gs.over){
     document.getElementById('thinkingRow').style.display='block';
@@ -1040,7 +1041,7 @@ function cosmoMove(){
 
 function undoMove(){
   if(gs.cosmoThinking)return;
-  if(!gs.history.length||gs.over)return;
+  if(!gs.history.length)return; // allow undo even after game-over so Cassian can explore
   const steps=gs.mode==='cosmo'&&gs.history.length>=2?2:1;
   for(let i=0;i<steps;i++){if(gs.history.length){const h=gs.history.pop();Object.assign(gs,h);}}
   gs.sel=null;gs.hints=[];gs.over=false;gs.result=null;gs.cosmoThinking=false;
@@ -1078,18 +1079,24 @@ function updateStatus(){
   document.getElementById('undoBtn').disabled=!gs.history.length;
 }
 
-function saveGame(){try{localStorage.setItem('chess_game',JSON.stringify({board:gs.board,turn:gs.turn,castling:gs.castling,ep:gs.ep,capW:gs.capW,capB:gs.capB,lastFrom:gs.lastFrom,lastTo:gs.lastTo,mode:gs.mode}));}catch(e){}}
+function saveGame(){try{localStorage.setItem('chess_game',JSON.stringify({board:gs.board,turn:gs.turn,castling:gs.castling,ep:gs.ep,capW:gs.capW,capB:gs.capB,lastFrom:gs.lastFrom,lastTo:gs.lastTo,mode:gs.mode,over:gs.over,result:gs.result}));}catch(e){}}
 function loadGame(){
   try{
     const d=JSON.parse(localStorage.getItem('chess_game'));
-    if(d&&d.board){gs.board=d.board;gs.turn=d.turn;gs.castling=d.castling;gs.ep=d.ep;gs.capW=d.capW||[];gs.capB=d.capB||[];gs.lastFrom=d.lastFrom;gs.lastTo=d.lastTo;gs.mode=d.mode||'human';
+    if(d&&d.board){gs.board=d.board;gs.turn=d.turn;gs.castling=d.castling;gs.ep=d.ep;gs.capW=d.capW||[];gs.capB=d.capB||[];gs.lastFrom=d.lastFrom;gs.lastTo=d.lastTo;gs.mode=d.mode||'human';gs.over=d.over||false;gs.result=d.result||null;
     document.getElementById('modeHumanBtn').classList.toggle('active',gs.mode==='human');
     document.getElementById('modeCosmoBtn').classList.toggle('active',gs.mode==='cosmo');
     gs.history=[];return true;}
   }catch(e){}return false;
 }
 
-function initPlay(){if(!loadGame()){gs.board=cpB(INIT);gs.turn='w';gs.castling={wK:true,wQ:true,bK:true,bQ:true};gs.ep=null;gs.capW=[];gs.capB=[];gs.history=[];}gs.sel=null;gs.hints=[];gs.over=false;gs.cosmoThinking=false;}
+function initPlay(){
+  const restored=loadGame();
+  if(!restored){gs.board=cpB(INIT);gs.turn='w';gs.castling={wK:true,wQ:true,bK:true,bQ:true};gs.ep=null;gs.capW=[];gs.capB=[];gs.history=[];}
+  gs.sel=null;gs.hints=[];gs.cosmoThinking=false;
+  // Restore game-over overlay if game ended before reload
+  if(!gs.over) gs.over=false; // keep restored value
+}
 initPlay();
 </script>
 <div id="chessHint" style="display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;z-index:500">
