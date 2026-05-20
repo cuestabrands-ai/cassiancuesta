@@ -60,11 +60,19 @@ body{
 .daily-tomorrow{font-size:11px;font-weight:800;color:rgba(30,27,75,.3);margin-top:10px;display:flex;align-items:center;gap:5px}
 
 /* ── SECTION LABEL ── */
-.section-label{font-size:12px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:rgba(30,27,75,.35);margin-bottom:14px;padding-left:2px}
+.section-label{
+  font-size:12px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(30,27,75,.35);margin-bottom:14px;padding-left:2px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1.5px;background:rgba(30,27,75,.07);border-radius:2px}
+.section-wrap{margin-bottom:24px}
 
-/* ── GRID ── */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+/* ── GRIDS ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-featured{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:0}
 
+/* ── BASE CARD ── */
 .card{
   border-radius:24px;padding:20px 16px 18px;
   text-decoration:none;color:#1E1B4B;display:block;
@@ -76,6 +84,14 @@ body{
 .card:active{transform:scale(.93)!important}
 .card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.12)}
 @keyframes card-pop{0%{opacity:0;transform:scale(.8) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+
+/* Featured cards = taller + bigger icon */
+.card-featured{
+  border-radius:26px;padding:24px 18px 20px;
+  box-shadow:0 6px 24px rgba(0,0,0,.09);
+}
+.card-featured .card-icon{font-size:52px;margin-bottom:12px}
+.card-featured .card-title{font-size:19px}
 
 .card-numbers{background:linear-gradient(145deg,#EFF6FF,#DBEAFE)}
 .card-games{background:linear-gradient(145deg,#F0FDF4,#DCFCE7)}
@@ -153,97 +169,115 @@ body{
     <div class="daily-tomorrow">🌙 New challenge tomorrow!</div>
   </div>
 
-  <div class="section-label">🎯 Your Apps</div>
-  <div class="grid">
+  <!-- ★ DAILY FAVOURITES ★ -->
+  <div class="section-wrap">
+    <div class="section-label">⭐ Daily Favourites</div>
+    <div class="grid-featured">
 
-    <a class="card card-numbers" href="numberblocks.html" style="animation-delay:.05s">
-      <span class="card-icon">🔢</span>
-      <div class="card-title">Numberblocks</div>
-      <div class="card-sub">Number Explorer</div>
-    </a>
+      <a class="card card-featured card-numbers" href="numberblocks.html" style="animation-delay:.05s">
+        <span class="card-icon">🔢</span>
+        <div class="card-title">Numberblocks</div>
+        <div class="card-sub">Number Explorer</div>
+      </a>
 
-    <a class="card card-games" href="games.html" style="animation-delay:.1s">
-      <span class="card-icon">🎮</span>
-      <div class="card-title">Math Games</div>
-      <div class="card-sub">Speed &amp; Strategy</div>
-    </a>
+      <a class="card card-featured card-chess" href="chess.html" style="animation-delay:.1s">
+        <span class="card-icon">♟️</span>
+        <div class="card-title">Chess</div>
+        <div class="card-sub">Learn · Puzzle · Play</div>
+      </a>
 
-    <a class="card card-chess" href="chess.html" style="animation-delay:.15s">
-      <span class="card-icon">♟️</span>
-      <div class="card-title">Chess</div>
-      <div class="card-sub">Learn · Puzzle · Play</div>
-    </a>
+      <a class="card card-featured card-cosmo" href="cosmo.html" style="animation-delay:.15s">
+        <span class="card-icon">🤖</span>
+        <div class="card-title">COSMO</div>
+        <div class="card-sub">Your AI tutor</div>
+      </a>
 
-    <a class="card card-cosmo" href="cosmo.html" style="animation-delay:.2s">
-      <span class="card-icon">🤖</span>
-      <div class="card-title">COSMO</div>
-      <div class="card-sub">Talk to your AI tutor</div>
-    </a>
+      <a class="card card-featured card-games" href="games.html" style="animation-delay:.2s">
+        <span class="card-icon">🎮</span>
+        <div class="card-title">Math Games</div>
+        <div class="card-sub">Speed &amp; Strategy</div>
+      </a>
 
-    <a class="card card-world" href="world.html" style="animation-delay:.25s">
-      <span class="hot-badge">🆕 Indonesia!</span>
-      <span class="card-icon">🌍</span>
-      <div class="card-title">World Explorer</div>
-      <div class="card-sub">9 languages</div>
-    </a>
+    </div>
+  </div>
 
-    <a class="card card-robotics" href="robotics.html" style="animation-delay:.3s">
-      <span class="hot-badge">🆕 New!</span>
-      <span class="card-icon">🦾</span>
-      <div class="card-title">Robotics Lab</div>
-      <div class="card-sub">Build · Code · Explore</div>
-    </a>
+  <!-- 🔬 EXPLORE & BUILD ── -->
+  <div class="section-wrap">
+    <div class="section-label">🔬 Explore &amp; Build</div>
+    <div class="grid">
 
-    <a class="card card-bitcoin" href="bitcoin.html" style="animation-delay:.35s">
-      <span class="card-icon">₿</span>
-      <div class="card-title">Bitcoin Mine</div>
-      <div class="card-sub">Earn Satoshis</div>
-    </a>
+      <a class="card card-robotics" href="robotics.html" style="animation-delay:.25s">
+        <span class="hot-badge">🆕 New!</span>
+        <span class="card-icon">🦾</span>
+        <div class="card-title">Robotics Lab</div>
+        <div class="card-sub">Build · Code · Explore</div>
+      </a>
 
-    <a class="card card-puzzles" href="puzzles.html" style="animation-delay:.4s">
-      <span class="card-icon">🧩</span>
-      <div class="card-title">Math Puzzles</div>
-      <div class="card-sub">30 Tough Challenges</div>
-    </a>
+      <a class="card card-world" href="world.html" style="animation-delay:.3s">
+        <span class="card-icon">🌍</span>
+        <div class="card-title">World Explorer</div>
+        <div class="card-sub">9 languages</div>
+      </a>
 
-    <a class="card card-focus" href="focus.html" style="animation-delay:.45s">
-      <span class="card-icon">⏱️</span>
-      <div class="card-title">Focus Timer</div>
-      <div class="card-sub">Pomodoro for Cassian</div>
-    </a>
+      <a class="card" href="ai.html" style="animation-delay:.35s;background:linear-gradient(145deg,#EFF6FF,#E0E7FF)">
+        <span class="hot-badge">🆕 New!</span>
+        <span class="card-icon">🧠</span>
+        <div class="card-title">AI Brain Trainer</div>
+        <div class="card-sub">Teach a robot to think!</div>
+      </a>
 
-    <a class="card card-jokes" href="jokes.html" style="animation-delay:.5s">
-      <span class="card-icon">😄</span>
-      <div class="card-title">Smart Jokes</div>
-      <div class="card-sub">New joke every day!</div>
-    </a>
+      <a class="card card-bitcoin" href="bitcoin.html" style="animation-delay:.4s">
+        <span class="card-icon">₿</span>
+        <div class="card-title">Bitcoin Mine</div>
+        <div class="card-sub">Earn Satoshis</div>
+      </a>
 
-    <a class="card card-books" href="books.html" style="animation-delay:.55s">
-      <span class="card-icon">📚</span>
-      <div class="card-title">Cool Books</div>
-      <div class="card-sub">100 Amazing Things</div>
-    </a>
+      <a class="card" href="entrepreneur.html" style="animation-delay:.45s;background:linear-gradient(145deg,#FFFBEB,#FEF3C7)">
+        <span class="hot-badge">🆕 New!</span>
+        <span class="card-icon">💼</span>
+        <div class="card-title">Build Your Empire</div>
+        <div class="card-sub">Money · Business · Invent</div>
+      </a>
 
-    <a class="card card-beast" href="https://beastacademy.com" target="_blank" rel="noopener" style="animation-delay:.6s">
-      <span class="card-icon">🎓</span>
-      <div class="card-title">Beast Academy</div>
-      <div class="card-sub">↗ Open in browser</div>
-    </a>
+      <a class="card card-beast" href="https://beastacademy.com" target="_blank" rel="noopener" style="animation-delay:.5s">
+        <span class="card-icon">🎓</span>
+        <div class="card-title">Beast Academy</div>
+        <div class="card-sub">↗ Open in browser</div>
+      </a>
 
-    <a class="card" href="ai.html" style="animation-delay:.65s;background:linear-gradient(145deg,#EFF6FF,#E0E7FF)">
-      <span class="hot-badge">🆕 New!</span>
-      <span class="card-icon">🧠</span>
-      <div class="card-title">AI Brain Trainer</div>
-      <div class="card-sub">Teach a robot to think!</div>
-    </a>
+    </div>
+  </div>
 
-    <a class="card" href="entrepreneur.html" style="animation-delay:.7s;background:linear-gradient(145deg,#FFFBEB,#FEF3C7)">
-      <span class="hot-badge">🆕 New!</span>
-      <span class="card-icon">💼</span>
-      <div class="card-title">Build Your Empire</div>
-      <div class="card-sub">Money · Business · Invent</div>
-    </a>
+  <!-- 😄 FUN ZONE ── -->
+  <div class="section-wrap">
+    <div class="section-label">😄 Fun Zone</div>
+    <div class="grid">
 
+      <a class="card card-puzzles" href="puzzles.html" style="animation-delay:.55s">
+        <span class="card-icon">🧩</span>
+        <div class="card-title">Math Puzzles</div>
+        <div class="card-sub">30 Tough Challenges</div>
+      </a>
+
+      <a class="card card-books" href="books.html" style="animation-delay:.6s">
+        <span class="card-icon">📚</span>
+        <div class="card-title">Cool Books</div>
+        <div class="card-sub">100 Amazing Things</div>
+      </a>
+
+      <a class="card card-jokes" href="jokes.html" style="animation-delay:.65s">
+        <span class="card-icon">😄</span>
+        <div class="card-title">Smart Jokes</div>
+        <div class="card-sub">New joke every day!</div>
+      </a>
+
+      <a class="card card-focus" href="focus.html" style="animation-delay:.7s">
+        <span class="card-icon">⏱️</span>
+        <div class="card-title">Focus Timer</div>
+        <div class="card-sub">Pomodoro for Cassian</div>
+      </a>
+
+    </div>
   </div>
 </div>
 

@@ -1,10 +1,11 @@
-const CACHE = 'cassian-v11';
+const CACHE = 'cassian-v12';
 const ASSETS = [
   // Pages
   '/', '/index.html', '/numberblocks.html',
   '/games.html', '/chess.html', '/jokes.html', '/cosmo.html',
   '/bitcoin.html', '/books.html', '/puzzles.html', '/learning-path.html',
   '/focus.html', '/world.html', '/robotics.html',
+  '/ai.html', '/entrepreneur.html',
   // App shell
   '/manifest.json', '/cassian-profile.js', '/cosmo-hints.js',
   // Icons
