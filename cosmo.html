@@ -338,12 +338,11 @@ let demoMode = false;
 // ════════════════════════════════
 // INIT
 // ════════════════════════════════
+const DEFAULT_WORKER = 'https://cosmo-worker.cuestabrands.workers.dev';
+
 function init() {
-  workerUrl = localStorage.getItem('cosmo_worker_url') || '';
-  // Always go straight to the app — no gate
-  if (!workerUrl) {
-    document.getElementById('offlineBanner').classList.add('show');
-  }
+  workerUrl = localStorage.getItem('cosmo_worker_url') || DEFAULT_WORKER;
+  // Always go straight to the app — no gate, no setup screen
   startApp();
 }
 
