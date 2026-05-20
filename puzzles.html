@@ -236,32 +236,16 @@
   .nav-icon{font-size:22px;line-height:1}
   .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:system-ui}
 
-/* ── LIGHT THEME ── */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-body{background:linear-gradient(160deg,#EFF6FF 0%,#F5F3FF 55%,#F0FFF4 100%)!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
-body::before{display:none!important}
-.back-btn{color:#6B7280!important}
-.back-btn:hover{color:#1E1B4B!important}
-.header h1{color:#4F46E5!important;font-family:'Nunito',system-ui,sans-serif!important;font-weight:900!important}
-.header p{color:#6B7280!important}
-.score-chip{background:white!important;border-color:rgba(0,0,0,.07)!important;color:#1E1B4B!important;box-shadow:0 2px 8px rgba(0,0,0,.06)!important}
-.tab{background:white!important;border-color:rgba(0,0,0,.07)!important;color:#9CA3AF!important}
-.tab:hover,.tab.active{background:#EEF2FF!important;border-color:#6366F1!important;color:#4F46E5!important}
-.puzzle-card{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.puzzle-q{color:#1E1B4B!important}
-.hint-text{color:#6B7280!important}
-.difficulty{color:#9CA3AF!important}
-.answer-input{background:#F9FAFB!important;border-color:rgba(0,0,0,.12)!important;color:#1E1B4B!important}
-.answer-input:focus{border-color:#6366F1!important;box-shadow:0 0 0 3px rgba(99,102,241,.12)!important}
-.btn-hint{background:#F3F4F6!important;color:#6B7280!important;border-color:rgba(0,0,0,.08)!important}
-.btn-hint:hover{background:#E5E7EB!important;color:#1E1B4B!important}
-.puzzle-counter{color:#9CA3AF!important}
-.btn-nav{background:#F3F4F6!important;color:#1E1B4B!important;border-color:rgba(0,0,0,.08)!important}
-.btn-nav:hover{background:#EEF2FF!important;border-color:rgba(99,102,241,.3)!important}
-.celebration p{color:#6B7280!important}
-.app-nav{background:white!important;border-top:2px solid #EEF2FF!important;box-shadow:0 -4px 20px rgba(99,102,241,.06)!important;backdrop-filter:none!important}
-.nav-btn{color:#9CA3AF!important}
-.nav-btn:hover,.nav-btn.active{color:#6366F1!important}
+
+/* ── SPACE MISSION NAV ── */
+.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
+.nav-btn{color:rgba(241,245,249,.4)!important}
+.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
+/* ── SPACE MISSION BODY ── */
+body{background:#06060F!important;color:#F1F5F9!important}
+body::before{display:block!important}
+.stars{display:block!important}
+
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
@@ -490,6 +474,20 @@ document.getElementById('streakDisplay').textContent = currentStreak;
   <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
+</script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>

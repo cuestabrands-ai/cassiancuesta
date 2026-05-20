@@ -171,41 +171,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes coinFloat{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-60px);opacity:0}}
 @keyframes shimmer{0%{left:-70%}100%{left:120%}}
 
-/* ── LIGHT THEME ── */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-body{background:linear-gradient(160deg,#FFFBF0 0%,#FFF3E0 55%,#FFFEF0 100%)!important;color:#1C1C1E!important;font-family:'Nunito',system-ui,sans-serif!important}
-body::before{display:none!important}
-.stars-bg{display:none!important}
-.hdr p{color:#6B7280!important}
-.wallet{background:linear-gradient(135deg,rgba(247,147,26,.12),rgba(255,215,0,.06))!important;border-color:rgba(247,147,26,.3)!important;box-shadow:0 4px 20px rgba(247,147,26,.12)!important}
-.wallet-btc{color:#9CA3AF!important}
-.streak-lbl{color:#9CA3AF!important}
-.scarcity{background:white!important;border-color:rgba(247,147,26,.2)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.supply-track{background:rgba(0,0,0,.08)!important}
-.supply-labels{color:#9CA3AF!important}
-.supply-note{color:#6B7280!important}
-.tabs{background:white!important;box-shadow:0 2px 12px rgba(0,0,0,.07)!important;border:1px solid rgba(0,0,0,.06)!important}
-.tab{color:#9CA3AF!important}
-.tab.active{background:rgba(247,147,26,.15)!important;color:#C65D00!important}
-.question-card{background:white!important;border-color:rgba(247,147,26,.25)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.question-text{color:#1C1C1E!important}
-.reward-label{color:#9CA3AF!important}
-.ans-input{background:#FFFDF5!important;border-color:rgba(247,147,26,.35)!important;color:#1C1C1E!important}
-.ans-input:focus{border-color:#F7931A!important;box-shadow:0 0 0 4px rgba(247,147,26,.12)!important}
-.btn-skip{background:#F3F4F6!important;color:#6B7280!important;border-color:rgba(0,0,0,.08)!important}
-.hint-box{background:rgba(99,102,241,.06)!important;color:#4B5563!important;border-left-color:#6366F1!important}
-.mine-progress-bar{background:rgba(0,0,0,.08)!important}
-.mine-progress-label{color:#9CA3AF!important}
-.learn-card{background:white!important;border-color:rgba(0,0,0,.06)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.learn-card p{color:#4B5563!important}
-.treasury-header{color:#0D9488!important}
-.t-card{background:white!important;border-color:rgba(0,0,0,.06)!important;box-shadow:0 2px 8px rgba(0,0,0,.06)!important}
-.t-card .t-lbl{color:#9CA3AF!important}
-.savings-lesson{background:rgba(13,148,136,.07)!important;border-left-color:#0D9488!important;color:#374151!important}
-.savings-lesson strong{color:#0D9488!important}
-.app-nav{background:white!important;border-top:2px solid #FEF3E2!important;box-shadow:0 -4px 20px rgba(247,147,26,.06)!important;backdrop-filter:none!important}
-.nav-btn{color:#9CA3AF!important}
-.nav-btn:hover,.nav-btn.active{color:#F7931A!important}
+
+/* ── SPACE MISSION NAV ── */
+.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
+.nav-btn{color:rgba(241,245,249,.4)!important}
+.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
+/* ── SPACE MISSION BODY ── */
+body{background:#06060F!important;color:#F1F5F9!important}
+body::before{display:block!important}
+.stars{display:block!important}
+
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
@@ -692,6 +667,20 @@ async function askCosmoWhy(cardTitle) {
     setTimeout(() => document.getElementById('btcHint').style.display = 'none', 8000);
   }
 }
+</script>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>

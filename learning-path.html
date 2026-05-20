@@ -239,49 +239,16 @@
   .nav-icon{font-size:22px;line-height:1}
   .nav-label{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 
-/* ── LIGHT THEME ── */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
-body{background:linear-gradient(160deg,#F5F0FF 0%,#FAF0FF 55%,#F0F4FF 100%)!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
-.back-btn{color:#9CA3AF!important}
-.back-btn:hover{color:#1E1B4B!important}
-.header h1{color:#7C3AED!important;font-family:'Nunito',system-ui,sans-serif!important;font-weight:900!important}
-.header p{color:#6B7280!important}
-.profile-banner{background:rgba(124,58,237,.07)!important;border-color:rgba(124,58,237,.15)!important}
-.profile-info h2{color:#1E1B4B!important}
-.profile-info p{color:#9CA3AF!important}
-.section-title{color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
-.path-content{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 2px 10px rgba(0,0,0,.06)!important}
-.path-item:hover .path-content{background:#F5F0FF!important;border-color:rgba(124,58,237,.2)!important}
-.path-item.current .path-content{background:rgba(124,58,237,.06)!important;border-color:rgba(124,58,237,.2)!important}
-.path-item.done .path-content{background:rgba(16,185,129,.04)!important;border-color:rgba(16,185,129,.15)!important}
-.path-item.done .path-title{color:#059669!important}
-.path-item.current .path-title{color:#7C3AED!important}
-.path-item.soon .path-title{color:#1E1B4B!important}
-.path-item.future .path-title{color:#9CA3AF!important}
-.path-desc{color:#6B7280!important}
-.path-item.future .path-desc{color:#9CA3AF!important}
-.path-link{color:#7C3AED!important}
-.path-link:hover{color:#1E1B4B!important}
-.path-dot.done{background:#10B981!important;color:white!important}
-.path-dot.current{background:#7C3AED!important;color:white!important;box-shadow:0 0 16px rgba(124,58,237,.35)!important}
-.path-dot.soon{background:#E5E7EB!important;color:#6B7280!important}
-.path-dot.future{background:#F3F4F6!important;color:#9CA3AF!important}
-.cross-card{background:white!important;border-color:rgba(0,0,0,.07)!important;color:#1E1B4B!important;box-shadow:0 2px 10px rgba(0,0,0,.06)!important}
-.cross-card:hover{background:#F5F0FF!important;border-color:rgba(124,58,237,.2)!important;box-shadow:0 12px 28px rgba(124,58,237,.1)!important}
-.cross-card h3{color:#1E1B4B!important}
-.cross-card p{color:#6B7280!important}
-.checkbox-row label{color:#9CA3AF!important}
-.quote-box{background:rgba(124,58,237,.05)!important;border-left-color:rgba(124,58,237,.4)!important}
-.quote-box p{color:#4B5563!important}
-.quote-box cite{color:#9CA3AF!important}
-.tag-done{background:rgba(16,185,129,.12)!important;color:#059669!important}
-.tag-current{background:rgba(124,58,237,.12)!important;color:#7C3AED!important}
-.tag-soon{background:rgba(0,0,0,.05)!important;color:#6B7280!important}
-.tag-future{background:rgba(0,0,0,.03)!important;color:#9CA3AF!important}
-.app-nav{background:white!important;border-top:2px solid #F5F0FF!important;box-shadow:0 -4px 20px rgba(124,58,237,.06)!important;backdrop-filter:none!important}
-.nav-btn{color:#9CA3AF!important}
-.nav-btn:hover,.nav-btn.active{color:#7C3AED!important}
-.nav-btn.active .nav-label{color:#7C3AED!important}
+
+/* ── SPACE MISSION NAV ── */
+.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
+.nav-btn{color:rgba(241,245,249,.4)!important}
+.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
+/* ── SPACE MISSION BODY ── */
+body{background:#06060F!important;color:#F1F5F9!important}
+body::before{display:block!important}
+.stars{display:block!important}
+
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
@@ -554,6 +521,20 @@ function saveCheck(el) {
   <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
+</script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>

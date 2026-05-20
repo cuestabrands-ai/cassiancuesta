@@ -90,38 +90,16 @@ body{display:flex;flex-direction:column;min-height:100dvh}
 .tip-emoji{font-size:24px;flex-shrink:0}
 .tip-text{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);line-height:1.5}
 
-/* ── LIGHT THEME ── */
-html,body{background:linear-gradient(160deg,#F0F9FF 0%,#FFF8E7 55%,#F5F0FF 100%)!important;color:#1E1B4B!important}
-.hero h1{-webkit-text-fill-color:unset!important;background:none!important;color:#D97706!important;font-weight:900!important}
-.hero p{color:#6B7280!important}
-.featured-badge{background:linear-gradient(135deg,rgba(217,119,6,.15),rgba(249,115,22,.15))!important;border-color:rgba(217,119,6,.35)!important;color:#D97706!important}
-.search-input{background:white!important;border-color:rgba(0,0,0,.1)!important;color:#1E1B4B!important;box-shadow:0 2px 10px rgba(0,0,0,.07)!important}
-.search-input:focus{border-color:#6366F1!important}
-.search-input::placeholder{color:#9CA3AF!important}
-.section-label{color:#9CA3AF!important}
-.country-card{background:white!important;border-color:rgba(0,0,0,.08)!important;box-shadow:0 2px 10px rgba(0,0,0,.06)!important}
-.country-card:hover{border-color:rgba(99,102,241,.3)!important;background:#F5F5FF!important}
-.country-card.featured{border-color:rgba(217,119,6,.4)!important;background:rgba(217,119,6,.05)!important}
-.card-name{color:#1E1B4B!important}
-.card-lang{color:#9CA3AF!important}
-#phraseView{background:#F8F9FF!important}
-.phrase-header{background:white!important;border-bottom-color:rgba(0,0,0,.07)!important}
-.back-btn{background:#F3F4F6!important;color:#1E1B4B!important}
-.phrase-country-name{color:#1E1B4B!important}
-.phrase-lang-label{color:#9CA3AF!important}
-.phrase-intro{color:#6B7280!important}
-.phrase-card{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 2px 10px rgba(0,0,0,.06)!important}
-.phrase-category{color:#9CA3AF!important}
-.phrase-english{color:#9CA3AF!important}
-.phrase-main{color:#1E1B4B!important}
-.phrase-tip{color:#9CA3AF!important;border-top-color:rgba(0,0,0,.06)!important}
-.section-divider::before{background:rgba(0,0,0,.08)!important}
-.section-divider span{background:#F8F9FF!important;color:#9CA3AF!important}
-.tip-banner{background:rgba(99,102,241,.06)!important;border-color:rgba(99,102,241,.18)!important}
-.tip-text{color:#4B5563!important}
-.app-nav{background:white!important;border-top:2px solid #EEF2FF!important;box-shadow:0 -4px 20px rgba(99,102,241,.06)!important;backdrop-filter:none!important}
-.nav-btn{color:#9CA3AF!important}
-.nav-btn:hover,.nav-btn.active{color:#6366F1!important}
+
+/* ── SPACE MISSION NAV ── */
+.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
+.nav-btn{color:rgba(241,245,249,.4)!important}
+.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
+/* ── SPACE MISSION BODY ── */
+body{background:#06060F!important;color:#F1F5F9!important}
+body::before{display:block!important}
+.stars{display:block!important}
+
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
@@ -413,6 +391,20 @@ if ('speechSynthesis' in window) {
 
 // ── Init ──
 renderGrids(COUNTRIES);
+</script>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>

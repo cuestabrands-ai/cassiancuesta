@@ -28,6 +28,10 @@ body{display:flex;flex-direction:column;height:100dvh}
 .nav-btn:hover,.nav-btn.active{color:#00d4ff}
 .nav-icon{font-size:22px;line-height:1}
 .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;font-family:system-ui}
+
+/* Space Mission stars */
+.star{position:absolute;background:white;border-radius:50%;animation:twinkle 3s infinite alternate}
+@keyframes twinkle{from{opacity:.1}to{opacity:.9}}
 </style>
 </head>
 <body>
@@ -63,6 +67,20 @@ function showSetup(){
       <button onclick="location.reload()">Tap here after setup ✓</button>
     </div>`;
 }
+</script>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>

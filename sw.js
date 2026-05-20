@@ -1,4 +1,4 @@
-const CACHE = 'cassian-v12';
+const CACHE = 'cassian-v13';
 const ASSETS = [
   // Pages
   '/', '/index.html', '/numberblocks.html',

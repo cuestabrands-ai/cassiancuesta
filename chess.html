@@ -121,35 +121,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .sq.wp{color:#fff;text-shadow:0 1px 5px rgba(0,0,0,1),0 0 2px rgba(0,0,0,1)}
 .sq.bp{color:#1a1020;text-shadow:0 0 3px rgba(255,255,255,.5),0 1px 3px rgba(255,255,255,.3)}
 
-/* ── LIGHT THEME ── */
-body{background:linear-gradient(160deg,#FFF8F0 0%,#F5F3FF 50%,#F0FFF8 100%)!important;color:#1E1B4B!important}
-body::before{display:none!important}
-.stars{display:none!important}
-.hero p{color:#6B7280!important}
-.tabs{background:white!important;box-shadow:0 2px 12px rgba(0,0,0,.06)!important;border:1.5px solid rgba(0,0,0,.06)!important}
-.tab-btn{color:#6B7280!important}
-.tab-btn.active{background:rgba(212,175,55,.15)!important;color:#92400E!important;box-shadow:none!important}
-.piece-card{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.piece-card.selected{border-color:rgba(212,175,55,.6)!important;background:#FFFBEB!important;box-shadow:0 0 24px rgba(212,175,55,.2)!important}
-.piece-card:hover{border-color:rgba(212,175,55,.4)!important}
-.piece-name{color:#92400E!important}
-.piece-tagline{color:#6B7280!important}
-.piece-moves{color:#374151!important}
-.piece-value{background:rgba(245,158,11,.1)!important;border-color:rgba(245,158,11,.3)!important;color:#92400E!important}
-.demo-wrap{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.demo-title{color:#92400E!important}
-.p-dot{background:rgba(0,0,0,.05)!important;border-color:rgba(0,0,0,.1)!important;color:#6B7280!important}
-.puzzle-card{background:white!important;border-color:rgba(0,0,0,.07)!important;box-shadow:0 4px 20px rgba(0,0,0,.07)!important}
-.puzzle-label{color:#92400E!important}
-.puzzle-q{color:#1E1B4B!important}
-.choice-btn{background:white!important;border-color:rgba(99,102,241,.2)!important;color:#1E1B4B!important}
-.choice-btn:hover:not(:disabled){background:#F5F3FF!important;border-color:rgba(99,102,241,.5)!important}
-.puzzle-complete{background:white!important;border-color:rgba(99,102,241,.2)!important;box-shadow:0 8px 32px rgba(0,0,0,.08)!important}
-.puzzle-complete p{color:#6B7280!important}
-.btn-reset{background:rgba(245,158,11,.1)!important;border-color:rgba(245,158,11,.4)!important;color:#92400E!important}
-.app-nav{background:white!important;border-top:2px solid #EEF2FF!important;box-shadow:0 -4px 20px rgba(99,102,241,.06)!important;backdrop-filter:none!important}
-.nav-btn{color:#9CA3AF!important}
-.nav-btn:hover,.nav-btn.active{color:#6366F1!important}
+
+/* ── SPACE MISSION NAV ── */
+.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
+.nav-btn{color:rgba(241,245,249,.4)!important}
+.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
+/* ── SPACE MISSION BODY ── */
+body{background:#06060F!important;color:#F1F5F9!important}
+body::before{display:block!important}
+.stars{display:block!important}
+
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
@@ -1153,6 +1134,20 @@ async function getPuzzleHint() {
     setTimeout(() => document.getElementById('chessHint').style.display = 'none', 8000);
   }
 }
+</script>
+<script>
+(function(){
+  let c=document.getElementById('stars');
+  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
+  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
+  for(let i=0;i<100;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
