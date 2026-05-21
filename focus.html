@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Focus Timer — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -158,6 +159,7 @@ input:focus,textarea:focus,select:focus{border-color:#2563EB!important;outline:n
 </nav>
 
 <script>
+CassianGate.check('focus','Focus Timer','🎯');
 const CIRC=2*Math.PI*106;
 let focusDur=10,breakDur=3,timeLeft=600,breakLeft=180;
 let timer=null,breakTimer=null,running=false,breakRunning=false;

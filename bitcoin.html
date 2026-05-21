@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Satoshi's Math Mine — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
@@ -186,6 +187,7 @@ body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
 input,textarea,select{background:white!important;border:1.5px solid #E5E7EB!important;border-radius:12px!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
 input:focus,textarea:focus,select:focus{border-color:#F59E0B!important;outline:none!important}
 .star-field,.stars,.starfield,.bg-overlay,.stars-bg{display:none!important}
+.section-label,.section-title{color:#A5B4FC!important;font-weight:900}
 
 </style>
 </head>
@@ -368,6 +370,7 @@ input:focus,textarea:focus,select:focus{border-color:#F59E0B!important;outline:n
 </nav>
 
 <script>
+CassianGate.check('bitcoin','Bitcoin Mine','₿');
 /* ══════════════════════════════════════════════════════════════
    STARS
 ══════════════════════════════════════════════════════════════ */
@@ -565,8 +568,8 @@ function showHalving() {
   card.innerHTML = `
     <div style="text-align:center;padding:10px 0;animation:popIn .5s ease">
       <div style="font-size:56px;margin-bottom:14px">⛏️</div>
-      <div style="font-size:24px;font-weight:900;color:#FFD700;margin-bottom:12px">BLOCK MINED!</div>
-      <div style="font-size:14px;color:#c3cfe2;line-height:1.7;margin-bottom:20px">
+      <div style="font-size:24px;font-weight:900;color:#F59E0B;margin-bottom:12px">BLOCK MINED!</div>
+      <div style="font-size:14px;color:#6B7280;line-height:1.7;margin-bottom:20px">
         You just mined ${BATCH} math blocks!<br>
         Just like real Bitcoin, miners get rewarded for solving hard problems.<br>
         <span style="color:#F7931A;font-weight:900">Total sats: ${sats.toLocaleString()} ⚡</span>
@@ -592,7 +595,7 @@ function continueAfterHalving() {
 function showCoinFloat(amount) {
   const card = document.getElementById('questionCard');
   const coin = document.createElement('div');
-  coin.style.cssText=`position:absolute;top:20px;right:20px;font-size:18px;font-weight:900;color:#FFD700;animation:coinFloat .8s ease forwards;pointer-events:none;z-index:10;font-family:'Plus Jakarta Sans',system-ui,sans-serif`;
+  coin.style.cssText=`position:absolute;top:20px;right:20px;font-size:18px;font-weight:900;color:#F59E0B;animation:coinFloat .8s ease forwards;pointer-events:none;z-index:10;font-family:'Nunito',system-ui,sans-serif`;
   coin.textContent=`+${amount} ⚡`;
   card.style.position='relative';
   card.appendChild(coin);
@@ -638,10 +641,10 @@ function updateTreasury() {
   const grid=document.getElementById('milestonesGrid');
   grid.innerHTML=MILESTONES.map(m=>{
     const done=sats>=m.sats;
-    return `<div style="background:rgba(255,255,255,.07);border:1px solid ${done?'rgba(247,147,26,.5)':'rgba(255,255,255,.1)'};border-radius:14px;padding:12px;text-align:center;opacity:${done?1:.45}">
+    return `<div style="background:white;border:1.5px solid ${done?'#FDE68A':'#F1F5F9'};border-radius:14px;padding:12px;text-align:center;opacity:${done?1:.55};box-shadow:0 2px 8px rgba(0,0,0,.04)">
       <span style="font-size:22px">${m.icon}</span>
-      <div style="font-size:12px;font-weight:800;color:${done?'#FFD700':'#8892b0'};margin-top:4px">${m.label}</div>
-      <div style="font-size:11px;color:#8892b0;margin-top:2px">${done?'✅ Unlocked!':'🔒 '+m.sats.toLocaleString()+' sats'}</div>
+      <div style="font-size:12px;font-weight:800;color:${done?'#F59E0B':'#6B7280'};margin-top:4px">${m.label}</div>
+      <div style="font-size:11px;color:#6B7280;margin-top:2px">${done?'✅ Unlocked!':'🔒 '+m.sats.toLocaleString()+' sats'}</div>
     </div>`;
   }).join('');
 }

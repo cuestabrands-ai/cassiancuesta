@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Robotics Lab — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -260,6 +261,7 @@ input:focus,textarea:focus,select:focus{border-color:#059669!important;outline:n
 </nav>
 
 <script>
+CassianGate.check('robotics','Robotics Lab','🦾');
 /* ── PARTS DATA ── */
 const PARTS = [
   {id:'servo',icon:'🔄',name:'Servo Motor',short:'Precise angle',color:'#00ffb4',

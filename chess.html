@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Chess School 🏰 — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 
@@ -235,12 +236,13 @@ input:focus,textarea:focus,select:focus{border-color:#D97706!important;outline:n
 <nav class="app-nav">
   <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
   <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
-  <a href="world.html" class="nav-btn"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
   <a href="chess.html" class="nav-btn active"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
 
 <script>
+CassianGate.check('chess','Chess','♟️');
 // ────────────────────────────────────────────────────────────
 // STARS
 // ────────────────────────────────────────────────────────────

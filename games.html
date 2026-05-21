@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cassian">
@@ -225,6 +226,7 @@ input:focus,textarea:focus,select:focus{border-color:#0891B2!important;outline:n
 </div>
 
 <script>
+CassianGate.check('games','Math Games','🎮');
 /* ===== TABS ===== */
 function switchTab(i){
   document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',j===i));

@@ -9,6 +9,7 @@
 <link rel="apple-touch-icon" href="/icon-192.png">
 <title>Cassian's Learning Path 🗺️</title>
 <link rel="manifest" href="/manifest.json">
+<script src="/cassian-gate.js"></script>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 
@@ -504,6 +505,7 @@ input:focus,textarea:focus,select:focus{border-color:#16A34A!important;outline:n
 </div>
 
 <script>
+CassianGate.check('learning-path','Learning Path','🗺️');
 // Persist checkboxes
 document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
   const saved = localStorage.getItem('cassian_check_' + cb.id);
