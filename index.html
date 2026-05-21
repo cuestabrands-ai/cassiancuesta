@@ -246,6 +246,7 @@ body{
 .warmth-cat.quote{background:rgba(99,102,241,.15);color:#A5B4FC;border:1px solid rgba(99,102,241,.25)}
 .warmth-cat.love{background:rgba(236,72,153,.15);color:#F9A8D4;border:1px solid rgba(236,72,153,.25)}
 .warmth-cat.values{background:rgba(245,158,11,.15);color:#FCD34D;border:1px solid rgba(245,158,11,.25)}
+.warmth-cat.dad{background:rgba(251,146,60,.18);color:#FB923C;border:1px solid rgba(251,146,60,.35)}
 .warmth-msg{font-size:18px;font-weight:800;line-height:1.55;color:#F1F5F9;margin-bottom:8px}
 .warmth-author{font-size:12px;font-weight:700;color:rgba(255,255,255,.3);margin-bottom:22px;font-style:italic}
 .warmth-close{background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:14px 36px;border-radius:50px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(99,102,241,.4);transition:transform .15s}
@@ -622,31 +623,30 @@ drawXP();
 const WARMTH_MESSAGES=[
   // Break Time
   {cat:'break',emoji:'🤸',msg:"Hey Cassian! You've been learning hard. Time to stretch, have some water, and take a little break!",author:'',cls:'break'},
-  {cat:'break',emoji:'🌟',msg:"Your brain needs rest to grow stronger. Take 5 minutes — walk around, breathe, come back ready!",author:'',cls:'break'},
-  {cat:'break',emoji:'💧',msg:"Reminder: drink some water! Big brains need fuel. Take a quick break and come back fresh 🧠",author:'',cls:'break'},
-  {cat:'break',emoji:'🍎',msg:"Learning time is amazing — but so is break time! Go give someone a hug and come back energised.",author:'',cls:'break'},
-  {cat:'break',emoji:'🌈',msg:"You've done great today! Take a moment to move your body, rest your eyes, and smile 😊",author:'',cls:'break'},
+  {cat:'break',emoji:'💧',msg:"Big brains need fuel! Drink some water, move your body, rest your eyes. Come back fresh 🧠",author:'',cls:'break'},
+  {cat:'break',emoji:'🍎',msg:"Learning is amazing — but so is a break! Go give someone a hug and come back energised.",author:'',cls:'break'},
+  {cat:'break',emoji:'🌬️',msg:"Take 3 slow deep breaths right now. In... hold... out. Feel that? That's your brain unlocking. Then take a real break!",author:'',cls:'break'},
   // Smart Quotes
   {cat:'quote',emoji:'💡',msg:'"Imagination is more important than knowledge."',author:'— Albert Einstein',cls:'quote'},
   {cat:'quote',emoji:'🚀',msg:'"The more that you read, the more things you will know."',author:'— Dr. Seuss',cls:'quote'},
-  {cat:'quote',emoji:'🔬',msg:'"Every expert was once a beginner."',author:'— Helen Hayes',cls:'quote'},
   {cat:'quote',emoji:'🧠',msg:'"The beautiful thing about learning is that no one can take it away from you."',author:'— B.B. King',cls:'quote'},
-  {cat:'quote',emoji:'⭐',msg:'"You are braver than you believe, stronger than you seem, and smarter than you think."',author:'— A.A. Milne',cls:'quote'},
-  {cat:'quote',emoji:'🌍',msg:'"The more I learn, the more I realise how much I don\'t know."',author:'— Albert Einstein',cls:'quote'},
   {cat:'quote',emoji:'♟️',msg:'"Chess is life in miniature. Chess is a struggle, chess is battles."',author:'— Garry Kasparov',cls:'quote'},
   {cat:'quote',emoji:'💎',msg:'"It always seems impossible until it\'s done."',author:'— Nelson Mandela',cls:'quote'},
+  {cat:'quote',emoji:'⭐',msg:'"You are braver than you believe, stronger than you seem, and smarter than you think."',author:'— A.A. Milne',cls:'quote'},
   // Family Love
   {cat:'love',emoji:'💙',msg:"Dad loves you more than all the stars in the universe combined. You make every day brighter just by being you.",author:'',cls:'love'},
   {cat:'love',emoji:'🌟',msg:"You are the greatest adventure of our lives, Cassian. We are SO proud of how hard you work and how kind you are.",author:'',cls:'love'},
-  {cat:'love',emoji:'🚀',msg:"Your family believes in you — today, tomorrow, always. Keep being your amazing self!",author:'',cls:'love'},
   {cat:'love',emoji:'🤗',msg:"No matter what you learn or don't learn today — you are loved exactly as you are. Now and forever.",author:'',cls:'love'},
   {cat:'love',emoji:'💫',msg:"Dad thinks about you every single day and is so proud of the incredible human you're becoming.",author:'',cls:'love'},
-  // Values
-  {cat:'values',emoji:'🤝',msg:"Being KIND is a superpower. One small act of kindness can change someone's whole day.",author:'',cls:'values'},
-  {cat:'values',emoji:'💪',msg:"When something is hard, that means your brain is GROWING. Hard things make you stronger!",author:'',cls:'values'},
-  {cat:'values',emoji:'🌱',msg:"Mistakes are not failures — they are lessons. Every great inventor made thousands of mistakes first.",author:'',cls:'values'},
-  {cat:'values',emoji:'🙏',msg:"Being curious is a gift. Never stop asking \"why?\" — that question has changed the world.",author:'',cls:'values'},
-  {cat:'values',emoji:'🦁',msg:"Courage doesn't mean not being scared — it means doing the thing even when you ARE scared. You've got this.",author:'',cls:'values'},
+  // Dad's Wisdom — RC's specific teachings
+  {cat:'dad',emoji:'🏆',msg:"Practice makes masters. Magnus Carlsen wasn't born knowing every chess move — he practiced every single day. Your brain builds new connections every time you repeat something. That's science. Keep going.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'🎯',msg:"Focus first, then act. Your brain is like the most powerful computer on Earth — but even supercomputers crash when running too many things at once. Close the noise, zoom in on ONE thing, then go. That's when your genius shows up.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'🧘',msg:"Control your emotions first, so you can control your actions. When you feel angry, your brain's alarm takes over and your thinking brain goes quiet. Breathe, calm the alarm — and your thinking brain comes back. Then you can do anything.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'⚡',msg:"Emotions dictate your success. IQ dictates your creativity. Your IQ is the engine — your emotions are the driver. Stay calm and happy, and your brilliant brain can build absolutely anything.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'🥇',msg:"Responsibilities before benefits! Before the reward, comes the work. Before the fun, comes the task. That's the code champions live by — always. Do what you said you'd do, THEN enjoy what you earned.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'💎',msg:"Add value first, then receive rewards. Help someone. Build something. Teach something useful. Then the world rewards you. Even Bitcoin works this way — miners do the work first, THEN get the coin. Same rule, everywhere.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'🌬️',msg:"Take 3 deep breaths, slow down, and unlock your brain. When things feel hard or fast, your brain gets foggy. 3 slow breaths send a signal: 'I'm safe, I'm calm.' Try it now — breathe in... hold... breathe out. Feel that? Unlocked.",author:'— Dad',cls:'dad'},
+  {cat:'dad',emoji:'🌊',msg:"Frustration is just an emotion — control it and happiness comes to you. When you feel it, just NAME it: 'I'm frustrated.' Naming it makes it smaller. Then breathe and push through. Happiness is always waiting on the other side.",author:'— Dad',cls:'dad'},
 ];
 
 function showWarmth(){
@@ -655,7 +655,7 @@ function showWarmth(){
   document.getElementById('warmthMsg').textContent=msg.msg;
   document.getElementById('warmthAuthor').textContent=msg.author;
   const catEl=document.getElementById('warmthCat');
-  const labels={break:'Take a Break 🤸',quote:'Smart Quote 💡',love:'Family Love 💙',values:'Remember This 🌟'};
+  const labels={break:'Take a Break 🤸',quote:'Smart Quote 💡',love:'Family Love 💙',values:'Remember This 🌟',dad:"Dad's Wisdom 🧡"};
   catEl.textContent=labels[msg.cat]||msg.cat;
   catEl.className='warmth-cat '+msg.cls;
   document.getElementById('warmthOverlay').classList.add('show');
