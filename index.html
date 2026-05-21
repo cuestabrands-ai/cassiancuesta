@@ -568,7 +568,9 @@ function sparkClick(i){
   }else{
     addXP(10);confettiBurst();
     localStorage.setItem(dk,'1');
-    btn.textContent='✅ Next in 1h!';btn.disabled=true;
+    btn.textContent='✅ Spark Pass earned! ⚡';btn.disabled=true;
+    // Grant a 45-min free gate pass on any page
+    if(typeof CassianGate!=='undefined') CassianGate.grantSparkPass();
   }
 }
 
@@ -679,6 +681,7 @@ function closeWarmth(e){
 setTimeout(showWarmth, 4000);
 setInterval(showWarmth, 20*60*1000);
 </script>
+<script src="/cassian-gate.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>

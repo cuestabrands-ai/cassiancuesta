@@ -7,7 +7,7 @@ const ASSETS = [
   '/focus.html', '/world.html', '/robotics.html',
   '/ai.html', '/entrepreneur.html', '/piano.html',
   // App shell
-  '/manifest.json', '/cassian-profile.js', '/cosmo-hints.js',
+  '/manifest.json', '/cassian-profile.js', '/cosmo-hints.js', '/cassian-gate.js',
   // Icons
   '/icon-192.png', '/icon-512.png',
   // Self-hosted fonts (offline-safe, no Google Fonts)
