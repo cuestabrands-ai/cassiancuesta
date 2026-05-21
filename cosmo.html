@@ -25,6 +25,7 @@ body{display:flex;flex-direction:column;height:100dvh}
   border-bottom:1px solid #ECEDF2;
   display:flex;align-items:center;justify-content:space-between;
   flex-shrink:0;
+  transition:background .35s ease, border-color .35s ease;
 }
 .header-left{display:flex;align-items:center;gap:12px}
 .cosmo-avatar-small{
@@ -34,42 +35,69 @@ body{display:flex;flex-direction:column;height:100dvh}
   font-size:24px;
   box-shadow:0 2px 12px rgba(99,102,241,.3);
   animation:pulse-glow 2.5s ease-in-out infinite;
+  transition:background .35s ease, box-shadow .35s ease;
+  flex-shrink:0;
 }
 @keyframes pulse-glow{0%,100%{box-shadow:0 2px 12px rgba(99,102,241,.25)}50%{box-shadow:0 2px 22px rgba(139,92,246,.55)}}
-.cosmo-name{font-size:19px;font-weight:900;color:#1E1B4B}
-.cosmo-status{font-size:11px;color:#9CA3AF;font-weight:700}
+.cosmo-name{font-size:19px;font-weight:900;color:#1E1B4B;transition:color .3s}
+.cosmo-status{font-size:11px;color:#9CA3AF;font-weight:700;transition:color .3s}
+.header-right{display:flex;align-items:center;gap:6px}
+.back-world-btn{
+  display:none;
+  padding:7px 14px;border-radius:20px;border:none;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;
+  cursor:pointer;transition:all .2s;
+  background:rgba(0,0,0,.08);color:#1E1B4B;
+}
+.back-world-btn:active{opacity:.7;transform:scale(.95)}
 .settings-btn{
   width:38px;height:38px;background:transparent;border:none;
   border-radius:50%;color:#9CA3AF;font-size:18px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:background .2s;
 }
-.settings-btn:active{background:#F3F4F6}
+.settings-btn:active{background:rgba(0,0,0,.06)}
 
-/* ════ EMPTY STATE — Claude / ChatGPT style ════ */
-#emptyState{
+/* ════ WORLD PICKER ════ */
+#worldPicker{
   flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;padding:20px 20px 10px;gap:4px;text-align:center;
+  justify-content:center;padding:16px 20px 10px;gap:6px;text-align:center;
+  overflow-y:auto;
 }
-.empty-avatar{font-size:68px;animation:float 3.2s ease-in-out infinite;line-height:1;margin-bottom:8px}
+.wp-avatar{font-size:62px;animation:float 3.2s ease-in-out infinite;line-height:1;margin-bottom:4px}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.empty-title{font-size:26px;font-weight:900;color:#1E1B4B;margin-bottom:4px}
-.empty-sub{font-size:15px;color:#6B7280;font-weight:700;margin-bottom:20px;line-height:1.4}
+.wp-title{font-size:28px;font-weight:900;color:#1E1B4B;margin-bottom:2px}
+.wp-sub{font-size:14px;color:#6B7280;font-weight:700;margin-bottom:16px}
 
-.suggestion-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:10px;
-  width:100%;max-width:400px;
+.world-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+  width:100%;max-width:420px;
 }
-.suggestion-card{
-  background:white;border:1.5px solid #E5E7EB;
-  border-radius:16px;padding:14px 12px;
-  text-align:left;font-family:'Nunito',sans-serif;
-  cursor:pointer;transition:all .15s;
+.world-card{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  padding:16px 8px 14px;border-radius:20px;border:2px solid;
+  background:white;cursor:pointer;
+  transition:transform .15s, box-shadow .15s;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  font-family:'Nunito',sans-serif;
+}
+.world-card:active{transform:scale(.93);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.world-emoji{font-size:32px;line-height:1}
+.world-label{font-size:13px;font-weight:900;line-height:1.2;text-align:center}
+
+/* ════ CHIPS ════ */
+.chips-row{
+  display:flex;gap:8px;overflow-x:auto;padding:10px 14px 4px;
+  flex-shrink:0;scrollbar-width:none;
+}
+.chips-row::-webkit-scrollbar{display:none}
+.chip-btn{
+  white-space:nowrap;padding:10px 16px;border-radius:20px;border:2px solid #E5E7EB;
+  background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;
+  color:#374151;cursor:pointer;flex-shrink:0;transition:all .15s;
   box-shadow:0 1px 4px rgba(0,0,0,.05);
 }
-.suggestion-card:active{background:#F5F3FF;border-color:rgba(99,102,241,.4);transform:scale(.97)}
-.sc-emoji{font-size:22px;display:block;margin-bottom:6px}
-.sc-text{font-size:13px;font-weight:800;color:#374151;line-height:1.35;display:block}
+.chip-btn:active{transform:scale(.94)}
 
 /* ════ MESSAGES ════ */
 .messages-area{
@@ -124,7 +152,7 @@ body{display:flex;flex-direction:column;height:100dvh}
 
 /* ════ INPUT AREA ════ */
 .input-area{
-  padding:10px 14px;
+  padding:8px 14px 6px;
   padding-bottom:calc(80px + env(safe-area-inset-bottom));
   background:white;border-top:1px solid #ECEDF2;
   flex-shrink:0;display:flex;flex-direction:column;gap:6px;
@@ -168,7 +196,7 @@ body{display:flex;flex-direction:column;height:100dvh}
   border:none;border-radius:50%;color:white;font-size:18px;
   cursor:pointer;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  transition:transform .1s;
+  transition:transform .1s, background .3s;
   box-shadow:0 2px 8px rgba(99,102,241,.3);
 }
 .send-btn:active{transform:scale(0.88)}
@@ -187,7 +215,7 @@ body{display:flex;flex-direction:column;height:100dvh}
 }
 .offline-banner.show{display:block}
 
-/* Settings modal inputs */
+/* Settings modal */
 .setup-input{
   width:100%;padding:15px 16px;
   background:#F9FAFB;border:1.5px solid #E5E7EB;
@@ -242,56 +270,61 @@ body{display:flex;flex-direction:column;height:100dvh}
 <!-- ── Main App ── -->
 <div id="mainApp" style="display:flex">
 
-  <div class="cosmo-header">
+  <div class="cosmo-header" id="cosmoHeader">
     <div class="header-left">
       <div class="cosmo-avatar-small" id="cosmoAvatar">🤖</div>
       <div>
-        <div class="cosmo-name">COSMO</div>
-        <div class="cosmo-status" id="cosmoStatus">Ready to learn! ✨</div>
+        <div class="cosmo-name" id="cosmoTitle">COSMO</div>
+        <div class="cosmo-status" id="cosmoStatus">Pick your world! 🌍</div>
       </div>
     </div>
-    <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    <div class="header-right">
+      <button class="back-world-btn" id="backBtn" onclick="backToWorlds()">← Worlds</button>
+      <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    </div>
   </div>
 
   <div class="offline-banner" id="offlineBanner">⚡ No connection — tap ⚙️ to set up COSMO.</div>
 
-  <!-- Empty state: shown until first message -->
-  <div id="emptyState">
-    <div class="empty-avatar">🤖</div>
-    <div class="empty-title">Hey Cassian! 👋</div>
-    <div class="empty-sub">Ask me anything —<br>I love big questions!</div>
-    <div class="suggestion-grid">
-      <button class="suggestion-card" onclick="sendChip('What\'s a cool math fact?')">
-        <span class="sc-emoji">🔢</span>
-        <span class="sc-text">Cool math fact!</span>
+  <!-- ── World Picker ── -->
+  <div id="worldPicker">
+    <div class="wp-avatar">🤖</div>
+    <div class="wp-title">Pick a World!</div>
+    <div class="wp-sub">Where do you want to explore today?</div>
+    <div class="world-grid">
+      <button class="world-card" style="background:#EEF2FF;border-color:#C7D2FE" onclick="selectWorld('numbers')">
+        <span class="world-emoji">🔢</span>
+        <span class="world-label" style="color:#3730A3">Numbers</span>
       </button>
-      <button class="suggestion-card" onclick="sendChip('Give me a chess tip!')">
-        <span class="sc-emoji">♟️</span>
-        <span class="sc-text">Chess tip!</span>
+      <button class="world-card" style="background:#FFFBEB;border-color:#FDE68A" onclick="selectWorld('chess')">
+        <span class="world-emoji">♟️</span>
+        <span class="world-label" style="color:#92400E">Chess</span>
       </button>
-      <button class="suggestion-card" onclick="sendChip('What\'s the biggest number?')">
-        <span class="sc-emoji">🤯</span>
-        <span class="sc-text">Biggest number?</span>
+      <button class="world-card" style="background:#ECFDF5;border-color:#A7F3D0" onclick="selectWorld('robots')">
+        <span class="world-emoji">🤖</span>
+        <span class="world-label" style="color:#065F46">Robots</span>
       </button>
-      <button class="suggestion-card" onclick="sendChip('Tell me a funny joke!')">
-        <span class="sc-emoji">😂</span>
-        <span class="sc-text">Funny joke!</span>
+      <button class="world-card" style="background:#FEF2F2;border-color:#FECACA" onclick="selectWorld('italy')">
+        <span class="world-emoji">🇮🇹</span>
+        <span class="world-label" style="color:#991B1B">Italy</span>
       </button>
-      <button class="suggestion-card" onclick="sendChip('Tell me about prime numbers!')">
-        <span class="sc-emoji">🌟</span>
-        <span class="sc-text">Prime numbers!</span>
+      <button class="world-card" style="background:#F5F3FF;border-color:#DDD6FE" onclick="selectWorld('space')">
+        <span class="world-emoji">🚀</span>
+        <span class="world-label" style="color:#4C1D95">Space</span>
       </button>
-      <button class="suggestion-card" onclick="sendChip('How do robots move?')">
-        <span class="sc-emoji">🤖</span>
-        <span class="sc-text">How robots move!</span>
+      <button class="world-card" style="background:#FFF7ED;border-color:#FED7AA" onclick="selectWorld('jokes')">
+        <span class="world-emoji">😂</span>
+        <span class="world-label" style="color:#9A3412">Jokes</span>
       </button>
     </div>
   </div>
 
-  <!-- Messages: hidden until Cassian sends first message -->
+  <!-- ── Messages ── -->
   <div class="messages-area" id="messagesArea"></div>
 
-  <div class="input-area">
+  <!-- ── Input Area (hidden until world selected) ── -->
+  <div class="input-area" id="inputArea" style="display:none">
+    <div class="chips-row" id="chipsRow"></div>
     <div class="voice-status" id="voiceStatus"></div>
     <div class="text-row" id="textRow">
       <textarea class="chat-input" id="chatInput" placeholder="Ask COSMO anything..." rows="1"
@@ -314,12 +347,102 @@ body{display:flex;flex-direction:column;height:100dvh}
 
 <script>
 // ════════════════════════════════
-// CONFIG & STATE
+// WORLD DEFINITIONS
 // ════════════════════════════════
-const SYSTEM_PROMPT = `You are COSMO, a fun AI buddy for Cassian Cuesta — a brilliant 6-year-old (IQ ~150).
+const WORLDS = {
+  numbers: {
+    name: 'Numbers 🔢',
+    emoji: '🔢',
+    color: '#6366F1',
+    headerBg: '#EEF2FF',
+    headerBorder: '#C7D2FE',
+    chipBg: '#EEF2FF',
+    chipBorder: '#C7D2FE',
+    chipColor: '#3730A3',
+    tagline: 'Math & number magic! ✨',
+    greeting: "Numbers World! 🔢 What do you want to discover — primes, big patterns, or something massive?",
+    chips: ["Cool math fact!", "What are prime numbers?", "What's the biggest number?", "Tell me about infinity!", "What is 12 × 144?"],
+    context: "ACTIVE WORLD: NUMBERS. Focus ONLY on math, numbers, primes, patterns, arithmetic, Numberblocks, counting, multiplication. Cassian is Year 2+ math level — treat him like an 8-10 year old for numbers."
+  },
+  chess: {
+    name: 'Chess ♟️',
+    emoji: '♟️',
+    color: '#D97706',
+    headerBg: '#FFFBEB',
+    headerBorder: '#FDE68A',
+    chipBg: '#FFFBEB',
+    chipBorder: '#FDE68A',
+    chipColor: '#92400E',
+    tagline: 'Openings, tactics & tricks! ♟️',
+    greeting: "Chess World! ♟️ Want to learn a sneaky opening, a cool tactic, or a famous chess secret?",
+    chips: ["Best first move?", "How does the knight move?", "What is checkmate?", "Teach me a trick!", "Who's the best player?"],
+    context: "ACTIVE WORLD: CHESS. Focus ONLY on chess — moves, openings, tactics, famous games, famous players, rules. Keep it simple for a beginner 6-year-old."
+  },
+  robots: {
+    name: 'Robots 🤖',
+    emoji: '🤖',
+    color: '#059669',
+    headerBg: '#ECFDF5',
+    headerBorder: '#A7F3D0',
+    chipBg: '#ECFDF5',
+    chipBorder: '#A7F3D0',
+    chipColor: '#065F46',
+    tagline: 'Build, code & explore! 🔧',
+    greeting: "Robots World! 🤖 Let's explore servos, sensors, code, or cook up a wild invention idea!",
+    chips: ["How do servos work?", "What is a sensor?", "How do robots think?", "Give me a robot idea!", "What is Arduino?"],
+    context: "ACTIVE WORLD: ROBOTS. Focus ONLY on robotics, servos, sensors, coding, electronics, building things, inventions. Cassian goes to robotics class and builds with Lego, servos, and lights."
+  },
+  italy: {
+    name: 'Italy 🇮🇹',
+    emoji: '🇮🇹',
+    color: '#DC2626',
+    headerBg: '#FEF2F2',
+    headerBorder: '#FECACA',
+    chipBg: '#FEF2F2',
+    chipBorder: '#FECACA',
+    chipColor: '#991B1B',
+    tagline: 'Ciao! Culture & language! 🍕',
+    greeting: "Italia! 🇮🇹 Ciao Cassian! Shall we learn Italian words, discover cool facts, or explore the amazing food?",
+    chips: ["Teach me Italian!", "Cool Italy fact!", "Best Italian food?", "Famous Italians?", "Tell me about Rome!"],
+    context: "ACTIVE WORLD: ITALY. Focus ONLY on Italy — teach Italian words (label them clearly), culture, food, history, famous Italians. Make it fun and exciting for a 6-year-old."
+  },
+  space: {
+    name: 'Space 🚀',
+    emoji: '🚀',
+    color: '#7C3AED',
+    headerBg: '#F5F3FF',
+    headerBorder: '#DDD6FE',
+    chipBg: '#F5F3FF',
+    chipBorder: '#DDD6FE',
+    chipColor: '#4C1D95',
+    tagline: 'Planets, stars & black holes! 🌌',
+    greeting: "Space World! 🚀 3… 2… 1… blast off! What cosmic mystery shall we explore?",
+    chips: ["How big is the sun?", "What is a black hole?", "Are there aliens?", "How do rockets work?", "Furthest planet?"],
+    context: "ACTIVE WORLD: SPACE. Focus ONLY on space — planets, stars, black holes, rockets, astronauts, the universe, galaxies. Make it mind-blowing for a 6-year-old!"
+  },
+  jokes: {
+    name: 'Jokes 😂',
+    emoji: '😂',
+    color: '#EA580C',
+    headerBg: '#FFF7ED',
+    headerBorder: '#FED7AA',
+    chipBg: '#FFF7ED',
+    chipBorder: '#FED7AA',
+    chipColor: '#9A3412',
+    tagline: 'Laugh, giggle & go silly! 🤣',
+    greeting: "Jokes World! 😂 Brace yourself — this is about to get VERY funny. Want a joke or want to learn how jokes work?",
+    chips: ["Tell me a joke!", "Knock knock!", "Math joke please!", "Funniest animal fact?", "Joke about robots!"],
+    context: "ACTIVE WORLD: JOKES. Be maximally funny! Tell jokes, be silly, make Cassian laugh. Knock-knock jokes, puns, silly facts — all fair game. Keep it clean and age-appropriate for a 6-year-old."
+  }
+};
+
+// ════════════════════════════════
+// BASE SYSTEM PROMPT
+// ════════════════════════════════
+const BASE_SYSTEM = `You are COSMO, a fun AI buddy for Cassian Cuesta — a brilliant 6-year-old (IQ ~150).
 
 CASSIAN'S PROFILE:
-- Math: Year 2+ level (treats like 8-10 year old for numbers)
+- Math: Year 2+ level (treat like 8-10 year old for numbers)
 - Loves: big numbers, primes, patterns, Numberblocks, chess, piano, Bitcoin, robotics, Italy
 - Learning Spanish + Arabic too
 - Goes to robotics class, builds with Lego + servos + lights
@@ -332,102 +455,107 @@ YOUR VOICE RULES — CRITICAL:
 - Emojis: 1-2 max per reply
 - Never say "Great question!" — just answer it`;
 
+// ════════════════════════════════
+// STATE
+// ════════════════════════════════
 let workerUrl = '';
 let messages = [];
 let isListening = false;
 let isSpeaking = false;
 let recognition = null;
-let keyboardMode = false;
 let thinkingEl = null;
 let demoMode = false;
-let chatStarted = false;
+let currentWorld = null;
+
+const DEFAULT_WORKER = 'https://cosmo-worker.cuestabrands.workers.dev';
 
 // ════════════════════════════════
 // INIT
 // ════════════════════════════════
-const DEFAULT_WORKER = 'https://cosmo-worker.cuestabrands.workers.dev';
-
 function init() {
   workerUrl = localStorage.getItem('cosmo_worker_url') || DEFAULT_WORKER;
-  startApp();
-}
-
-function startApp() {
   setupVoiceRecognition();
-  // Empty state shows by default — no bubble on load
-}
-
-function startDemoMode() {
-  demoMode = true;
-  closeSettings();
-  startApp();
 }
 
 // ════════════════════════════════
-// DEMO MODE — offline smart responses
+// WORLD SELECTION
 // ════════════════════════════════
-function isPrimeNum(n) {
-  if (n < 2) return false;
-  if (n === 2) return true;
-  if (n % 2 === 0) return false;
-  for (let i = 3; i <= Math.sqrt(n); i += 2) if (n % i === 0) return false;
-  return true;
-}
-function getDemoFactors(n) {
-  const f = [];
-  for (let i = 1; i <= Math.min(n, 5000); i++) if (n % i === 0) f.push(i);
-  return f;
-}
-function getDemoReply(text) {
-  const t = text.toLowerCase().trim();
+function selectWorld(key) {
+  const w = WORLDS[key];
+  currentWorld = key;
+  messages = []; // fresh conversation per world
 
-  const arith = text.match(/(\d+(?:\.\d+)?)\s*([+\-×x*÷\/])\s*(\d+(?:\.\d+)?)/);
-  if (arith) {
-    const [, a, op, b] = arith;
-    const n1 = parseFloat(a), n2 = parseFloat(b);
-    let result, opWord;
-    if (op === '+') { result = n1 + n2; opWord = 'plus'; }
-    else if (op === '-') { result = n1 - n2; opWord = 'minus'; }
-    else if (op === '×' || op === 'x' || op === '*') { result = n1 * n2; opWord = 'times'; }
-    else if (op === '÷' || op === '/') { result = n2 ? +(n1/n2).toFixed(4) : 'infinity'; opWord = 'divided by'; }
-    if (result !== undefined) return `${a} ${opWord} ${b} = ${result}! 🔢`;
-  }
+  // Update header
+  const header = document.getElementById('cosmoHeader');
+  header.style.background = w.headerBg;
+  header.style.borderColor = w.headerBorder;
+  document.getElementById('cosmoAvatar').textContent = w.emoji;
+  document.getElementById('cosmoAvatar').style.background = `linear-gradient(135deg,${w.color},${w.color}99)`;
+  document.getElementById('cosmoAvatar').style.boxShadow = `0 2px 12px ${w.color}44`;
+  document.getElementById('cosmoTitle').textContent = w.name;
+  document.getElementById('cosmoStatus').textContent = w.tagline;
+  document.getElementById('backBtn').style.display = 'flex';
+  document.getElementById('backBtn').style.color = w.chipColor;
 
-  const timesQ = text.match(/(\d+)\s*(?:times|×|multiplied\s*by)\s*(\d+)/i);
-  if (timesQ) return `${timesQ[1]} times ${timesQ[2]} = ${+timesQ[1] * +timesQ[2]}! 💪`;
+  // Update send button color
+  document.getElementById('sendBtn').style.background = `linear-gradient(135deg,${w.color},${w.color}cc)`;
 
-  const numQ = text.match(/(?:about|what(?:'?s|\s+is)|tell\s+me|explain|is)\s+(\d+)/i);
-  if (numQ) {
-    const n = parseInt(numQ[1]);
-    const facts = [];
-    if (isPrimeNum(n)) facts.push(`${n} is prime — only 1 and ${n} divide it!`);
-    else {
-      const fs = getDemoFactors(n);
-      facts.push(`Factors of ${n}: ${fs.join(', ')}.`);
-    }
-    const sq = Math.sqrt(n);
-    if (sq === Math.floor(sq)) facts.push(`${sq} × ${sq} = ${n} — a perfect square!`);
-    facts.push(n % 2 === 0 ? `${n} is even.` : `${n} is odd.`);
-    return facts.join(' ') + ' 🔢';
-  }
+  // Build chips
+  const chipsRow = document.getElementById('chipsRow');
+  chipsRow.innerHTML = '';
+  w.chips.forEach(chip => {
+    const btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.style.background = w.chipBg;
+    btn.style.borderColor = w.chipBorder;
+    btn.style.color = w.chipColor;
+    btn.textContent = chip;
+    btn.onclick = () => sendChip(chip);
+    chipsRow.appendChild(btn);
+  });
 
-  if (t.includes('fibonacci')) return `Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55… each number is the sum of the two before it! 🌀`;
-  if (t.includes('prime')) return `Prime numbers can only be divided by 1 and themselves — like 2, 3, 5, 7, 11, 13, 17, 19, 23… they go on forever! 🔴`;
+  // Show chat UI
+  document.getElementById('worldPicker').style.display = 'none';
+  document.getElementById('messagesArea').classList.add('active');
+  document.getElementById('inputArea').style.display = 'flex';
 
-  const countQ = text.match(/count\s+to\s+(\d+)/i);
-  if (countQ) {
-    const n = Math.min(parseInt(countQ[1]), 20);
-    return Array.from({length:n},(_,i)=>i+1).join(', ') + '! 🎉';
-  }
+  // Send greeting from COSMO
+  addMessageDisplay('cosmo', w.greeting);
+  messages.push({ role: 'assistant', content: w.greeting });
+  speakReply(w.greeting);
 
-  const defaults = [
-    "I'm in sleep mode 💤 but I can do math! Try asking '12 × 8' or 'tell me about 17'!",
-    "Ooh, that's deep! Ask dad to tap ⚙️ and wake me up fully. For now, try a math question! 🔢",
-    "My brain is napping! Try asking me to multiply two numbers — I'm great at that! 🤖",
-  ];
-  return defaults[Math.floor(Math.random() * defaults.length)];
+  setStatus(w.tagline);
 }
 
+function backToWorlds() {
+  currentWorld = null;
+  messages = [];
+
+  // Reset header
+  const header = document.getElementById('cosmoHeader');
+  header.style.background = 'white';
+  header.style.borderColor = '#ECEDF2';
+  document.getElementById('cosmoAvatar').textContent = '🤖';
+  document.getElementById('cosmoAvatar').style.background = 'linear-gradient(135deg,#6366F1,#8B5CF6)';
+  document.getElementById('cosmoAvatar').style.boxShadow = '0 2px 12px rgba(99,102,241,.3)';
+  document.getElementById('cosmoTitle').textContent = 'COSMO';
+  document.getElementById('cosmoStatus').textContent = 'Pick your world! 🌍';
+  document.getElementById('backBtn').style.display = 'none';
+  document.getElementById('sendBtn').style.background = 'linear-gradient(135deg,#6366F1,#8B5CF6)';
+
+  // Clear messages
+  document.getElementById('messagesArea').innerHTML = '';
+  document.getElementById('messagesArea').classList.remove('active');
+  document.getElementById('inputArea').style.display = 'none';
+  document.getElementById('worldPicker').style.display = 'flex';
+  document.getElementById('voiceStatus').textContent = '';
+
+  window.speechSynthesis && window.speechSynthesis.cancel();
+}
+
+// ════════════════════════════════
+// SETTINGS
+// ════════════════════════════════
 function openSettings() {
   document.getElementById('workerUrlInput').value = workerUrl || '';
   const m = document.getElementById('settingsModal');
@@ -449,7 +577,9 @@ function saveWorkerUrl() {
   closeSettings();
   document.getElementById('offlineBanner').classList.remove('show');
   setStatus('Connected! ✨');
-  addMessageDisplay('cosmo', `I'm connected! Now I can answer ANYTHING! 🤖⭐`);
+  if (currentWorld) {
+    addMessageDisplay('cosmo', `I'm fully connected now! Ask me anything! 🤖⭐`);
+  }
 }
 
 function resetWorker() {
@@ -462,30 +592,19 @@ function resetWorker() {
 // ════════════════════════════════
 // MESSAGES
 // ════════════════════════════════
-
-function showChatArea() {
-  if (!chatStarted) {
-    chatStarted = true;
-    document.getElementById('emptyState').style.display = 'none';
-    document.getElementById('messagesArea').classList.add('active');
-  }
-}
-
 function addMessage(role, text) {
-  showChatArea();
   addMessageDisplay(role, text);
-  messages.push({role: role === 'cosmo' ? 'assistant' : 'user', content: text});
+  messages.push({ role: role === 'cosmo' ? 'assistant' : 'user', content: text });
   if (messages.length > 40) messages = messages.slice(-40);
 }
 
 function addMessageDisplay(role, text) {
-  showChatArea();
   const area = document.getElementById('messagesArea');
   const row = document.createElement('div');
   row.className = `msg-row ${role}`;
-  const avatar = role === 'cosmo' ? '🤖' : '😊';
+  const avatarEmoji = role === 'cosmo' ? (currentWorld ? WORLDS[currentWorld].emoji : '🤖') : '😊';
   row.innerHTML = `
-    <div class="msg-avatar">${avatar}</div>
+    <div class="msg-avatar">${avatarEmoji}</div>
     <div class="msg-bubble">${escapeHtml(text)}</div>
   `;
   area.appendChild(row);
@@ -503,22 +622,22 @@ function setAvatarMood(emoji) {
 
 function showThinking() {
   setAvatarMood('🧠');
-  showChatArea();
   const area = document.getElementById('messagesArea');
   thinkingEl = document.createElement('div');
   thinkingEl.className = 'thinking-row';
-  thinkingEl.innerHTML = `<div class="msg-avatar" style="background:linear-gradient(135deg,#6366F1,#8B5CF6)">🧠</div><div class="thinking-bubble"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  const worldColor = currentWorld ? WORLDS[currentWorld].color : '#6366F1';
+  thinkingEl.innerHTML = `<div class="msg-avatar" style="background:linear-gradient(135deg,${worldColor},${worldColor}cc)">🧠</div><div class="thinking-bubble"><div class="dot" style="background:${worldColor}"></div><div class="dot" style="background:${worldColor}"></div><div class="dot" style="background:${worldColor}"></div></div>`;
   area.appendChild(thinkingEl);
   area.scrollTop = area.scrollHeight;
 }
 
-function hideThinkingAndResetAvatar() {
-  hideThinking();
-  setAvatarMood('🤖');
-}
-
 function hideThinking() {
   if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
+}
+
+function hideThinkingAndResetAvatar() {
+  hideThinking();
+  setAvatarMood(currentWorld ? WORLDS[currentWorld].emoji : '🤖');
 }
 
 // ════════════════════════════════
@@ -528,7 +647,6 @@ function setupVoiceRecognition() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec) {
     document.getElementById('micBtn').style.display = 'none';
-    document.getElementById('voiceStatus').textContent = '⌨️ Type your question!';
     return;
   }
   recognition = new SpeechRec();
@@ -584,19 +702,16 @@ function stopListening() {
   try { recognition && recognition.stop(); } catch(e) {}
   document.getElementById('micBtn').classList.remove('listening');
   document.getElementById('micBtn').textContent = '🎙️';
-  setAvatarMood('🤖');
-  setStatus('Ready to learn! ✨');
+  setAvatarMood(currentWorld ? WORLDS[currentWorld].emoji : '🤖');
+  setStatus(currentWorld ? WORLDS[currentWorld].tagline : 'Pick your world! 🌍');
   setTimeout(() => { document.getElementById('voiceStatus').textContent = ''; }, 1500);
-}
-
-function toggleKeyboard() {
-  document.getElementById('chatInput').focus();
 }
 
 // ════════════════════════════════
 // SEND MESSAGE
 // ════════════════════════════════
 function sendChip(text) { sendMessage(text); }
+
 function sendText() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
@@ -607,7 +722,11 @@ function sendText() {
 }
 
 async function sendMessage(text) {
+  if (!currentWorld) return;
   addMessage('cassian', text);
+
+  const world = WORLDS[currentWorld];
+  const systemPrompt = BASE_SYSTEM + '\n\n' + world.context;
 
   if (!workerUrl) {
     if (demoMode) {
@@ -618,11 +737,11 @@ async function sendMessage(text) {
       const reply = getDemoReply(text);
       addMessage('cosmo', reply);
       speakReply(reply);
-      setStatus('Ready to learn! ✨');
+      setStatus(world.tagline);
       return;
     }
     document.getElementById('offlineBanner').classList.add('show');
-    addMessageDisplay('cosmo', "I need my Worker URL to think! Tap ⚙️ to set me up! 🔧");
+    addMessageDisplay('cosmo', "I need my Worker URL to think! Ask dad to tap ⚙️! 🔧");
     return;
   }
 
@@ -633,11 +752,11 @@ async function sendMessage(text) {
   try {
     const res = await fetch(`${workerUrl}/chat`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 120,
-        system: SYSTEM_PROMPT,
+        system: systemPrompt,
         messages: messages.filter(m => m.role === 'user' || m.role === 'assistant').slice(-12)
       })
     });
@@ -647,18 +766,18 @@ async function sendMessage(text) {
     if (reply) {
       addMessage('cosmo', reply);
       speakReply(reply);
-      setStatus('Ready to learn! ✨');
+      setStatus(world.tagline);
     } else {
       const errMsg = data?.error?.message || data?.error || data?.message || JSON.stringify(data);
       console.error('COSMO API error:', data);
-      setAvatarMood('🤖');
-      addMessage('cosmo', `Hmm, my brain glitched! 🤖\n\n(Error: ${errMsg})`);
-      setStatus('API error ⚡');
+      setAvatarMood(world.emoji);
+      addMessage('cosmo', `Hmm, my brain glitched! 🤖 (Error: ${errMsg})`);
+      setStatus('Oops! Try again ⚡');
     }
   } catch(err) {
     hideThinkingAndResetAvatar();
     console.error('COSMO fetch error:', err);
-    addMessage('cosmo', `Oops! I had a little hiccup 🤔\n\n(${err.message})`);
+    addMessage('cosmo', `Oops! I had a little hiccup 🤔 (${err.message})`);
     setStatus('Connection error ⚡');
   } finally {
     document.getElementById('micBtn').disabled = false;
@@ -666,11 +785,54 @@ async function sendMessage(text) {
 }
 
 // ════════════════════════════════
+// DEMO MODE — offline smart replies
+// ════════════════════════════════
+function isPrimeNum(n) {
+  if (n < 2) return false;
+  if (n === 2) return true;
+  if (n % 2 === 0) return false;
+  for (let i = 3; i <= Math.sqrt(n); i += 2) if (n % i === 0) return false;
+  return true;
+}
+
+function getDemoReply(text) {
+  const t = text.toLowerCase().trim();
+
+  const arith = text.match(/(\d+(?:\.\d+)?)\s*([+\-×x*÷\/])\s*(\d+(?:\.\d+)?)/);
+  if (arith) {
+    const [, a, op, b] = arith;
+    const n1 = parseFloat(a), n2 = parseFloat(b);
+    let result, opWord;
+    if (op === '+') { result = n1 + n2; opWord = 'plus'; }
+    else if (op === '-') { result = n1 - n2; opWord = 'minus'; }
+    else if (op === '×' || op === 'x' || op === '*') { result = n1 * n2; opWord = 'times'; }
+    else if (op === '÷' || op === '/') { result = n2 ? +(n1/n2).toFixed(4) : 'infinity'; opWord = 'divided by'; }
+    if (result !== undefined) return `${a} ${opWord} ${b} = ${result}! 🔢`;
+  }
+
+  if (t.includes('prime')) return `Prime numbers can only be divided by 1 and themselves — like 2, 3, 5, 7, 11, 13… they go on forever! 🔴`;
+  if (t.includes('fibonacci')) return `Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13, 21… each number is the sum of the two before it! 🌀`;
+
+  const numQ = text.match(/(?:about|what(?:'?s|\s+is)|tell\s+me|explain|is)\s+(\d+)/i);
+  if (numQ) {
+    const n = parseInt(numQ[1]);
+    return isPrimeNum(n) ? `${n} is prime — only 1 and ${n} divide it! 🔢` : `${n} is ${n % 2 === 0 ? 'even' : 'odd'} and has factors! 🔢`;
+  }
+
+  const defaults = [
+    "I'm in sleep mode 💤 but I can do math! Try asking '12 × 8' or 'tell me about 17'!",
+    "My brain is napping! Ask a math question — I'm great at those! 🔢",
+    "Ooh! Ask dad to tap ⚙️ to wake me up fully. For now, try a multiplication! 🤖",
+  ];
+  return defaults[Math.floor(Math.random() * defaults.length)];
+}
+
+// ════════════════════════════════
 // TEXT TO SPEECH
 // ════════════════════════════════
 function speakReply(text) {
   if (!('speechSynthesis' in window)) return;
-  const clean = text.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[🎉✨🔢🧠🎙️🤖⭐🌍♟️😊₿]/g, '').replace(/<br>/g, ' ').trim();
+  const clean = text.replace(/[\u{1F300}-\u{1FFFF}]/gu, '').replace(/[🎉✨🔢🧠🎙️🤖⭐🌍♟️😊₿😂🚀🇮🇹]/g, '').replace(/<br>/g, ' ').trim();
   if (!clean) return;
 
   window.speechSynthesis.cancel();
@@ -687,8 +849,19 @@ function speakReply(text) {
   if (preferred) u.voice = preferred;
 
   const avatar = document.getElementById('cosmoAvatar');
-  u.onstart = () => { isSpeaking = true; avatar.classList.add('speaking'); setAvatarMood('😄'); setStatus('Speaking... 🗣️'); };
-  u.onend = () => { isSpeaking = false; avatar.classList.remove('speaking'); setAvatarMood('🤖'); setStatus('Ready to learn! ✨'); };
+  const worldEmoji = currentWorld ? WORLDS[currentWorld].emoji : '🤖';
+  u.onstart = () => {
+    isSpeaking = true;
+    avatar.classList.add('speaking');
+    setAvatarMood('😄');
+    setStatus('Speaking... 🗣️');
+  };
+  u.onend = () => {
+    isSpeaking = false;
+    avatar.classList.remove('speaking');
+    setAvatarMood(worldEmoji);
+    setStatus(currentWorld ? WORLDS[currentWorld].tagline : 'Pick your world! 🌍');
+  };
   window.speechSynthesis.speak(u);
 }
 
