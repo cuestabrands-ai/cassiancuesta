@@ -197,6 +197,9 @@ body{
 .card-beast .card-icon-wrap{background:#F0FDF4}
 .card-beast:hover{border-color:#BBF7D0;box-shadow:0 8px 28px rgba(22,163,74,.12)}
 
+.card-piano .card-icon-wrap{background:#FFF7ED}
+.card-piano:hover{border-color:#FDE68A;box-shadow:0 8px 28px rgba(251,191,36,.18)}
+
 .card-title{font-size:15px;font-weight:900;color:#1E1B4B;margin-bottom:2px}
 .card-sub{font-size:11px;font-weight:800;color:#9CA3AF;letter-spacing:.2px}
 
@@ -405,6 +408,12 @@ body{
         <div class="card-icon-wrap">💼</div>
         <div class="card-title">Build Your Empire</div>
         <div class="card-sub">Money · Business · Invent</div>
+      </a>
+      <a class="card card-piano" href="piano.html">
+        <span class="hot-badge">🆕 New!</span>
+        <div class="card-icon-wrap">🎹</div>
+        <div class="card-title">Piano</div>
+        <div class="card-sub">Play · Learn · Songs</div>
       </a>
       <a class="card card-beast" href="https://beastacademy.com" target="_blank" rel="noopener">
         <div class="card-icon-wrap">🎓</div>
@@ -666,15 +675,9 @@ function closeWarmth(e){
   document.getElementById('warmthOverlay').classList.remove('show');
 }
 
-// Show popup: 20 min after page load, then every 25 min
-// Also show immediately if 45+ min since last popup
-const lastWarmth=+localStorage.getItem('warmth_last')||0;
-const msSinceLast=Date.now()-lastWarmth;
-const FIRST_DELAY = msSinceLast > 45*60*1000 ? 8000 : 20*60*1000;
-setTimeout(()=>{
-  showWarmth();
-  setInterval(showWarmth, 25*60*1000);
-}, FIRST_DELAY);
+/// Show on every app open — 4 sec delay so page settles first, then every 20 min
+setTimeout(showWarmth, 4000);
+setInterval(showWarmth, 20*60*1000);
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
