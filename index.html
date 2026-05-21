@@ -751,6 +751,147 @@ function closeWarmth(e){
 setTimeout(showWarmth, 4000);
 setInterval(showWarmth, 20*60*1000);
 </script>
+<script>
+// ════════════════════════════════════════════
+// APP ROTATION SYSTEM — Missions · Golden App · Streaks
+// ════════════════════════════════════════════
+(function(){
+  const todayISO=new Date().toISOString().slice(0,10);
+  const dateNum=parseInt(todayISO.replace(/-/g,''));
+
+  // ── Per-App Streak: render 🔥 + record click ──
+  document.querySelectorAll('a.card[data-app]').forEach(link=>{
+    const appKey=link.getAttribute('data-app');
+    if(localStorage.getItem('app_last_'+appKey)===todayISO){
+      const f=document.createElement('span');f.className='streak-fire';f.textContent='🔥';link.appendChild(f);
+    }
+    link.addEventListener('click',function(){ localStorage.setItem('app_last_'+appKey,todayISO); });
+  });
+
+  // ── Golden App: one card gets ⭐ 2× XP badge per day ──
+  const GOLDEN=['numberblocks','chess','games','bitcoin','books','puzzles','jokes','robotics','world','ai','entrepreneur','focus','piano'];
+  const goldenKey=GOLDEN[dateNum%GOLDEN.length];
+  const goldenDoneKey='golden_done_'+todayISO;
+  const goldenLink=document.querySelector('a.card[data-app="'+goldenKey+'"]');
+  if(goldenLink){
+    const done=!!localStorage.getItem(goldenDoneKey);
+    const badge=document.createElement('span');badge.className='golden-badge';
+    if(done){ badge.textContent='✅ Bonus!';badge.style.background='linear-gradient(135deg,#D1FAE5,#6EE7B7)';badge.style.color='#064E3B';badge.style.animation='none'; }
+    else{ badge.textContent='⭐ 2× XP!'; }
+    goldenLink.prepend(badge);
+    if(!done){ goldenLink.addEventListener('click',function(){ if(!localStorage.getItem(goldenDoneKey)){ localStorage.setItem(goldenDoneKey,'1');addXP(20);confettiBurst();badge.textContent='✅ Bonus!'; } }); }
+  }
+
+  // ── Daily Mission Board ──
+  const MISSIONS=[
+    {key:'numberblocks',emoji:'🔢',title:'Visit Numberblocks',    href:'numberblocks.html',  desc:'Explore numbers!'},
+    {key:'chess',       emoji:'♟️',title:'Play a chess game',     href:'chess.html',          desc:'Make your moves'},
+    {key:'games',       emoji:'🎮',title:'Play a math game',      href:'games.html',          desc:'Score some points!'},
+    {key:'cosmo',       emoji:'🤖',title:'Ask COSMO something',   href:'cosmo.html',          desc:'Your AI tutor awaits'},
+    {key:'bitcoin',     emoji:'₿', title:'Visit Bitcoin Mine',    href:'bitcoin.html',        desc:'Learn about Satoshis'},
+    {key:'books',       emoji:'🃏',title:'Flip some Wonder Cards',href:'books.html',          desc:'Discover amazing facts'},
+    {key:'puzzles',     emoji:'🧩',title:'Solve a puzzle',        href:'puzzles.html',        desc:'Crack a math challenge'},
+    {key:'jokes',       emoji:'😄',title:'Read a smart joke',     href:'jokes.html',          desc:'Laugh and learn!'},
+    {key:'robotics',    emoji:'🦾',title:'Visit Robotics Lab',    href:'robotics.html',       desc:'Build something cool'},
+    {key:'world',       emoji:'🌍',title:'Explore the World',     href:'world.html',          desc:'9 languages to discover'},
+    {key:'ai',          emoji:'🧠',title:'Train the AI Brain',    href:'ai.html',             desc:'Teach it something new'},
+    {key:'focus',       emoji:'⏱️',title:'Do a Focus Session',    href:'focus.html',          desc:'Pomodoro timer time!'},
+    {key:'entrepreneur',emoji:'💼',title:'Build Your Empire',     href:'entrepreneur.html',   desc:'Think like a CEO!'},
+    {key:'piano',       emoji:'🎹',title:'Play the Piano',        href:'piano.html',          desc:'Make some music!'},
+    {key:'learning-path',emoji:'🗺️',title:'Check your Progress', href:'learning-path.html',  desc:"See how far you've come!"},
+  ];
+  function pickMissions(){
+    const used=new Set(),picks=[];
+    for(const off of [0,5,11]){
+      let idx=(dateNum+off)%MISSIONS.length;
+      while(used.has(idx))idx=(idx+1)%MISSIONS.length;
+      used.add(idx);picks.push(MISSIONS[idx]);
+    }
+    return picks;
+  }
+  const daily=pickMissions();
+  const mDone=k=>!!localStorage.getItem('m_done_'+k+'_'+todayISO);
+  const mMark=k=>localStorage.setItem('m_done_'+k+'_'+todayISO,'1');
+  function refreshMissions(){
+    const n=daily.filter(m=>mDone(m.key)).length;
+    const el=document.getElementById('missionsProgress');
+    if(el) el.textContent=n+'/3';
+    if(n===3){
+      const banner=document.getElementById('missionsBanner');
+      if(banner)banner.style.display='block';
+      const xpKey='missions_xp_'+todayISO;
+      if(!localStorage.getItem(xpKey)){ localStorage.setItem(xpKey,'1');setTimeout(()=>{addXP(50);confettiBurst();},300); }
+    }
+  }
+  const row=document.getElementById('missionsRow');
+  if(row){
+    daily.forEach((m,i)=>{
+      const done=mDone(m.key);
+      const item=document.createElement('a');
+      item.href=m.href;item.className='mission-item'+(done?' done':'');item.style.animationDelay=(0.05+i*0.07)+'s';
+      item.innerHTML='<div class="mission-emoji-wrap">'+m.emoji+'</div><div class="mission-text"><div class="mission-name">'+m.title+'</div><div class="mission-sub">'+m.desc+'</div></div><span class="mission-check">'+(done?'✅':'→')+'</span>';
+      if(!done){ item.addEventListener('click',function(){ mMark(m.key);localStorage.setItem('app_last_'+m.key,todayISO); }); }
+      row.appendChild(item);
+    });
+    refreshMissions();
+  }
+})();
+</script>
+
+<script>
+// ════════════════════════════════════════════
+// FIRST-TIME TOUR — shown once only
+// ════════════════════════════════════════════
+(function(){
+  if(localStorage.getItem('tour_done_v1'))return;
+  const STEPS=[
+    {emoji:'🚀',title:"Welcome, Cassian!",text:"This is YOUR app — built just for you. It's got math, chess, COSMO, Bitcoin, piano, robotics and a LOT more. Let me show you how it works in 5 quick steps!",btn:"Let's go! →"},
+    {emoji:'⭐',title:"Earn XP &amp; Level Up",text:"Every time you learn something, you earn <strong>XP stars</strong>. Earn enough and you <strong>level up</strong>! Watch that bar at the top of the home screen fill up. It's exactly like a video game — but real.",btn:"Cool! What's next? →",hl:'xp-panel'},
+    {emoji:'🎯',title:"Daily Missions",text:"Every day you get <strong>3 missions</strong> — each one takes you to a different part of your app. Complete all 3 and you get a huge <strong>+50 XP bonus</strong>! The missions change every single day.",btn:"Got it! Next →",hl:'missionsRow'},
+    {emoji:'⚡',title:"Hourly Sparks",text:"Every hour, 3 new smart questions appear. Show the answer and <strong>claim +10 XP</strong> each! Complete all 3 in one hour and you earn a <strong>Spark Pass ⚡</strong> — a free skip on any gate.",btn:"What's a gate? →"},
+    {emoji:'🔐',title:"Responsibilities Before Benefits",text:"Dad's rule: <strong>work before play</strong>. When you open an app after 45 minutes, a quick question pops up. Answer it and you're in! Or use a Spark Pass ⚡ to skip it for free.",btn:"Got it! Last one →"},
+    {emoji:'⭐',title:"The Golden App",text:"Each day, one app gets a <strong>gold star badge ⭐</strong>. Visit it and earn <strong>+20 bonus XP</strong>! It changes every single day, so check the home screen each morning. Today's golden app is already waiting for you!",btn:"I'm ready — let's explore! 🚀"},
+  ];
+  let step=0;
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(10,10,26,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  const card=document.createElement('div');
+  card.style.cssText='background:white;border-radius:28px;padding:28px 22px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);transform:scale(.88);opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .25s ease;';
+  overlay.appendChild(card);document.body.appendChild(overlay);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ card.style.transform='scale(1)';card.style.opacity='1'; }));
+
+  function render(){
+    const s=STEPS[step];
+    card.innerHTML=
+      '<div style="display:flex;justify-content:center;gap:5px;margin-bottom:18px">'+
+        STEPS.map((_,i)=>'<div style="height:7px;border-radius:4px;background:'+(i===step?'#6366F1':'#E0E7FF')+';width:'+(i===step?22:7)+'px;transition:all .3s"></div>').join('')+
+      '</div>'+
+      '<div style="font-size:48px;line-height:1;margin-bottom:10px;display:inline-block;animation:warmth-bounce 2s ease-in-out infinite">'+s.emoji+'</div>'+
+      '<div style="font-size:10px;font-weight:900;letter-spacing:3px;color:#A5B4FC;text-transform:uppercase;margin-bottom:6px">Step '+(step+1)+' of '+STEPS.length+'</div>'+
+      '<div style="font-size:20px;font-weight:900;color:#1E1B4B;margin-bottom:10px;line-height:1.2">'+s.title+'</div>'+
+      '<div style="font-size:13px;font-weight:700;color:#4B5563;line-height:1.65;margin-bottom:20px">'+s.text+'</div>'+
+      '<button id="tBtn" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:13px 24px;border-radius:50px;font-size:15px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;width:100%;box-shadow:0 4px 20px rgba(99,102,241,.35);">'+s.btn+'</button>'+
+      (step>0?'<button id="tBack" style="background:none;border:none;color:#9CA3AF;padding:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;display:block;width:100%;margin-top:4px">← Back</button>':'');
+    document.getElementById('tBtn').onclick=function(){
+      if(step<STEPS.length-1){
+        step++;card.style.transform='scale(.94)';
+        setTimeout(()=>{ render();card.style.transform='scale(1)'; },130);
+      } else {
+        localStorage.setItem('tour_done_v1','1');
+        overlay.style.opacity='0';overlay.style.transition='opacity .4s ease';
+        setTimeout(()=>overlay.remove(),400);
+      }
+    };
+    const back=document.getElementById('tBack');
+    if(back)back.onclick=function(){
+      step--;card.style.transform='scale(.94)';
+      setTimeout(()=>{ render();card.style.transform='scale(1)'; },130);
+    };
+  }
+  render();
+})();
+</script>
+
 <script src="/cassian-gate.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
