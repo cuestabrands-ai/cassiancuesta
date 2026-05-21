@@ -840,54 +840,135 @@ setInterval(showWarmth, 20*60*1000);
 
 <script>
 // ════════════════════════════════════════════
-// FIRST-TIME TOUR — shown once only
+// MISSION BRIEFING — unlock gate, shown until complete
+// Must finish all steps to access the app.
 // ════════════════════════════════════════════
 (function(){
-  if(localStorage.getItem('tour_done_v1'))return;
+  if(localStorage.getItem('tour_done_v1'))return; // already unlocked
+
   const STEPS=[
-    {emoji:'🚀',title:"Welcome, Cassian!",text:"This is YOUR app — built just for you. It's got math, chess, COSMO, Bitcoin, piano, robotics and a LOT more. Let me show you how it works in 5 quick steps!",btn:"Let's go! →"},
-    {emoji:'⭐',title:"Earn XP &amp; Level Up",text:"Every time you learn something, you earn <strong>XP stars</strong>. Earn enough and you <strong>level up</strong>! Watch that bar at the top of the home screen fill up. It's exactly like a video game — but real.",btn:"Cool! What's next? →",hl:'xp-panel'},
-    {emoji:'🎯',title:"Daily Missions",text:"Every day you get <strong>3 missions</strong> — each one takes you to a different part of your app. Complete all 3 and you get a huge <strong>+50 XP bonus</strong>! The missions change every single day.",btn:"Got it! Next →",hl:'missionsRow'},
-    {emoji:'⚡',title:"Hourly Sparks",text:"Every hour, 3 new smart questions appear. Show the answer and <strong>claim +10 XP</strong> each! Complete all 3 in one hour and you earn a <strong>Spark Pass ⚡</strong> — a free skip on any gate.",btn:"What's a gate? →"},
-    {emoji:'🔐',title:"Responsibilities Before Benefits",text:"Dad's rule: <strong>work before play</strong>. When you open an app after 45 minutes, a quick question pops up. Answer it and you're in! Or use a Spark Pass ⚡ to skip it for free.",btn:"Got it! Last one →"},
-    {emoji:'⭐',title:"The Golden App",text:"Each day, one app gets a <strong>gold star badge ⭐</strong>. Visit it and earn <strong>+20 bonus XP</strong>! It changes every single day, so check the home screen each morning. Today's golden app is already waiting for you!",btn:"I'm ready — let's explore! 🚀"},
+    {
+      emoji:'🚀',
+      badge:'INCOMING TRANSMISSION',
+      title:'Mission HQ is Online!',
+      text:'Cassian — this app was built just for YOU. Before you can access Mission HQ, you need to hear the rules. It takes about 2 minutes. Are you ready?',
+      btn:'I\'m ready! Let\'s go 🎯'
+    },
+    {
+      emoji:'⭐',
+      badge:'POWER-UP #1',
+      title:'Earn XP. Level Up.',
+      text:'Every time you learn something in this app, you earn <b>XP stars ⭐</b>. Fill up the bar and you LEVEL UP — just like in a real video game, but this makes your actual brain stronger!',
+      btn:'Awesome! What else? →'
+    },
+    {
+      emoji:'🎯',
+      badge:'POWER-UP #2',
+      title:'3 Missions. Every Day.',
+      text:'Every single day, 3 <b>missions</b> appear on the home screen. Each one takes you to explore a different part of your app. Finish all 3 and you win a massive <b>+50 XP bonus!</b>',
+      btn:'Got it! Next →'
+    },
+    {
+      emoji:'⚡',
+      badge:'POWER-UP #3',
+      title:'Hourly Sparks!',
+      text:'Every hour, 3 quick questions pop up on the home screen. Answer them all in one hour and you win a <b>Spark Pass ⚡</b> — a free golden ticket to skip any door.',
+      btn:'What\'s a door? →'
+    },
+    {
+      emoji:'🔐',
+      badge:'DAD\'S RULE',
+      title:'Work First. Play After.',
+      text:'This is the most important rule: <b>responsibilities before benefits.</b> After 45 minutes on an app, a quick question pops up before you can go back in. Answer it → you\'re straight in. Use a Spark Pass ⚡ → skip it free!',
+      btn:'One more! →'
+    },
+    {
+      emoji:'👑',
+      badge:'SECRET BONUS',
+      title:'The Golden App!',
+      text:'Every day, one app gets a <b>golden crown ⭐</b>. Visit it that day and you get <b>bonus XP!</b> It changes every morning — so always check the home screen when you wake up.',
+      btn:'I know the rules! →'
+    },
+    {
+      emoji:'🏆',
+      badge:'MISSION BRIEFING COMPLETE',
+      title:'You\'re in, Cassian!',
+      text:'You know the power-ups. You know the rules. Dad built this for you because you\'re special. Now go explore, earn XP, complete missions, and be the incredible kid you already are. 💙',
+      btn:'🔓 LAUNCH MY APP!'
+    },
   ];
+
   let step=0;
+
+  // Blur the page behind the overlay
+  document.querySelector('.page').style.filter='blur(6px)';
+  document.querySelector('.page').style.pointerEvents='none';
+
   const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;inset:0;background:rgba(10,10,26,.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;';
+  // No click-to-dismiss — pointer-events only on inner card
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(5,5,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:100000;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 32px;';
+
   const card=document.createElement('div');
-  card.style.cssText='background:white;border-radius:28px;padding:28px 22px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);transform:scale(.88);opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .25s ease;';
-  overlay.appendChild(card);document.body.appendChild(overlay);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{ card.style.transform='scale(1)';card.style.opacity='1'; }));
+  card.style.cssText='background:white;border-radius:32px 32px 28px 28px;padding:32px 24px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 -8px 60px rgba(0,0,0,.4),0 24px 80px rgba(0,0,0,.3);transform:translateY(60px);opacity:0;transition:transform .45s cubic-bezier(.34,1.38,.64,1),opacity .3s ease;';
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+
+  // Slide up
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    card.style.transform='translateY(0)';
+    card.style.opacity='1';
+  }));
 
   function render(){
     const s=STEPS[step];
+    const isLast=step===STEPS.length-1;
     card.innerHTML=
-      '<div style="display:flex;justify-content:center;gap:5px;margin-bottom:18px">'+
-        STEPS.map((_,i)=>'<div style="height:7px;border-radius:4px;background:'+(i===step?'#6366F1':'#E0E7FF')+';width:'+(i===step?22:7)+'px;transition:all .3s"></div>').join('')+
+      // Progress dots
+      '<div style="display:flex;justify-content:center;gap:6px;margin-bottom:22px">'+
+        STEPS.map((_,i)=>{
+          const active=i===step,done=i<step;
+          return '<div style="height:8px;border-radius:4px;background:'+(active?'#6366F1':done?'#A5B4FC':'#EEF2FF')+';width:'+(active?28:8)+'px;transition:all .35s cubic-bezier(.34,1.56,.64,1)"></div>';
+        }).join('')+
       '</div>'+
-      '<div style="font-size:48px;line-height:1;margin-bottom:10px;display:inline-block;animation:warmth-bounce 2s ease-in-out infinite">'+s.emoji+'</div>'+
-      '<div style="font-size:10px;font-weight:900;letter-spacing:3px;color:#A5B4FC;text-transform:uppercase;margin-bottom:6px">Step '+(step+1)+' of '+STEPS.length+'</div>'+
-      '<div style="font-size:20px;font-weight:900;color:#1E1B4B;margin-bottom:10px;line-height:1.2">'+s.title+'</div>'+
-      '<div style="font-size:13px;font-weight:700;color:#4B5563;line-height:1.65;margin-bottom:20px">'+s.text+'</div>'+
-      '<button id="tBtn" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:13px 24px;border-radius:50px;font-size:15px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;width:100%;box-shadow:0 4px 20px rgba(99,102,241,.35);">'+s.btn+'</button>'+
-      (step>0?'<button id="tBack" style="background:none;border:none;color:#9CA3AF;padding:8px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;display:block;width:100%;margin-top:4px">← Back</button>':'');
+      // Badge
+      '<div style="display:inline-block;background:#EEF2FF;color:#6366F1;font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:14px">'+s.badge+'</div>'+
+      // Emoji
+      '<div style="font-size:54px;line-height:1;margin-bottom:14px;display:block;animation:warmth-bounce 2.2s ease-in-out infinite">'+s.emoji+'</div>'+
+      // Title
+      '<div style="font-size:22px;font-weight:900;color:#1E1B4B;margin-bottom:10px;line-height:1.2;letter-spacing:-.3px">'+s.title+'</div>'+
+      // Body
+      '<div style="font-size:14px;font-weight:700;color:#4B5563;line-height:1.7;margin-bottom:22px">'+s.text+'</div>'+
+      // CTA button
+      '<button id="tBtn" style="background:'+(isLast?'linear-gradient(135deg,#059669,#10B981)':'linear-gradient(135deg,#6366F1,#8B5CF6)')+';border:none;color:white;padding:15px 24px;border-radius:50px;font-size:16px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;width:100%;box-shadow:0 4px 24px rgba(99,102,241,.35);letter-spacing:.2px;">'+s.btn+'</button>'+
+      // Back (not on step 0)
+      (step>0?'<button id="tBack" style="background:none;border:none;color:#C7D2FE;padding:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;display:block;width:100%;margin-top:4px">← go back</button>':'');
+
     document.getElementById('tBtn').onclick=function(){
       if(step<STEPS.length-1){
-        step++;card.style.transform='scale(.94)';
-        setTimeout(()=>{ render();card.style.transform='scale(1)'; },130);
+        step++;
+        card.style.transform='translateY(12px)';card.style.opacity='.7';
+        setTimeout(()=>{ render();card.style.transform='translateY(0)';card.style.opacity='1'; },160);
       } else {
+        // 🎉 UNLOCK — confetti + remove overlay
         localStorage.setItem('tour_done_v1','1');
-        overlay.style.opacity='0';overlay.style.transition='opacity .4s ease';
-        setTimeout(()=>overlay.remove(),400);
+        confettiBurst();
+        addXP(25); // bonus XP for completing the briefing
+        document.querySelector('.page').style.filter='';
+        document.querySelector('.page').style.pointerEvents='';
+        card.style.transform='translateY(60px)';card.style.opacity='0';
+        setTimeout(()=>{ overlay.style.opacity='0';overlay.style.transition='opacity .4s ease'; },200);
+        setTimeout(()=>overlay.remove(),700);
       }
     };
+
     const back=document.getElementById('tBack');
     if(back)back.onclick=function(){
-      step--;card.style.transform='scale(.94)';
-      setTimeout(()=>{ render();card.style.transform='scale(1)'; },130);
+      step--;
+      card.style.transform='translateY(12px)';card.style.opacity='.7';
+      setTimeout(()=>{ render();card.style.transform='translateY(0)';card.style.opacity='1'; },160);
     };
   }
+
   render();
 })();
 </script>
