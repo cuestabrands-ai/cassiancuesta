@@ -234,6 +234,23 @@ body{
 .confetti-piece{position:fixed;top:-10px;width:10px;height:10px;border-radius:2px;pointer-events:none;z-index:9999;animation:confetti-fall 1.2s ease-in forwards}
 @keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
+/* ── WARMTH POPUP ── */
+.warmth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .4s ease}
+.warmth-overlay.show{opacity:1;pointer-events:all}
+.warmth-card{background:rgba(15,12,35,.95);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:32px 28px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);transform:scale(.85) translateY(20px);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.warmth-overlay.show .warmth-card{transform:scale(1) translateY(0)}
+.warmth-emoji{font-size:52px;line-height:1;margin-bottom:10px;display:block;animation:warmth-bounce 2s ease-in-out infinite}
+@keyframes warmth-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.warmth-cat{font-size:10px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px;padding:4px 12px;border-radius:20px;display:inline-block}
+.warmth-cat.break{background:rgba(16,185,129,.15);color:#34D399;border:1px solid rgba(16,185,129,.25)}
+.warmth-cat.quote{background:rgba(99,102,241,.15);color:#A5B4FC;border:1px solid rgba(99,102,241,.25)}
+.warmth-cat.love{background:rgba(236,72,153,.15);color:#F9A8D4;border:1px solid rgba(236,72,153,.25)}
+.warmth-cat.values{background:rgba(245,158,11,.15);color:#FCD34D;border:1px solid rgba(245,158,11,.25)}
+.warmth-msg{font-size:18px;font-weight:800;line-height:1.55;color:#F1F5F9;margin-bottom:8px}
+.warmth-author{font-size:12px;font-weight:700;color:rgba(255,255,255,.3);margin-bottom:22px;font-style:italic}
+.warmth-close{background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:14px 36px;border-radius:50px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(99,102,241,.4);transition:transform .15s}
+.warmth-close:active{transform:scale(.95)}
+
 /* ── BOTTOM NAV ── */
 .app-nav{
   position:fixed;bottom:0;left:0;right:0;
@@ -257,6 +274,17 @@ body{
 <body>
 
 <div class="levelup-toast" id="lvlToast"></div>
+
+<!-- ── WARMTH POPUP ── -->
+<div class="warmth-overlay" id="warmthOverlay" onclick="closeWarmth(event)">
+  <div class="warmth-card">
+    <span class="warmth-emoji" id="warmthEmoji">💙</span>
+    <div class="warmth-cat" id="warmthCat">Break Time</div>
+    <div class="warmth-msg" id="warmthMsg"></div>
+    <div class="warmth-author" id="warmthAuthor"></div>
+    <button class="warmth-close" onclick="closeWarmth()">Got it! 💙</button>
+  </div>
+</div>
 
 <div class="page">
 
@@ -588,6 +616,65 @@ function confettiBurst(){
   }
 }
 drawXP();
+</script>
+<script>
+// ── WARMTH POPUP ──
+const WARMTH_MESSAGES=[
+  // Break Time
+  {cat:'break',emoji:'🤸',msg:"Hey Cassian! You've been learning hard. Time to stretch, have some water, and take a little break!",author:'',cls:'break'},
+  {cat:'break',emoji:'🌟',msg:"Your brain needs rest to grow stronger. Take 5 minutes — walk around, breathe, come back ready!",author:'',cls:'break'},
+  {cat:'break',emoji:'💧',msg:"Reminder: drink some water! Big brains need fuel. Take a quick break and come back fresh 🧠",author:'',cls:'break'},
+  {cat:'break',emoji:'🍎',msg:"Learning time is amazing — but so is break time! Go give someone a hug and come back energised.",author:'',cls:'break'},
+  {cat:'break',emoji:'🌈',msg:"You've done great today! Take a moment to move your body, rest your eyes, and smile 😊",author:'',cls:'break'},
+  // Smart Quotes
+  {cat:'quote',emoji:'💡',msg:'"Imagination is more important than knowledge."',author:'— Albert Einstein',cls:'quote'},
+  {cat:'quote',emoji:'🚀',msg:'"The more that you read, the more things you will know."',author:'— Dr. Seuss',cls:'quote'},
+  {cat:'quote',emoji:'🔬',msg:'"Every expert was once a beginner."',author:'— Helen Hayes',cls:'quote'},
+  {cat:'quote',emoji:'🧠',msg:'"The beautiful thing about learning is that no one can take it away from you."',author:'— B.B. King',cls:'quote'},
+  {cat:'quote',emoji:'⭐',msg:'"You are braver than you believe, stronger than you seem, and smarter than you think."',author:'— A.A. Milne',cls:'quote'},
+  {cat:'quote',emoji:'🌍',msg:'"The more I learn, the more I realise how much I don\'t know."',author:'— Albert Einstein',cls:'quote'},
+  {cat:'quote',emoji:'♟️',msg:'"Chess is life in miniature. Chess is a struggle, chess is battles."',author:'— Garry Kasparov',cls:'quote'},
+  {cat:'quote',emoji:'💎',msg:'"It always seems impossible until it\'s done."',author:'— Nelson Mandela',cls:'quote'},
+  // Family Love
+  {cat:'love',emoji:'💙',msg:"Dad loves you more than all the stars in the universe combined. You make every day brighter just by being you.",author:'',cls:'love'},
+  {cat:'love',emoji:'🌟',msg:"You are the greatest adventure of our lives, Cassian. We are SO proud of how hard you work and how kind you are.",author:'',cls:'love'},
+  {cat:'love',emoji:'🚀',msg:"Your family believes in you — today, tomorrow, always. Keep being your amazing self!",author:'',cls:'love'},
+  {cat:'love',emoji:'🤗',msg:"No matter what you learn or don't learn today — you are loved exactly as you are. Now and forever.",author:'',cls:'love'},
+  {cat:'love',emoji:'💫',msg:"Dad thinks about you every single day and is so proud of the incredible human you're becoming.",author:'',cls:'love'},
+  // Values
+  {cat:'values',emoji:'🤝',msg:"Being KIND is a superpower. One small act of kindness can change someone's whole day.",author:'',cls:'values'},
+  {cat:'values',emoji:'💪',msg:"When something is hard, that means your brain is GROWING. Hard things make you stronger!",author:'',cls:'values'},
+  {cat:'values',emoji:'🌱',msg:"Mistakes are not failures — they are lessons. Every great inventor made thousands of mistakes first.",author:'',cls:'values'},
+  {cat:'values',emoji:'🙏',msg:"Being curious is a gift. Never stop asking \"why?\" — that question has changed the world.",author:'',cls:'values'},
+  {cat:'values',emoji:'🦁',msg:"Courage doesn't mean not being scared — it means doing the thing even when you ARE scared. You've got this.",author:'',cls:'values'},
+];
+
+function showWarmth(){
+  const msg=WARMTH_MESSAGES[Math.floor(Math.random()*WARMTH_MESSAGES.length)];
+  document.getElementById('warmthEmoji').textContent=msg.emoji;
+  document.getElementById('warmthMsg').textContent=msg.msg;
+  document.getElementById('warmthAuthor').textContent=msg.author;
+  const catEl=document.getElementById('warmthCat');
+  const labels={break:'Take a Break 🤸',quote:'Smart Quote 💡',love:'Family Love 💙',values:'Remember This 🌟'};
+  catEl.textContent=labels[msg.cat]||msg.cat;
+  catEl.className='warmth-cat '+msg.cls;
+  document.getElementById('warmthOverlay').classList.add('show');
+  localStorage.setItem('warmth_last',Date.now());
+}
+function closeWarmth(e){
+  if(e&&e.target!==document.getElementById('warmthOverlay'))return;
+  document.getElementById('warmthOverlay').classList.remove('show');
+}
+
+// Show popup: 20 min after page load, then every 25 min
+// Also show immediately if 45+ min since last popup
+const lastWarmth=+localStorage.getItem('warmth_last')||0;
+const msSinceLast=Date.now()-lastWarmth;
+const FIRST_DELAY = msSinceLast > 45*60*1000 ? 8000 : 20*60*1000;
+setTimeout(()=>{
+  showWarmth();
+  setInterval(showWarmth, 25*60*1000);
+}, FIRST_DELAY);
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>
