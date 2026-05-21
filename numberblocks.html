@@ -67,6 +67,24 @@ input:focus,textarea:focus,select:focus{border-color:#6366F1!important;outline:n
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
 <script>
+// Inject CSS into iframe to hide TurboWarp's duplicate player controls/slider
+document.getElementById('nbFrame').addEventListener('load', function() {
+  try {
+    const doc = this.contentDocument || this.contentWindow.document;
+    const s = doc.createElement('style');
+    s.textContent = `
+      /* Hide TurboWarp player controls bar — keeps only the game's own slider */
+      .controls-bar, .player-controls, #controls,
+      .green-flag, .stop-all, .turbo-container,
+      .stage-controls, [class*="stage-header"],
+      .tw-controls, .player-footer,
+      input[type=range] ~ input[type=range],
+      input[type=range]:nth-of-type(2) { display:none !important; }
+    `;
+    doc.head.appendChild(s);
+  } catch(e) { /* cross-origin blocked — nothing we can do */ }
+});
+
 CassianGate.check('numberblocks','Numberblocks','🔢');
 if(window.location.protocol==='file:'){
   // On file:// protocol, fetch is blocked — just trust the iframe to load
