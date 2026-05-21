@@ -255,6 +255,56 @@ body{
 .warmth-close{background:linear-gradient(135deg,#6366F1,#8B5CF6);border:none;color:white;padding:14px 36px;border-radius:50px;font-size:16px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(99,102,241,.4);transition:transform .15s}
 .warmth-close:active{transform:scale(.95)}
 
+/* ── DAILY MISSIONS ── */
+.missions-section{margin:0 16px 24px}
+.missions-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.missions-title{font-size:10px;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#A5B4FC;display:flex;align-items:center;gap:8px}
+.missions-progress{font-size:12px;font-weight:900;color:#6366F1;background:#EEF2FF;padding:3px 10px;border-radius:20px;min-width:42px;text-align:center}
+.missions-row{display:flex;flex-direction:column;gap:8px}
+.mission-item{
+  background:white;border:1.5px solid #F1F5F9;border-radius:16px;
+  padding:12px 14px;display:flex;align-items:center;gap:12px;
+  text-decoration:none;color:#1E1B4B;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+  transition:transform .15s,border-color .15s,box-shadow .15s;
+  animation:fade-up .5s ease both;
+}
+.mission-item:active{transform:scale(.97)}
+.mission-item:hover{border-color:#C7D2FE;box-shadow:0 4px 16px rgba(99,102,241,.12);transform:translateY(-2px)}
+.mission-item.done{background:#F0FDF4;border-color:#A7F3D0;pointer-events:none}
+.mission-emoji-wrap{width:40px;height:40px;border-radius:12px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.mission-item.done .mission-emoji-wrap{background:#DCFCE7}
+.mission-text{flex:1;min-width:0}
+.mission-name{font-size:14px;font-weight:900;color:#1E1B4B;margin-bottom:1px}
+.mission-sub{font-size:11px;font-weight:700;color:#9CA3AF}
+.mission-item.done .mission-name{color:#15803D;text-decoration:line-through}
+.mission-check{font-size:20px;flex-shrink:0}
+.missions-complete-banner{
+  background:linear-gradient(135deg,#6366F1,#8B5CF6);
+  border-radius:16px;padding:14px 18px;
+  color:white;text-align:center;font-size:14px;font-weight:900;
+  display:none;margin-top:8px;
+  animation:fade-up .4s ease both;
+}
+/* ── GOLDEN APP ── */
+.golden-badge{
+  position:absolute;top:8px;left:8px;
+  background:linear-gradient(135deg,#FCD34D,#F59E0B);
+  color:#78350F;
+  font-size:9px;font-weight:900;
+  padding:3px 7px;border-radius:20px;letter-spacing:.3px;
+  animation:golden-pulse 2.5s ease-in-out infinite;
+  z-index:3;
+}
+@keyframes golden-pulse{0%,100%{transform:scale(1);box-shadow:0 2px 8px rgba(245,158,11,.3)}50%{transform:scale(1.06);box-shadow:0 4px 16px rgba(245,158,11,.5)}}
+/* ── STREAK FIRE ── */
+.streak-fire{
+  position:absolute;bottom:10px;right:10px;
+  font-size:16px;z-index:2;
+  animation:fire-pop .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes fire-pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+
 /* ── BOTTOM NAV ── */
 .app-nav{
   position:fixed;bottom:0;left:0;right:0;
@@ -319,6 +369,16 @@ body{
     </div>
   </div>
 
+  <!-- ── DAILY MISSIONS ── -->
+  <div class="missions-section">
+    <div class="missions-header">
+      <div class="missions-title">🎯 Today's Missions</div>
+      <span class="missions-progress" id="missionsProgress">0/3</span>
+    </div>
+    <div class="missions-row" id="missionsRow"></div>
+    <div class="missions-complete-banner" id="missionsBanner">🏆 All 3 missions done! +50 XP — you're on fire Cassian! 🔥</div>
+  </div>
+
   <!-- ── HOURLY SPARKS ── -->
   <div class="sparks-section">
     <div class="sparks-header">
@@ -354,22 +414,22 @@ body{
   <div class="section-wrap">
     <div class="section-label">★ Daily Favourites</div>
     <div class="grid-featured">
-      <a class="card card-featured card-numbers" href="numberblocks.html">
+      <a class="card card-featured card-numbers" href="numberblocks.html" data-app="numberblocks">
         <div class="card-icon-wrap">🔢</div>
         <div class="card-title">Numberblocks</div>
         <div class="card-sub">Number Explorer</div>
       </a>
-      <a class="card card-featured card-chess" href="chess.html">
+      <a class="card card-featured card-chess" href="chess.html" data-app="chess">
         <div class="card-icon-wrap">♟️</div>
         <div class="card-title">Chess</div>
         <div class="card-sub">Learn · Puzzle · Play</div>
       </a>
-      <a class="card card-featured card-cosmo" href="cosmo.html">
+      <a class="card card-featured card-cosmo" href="cosmo.html" data-app="cosmo">
         <div class="card-icon-wrap">🤖</div>
         <div class="card-title">COSMO</div>
         <div class="card-sub">Your AI tutor</div>
       </a>
-      <a class="card card-featured card-games" href="games.html">
+      <a class="card card-featured card-games" href="games.html" data-app="games">
         <div class="card-icon-wrap">🎮</div>
         <div class="card-title">Math Games</div>
         <div class="card-sub">Speed &amp; Strategy</div>
@@ -381,35 +441,35 @@ body{
   <div class="section-wrap">
     <div class="section-label">🔬 Explore &amp; Build</div>
     <div class="grid">
-      <a class="card card-robotics" href="robotics.html">
+      <a class="card card-robotics" href="robotics.html" data-app="robotics">
         <span class="hot-badge">🆕 New!</span>
         <div class="card-icon-wrap">🦾</div>
         <div class="card-title">Robotics Lab</div>
         <div class="card-sub">Build · Code · Explore</div>
       </a>
-      <a class="card card-world" href="world.html">
+      <a class="card card-world" href="world.html" data-app="world">
         <div class="card-icon-wrap">🌍</div>
         <div class="card-title">World Explorer</div>
         <div class="card-sub">9 languages</div>
       </a>
-      <a class="card card-ai" href="ai.html">
+      <a class="card card-ai" href="ai.html" data-app="ai">
         <span class="hot-badge">🆕 New!</span>
         <div class="card-icon-wrap">🧠</div>
         <div class="card-title">AI Brain Trainer</div>
         <div class="card-sub">You train it — it learns!</div>
       </a>
-      <a class="card card-bitcoin" href="bitcoin.html">
+      <a class="card card-bitcoin" href="bitcoin.html" data-app="bitcoin">
         <div class="card-icon-wrap">₿</div>
         <div class="card-title">Bitcoin Mine</div>
         <div class="card-sub">Earn Satoshis</div>
       </a>
-      <a class="card card-empire" href="entrepreneur.html">
+      <a class="card card-empire" href="entrepreneur.html" data-app="entrepreneur">
         <span class="hot-badge">🆕 New!</span>
         <div class="card-icon-wrap">💼</div>
         <div class="card-title">Build Your Empire</div>
         <div class="card-sub">Money · Business · Invent</div>
       </a>
-      <a class="card card-piano" href="piano.html">
+      <a class="card card-piano" href="piano.html" data-app="piano">
         <span class="hot-badge">🆕 New!</span>
         <div class="card-icon-wrap">🎹</div>
         <div class="card-title">Piano</div>
@@ -427,22 +487,22 @@ body{
   <div class="section-wrap">
     <div class="section-label">😄 Fun Zone</div>
     <div class="grid">
-      <a class="card card-puzzles" href="puzzles.html">
+      <a class="card card-puzzles" href="puzzles.html" data-app="puzzles">
         <div class="card-icon-wrap">🧩</div>
         <div class="card-title">Math Puzzles</div>
         <div class="card-sub">30 Tough Challenges</div>
       </a>
-      <a class="card card-books" href="books.html">
+      <a class="card card-books" href="books.html" data-app="books">
         <div class="card-icon-wrap">🃏</div>
         <div class="card-title">Wonder Cards</div>
         <div class="card-sub">100 Amazing Facts!</div>
       </a>
-      <a class="card card-jokes" href="jokes.html">
+      <a class="card card-jokes" href="jokes.html" data-app="jokes">
         <div class="card-icon-wrap">😄</div>
         <div class="card-title">Smart Jokes</div>
         <div class="card-sub">New joke every day!</div>
       </a>
-      <a class="card card-focus" href="focus.html">
+      <a class="card card-focus" href="focus.html" data-app="focus">
         <div class="card-icon-wrap">⏱️</div>
         <div class="card-title">Focus Timer</div>
         <div class="card-sub">Pomodoro for Cassian</div>
@@ -660,8 +720,17 @@ const WARMTH_MESSAGES=[
   {cat:'dad',emoji:'🌊',msg:"Frustration is just an emotion — control it and happiness comes to you. When you feel it, just NAME it: 'I'm frustrated.' Naming it makes it smaller. Then breathe and push through. Happiness is always waiting on the other side.",author:'— Dad',cls:'dad'},
 ];
 
+function pickWarmth(){
+  // Dad's Wisdom appears ~3x more often than other categories
+  const pool=[];
+  WARMTH_MESSAGES.forEach(m=>{
+    const w=m.cls==='dad'?3:1;
+    for(let i=0;i<w;i++) pool.push(m);
+  });
+  return pool[Math.floor(Math.random()*pool.length)];
+}
 function showWarmth(){
-  const msg=WARMTH_MESSAGES[Math.floor(Math.random()*WARMTH_MESSAGES.length)];
+  const msg=pickWarmth();
   document.getElementById('warmthEmoji').textContent=msg.emoji;
   document.getElementById('warmthMsg').textContent=msg.msg;
   document.getElementById('warmthAuthor').textContent=msg.author;
