@@ -906,16 +906,16 @@ setInterval(showWarmth, 20*60*1000);
 
   const overlay=document.createElement('div');
   // No click-to-dismiss — pointer-events only on inner card
-  overlay.style.cssText='position:fixed;inset:0;background:rgba(5,5,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:100000;display:flex;align-items:flex-end;justify-content:center;padding:0 16px 32px;';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(5,5,20,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px 16px;';
 
   const card=document.createElement('div');
-  card.style.cssText='background:white;border-radius:32px 32px 28px 28px;padding:32px 24px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 -8px 60px rgba(0,0,0,.4),0 24px 80px rgba(0,0,0,.3);transform:translateY(60px);opacity:0;transition:transform .45s cubic-bezier(.34,1.38,.64,1),opacity .3s ease;';
+  card.style.cssText='background:white;border-radius:28px;padding:32px 24px 24px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.5);transform:scale(.88);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease;';
   overlay.appendChild(card);
   document.body.appendChild(overlay);
 
   // Slide up
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    card.style.transform='translateY(0)';
+    card.style.transform='scale(1)';
     card.style.opacity='1';
   }));
 
@@ -946,7 +946,7 @@ setInterval(showWarmth, 20*60*1000);
     document.getElementById('tBtn').onclick=function(){
       if(step<STEPS.length-1){
         step++;
-        card.style.transform='translateY(12px)';card.style.opacity='.7';
+        card.style.transform='scale(.94)';card.style.opacity='.7';
         setTimeout(()=>{ render();card.style.transform='translateY(0)';card.style.opacity='1'; },160);
       } else {
         // 🎉 UNLOCK — confetti + remove overlay
@@ -955,7 +955,7 @@ setInterval(showWarmth, 20*60*1000);
         addXP(25); // bonus XP for completing the briefing
         document.querySelector('.page').style.filter='';
         document.querySelector('.page').style.pointerEvents='';
-        card.style.transform='translateY(60px)';card.style.opacity='0';
+        card.style.transform='scale(1.05)';card.style.opacity='0';
         setTimeout(()=>{ overlay.style.opacity='0';overlay.style.transition='opacity .4s ease'; },200);
         setTimeout(()=>overlay.remove(),700);
       }
@@ -964,7 +964,7 @@ setInterval(showWarmth, 20*60*1000);
     const back=document.getElementById('tBack');
     if(back)back.onclick=function(){
       step--;
-      card.style.transform='translateY(12px)';card.style.opacity='.7';
+      card.style.transform='scale(.94)';card.style.opacity='.7';
       setTimeout(()=>{ render();card.style.transform='translateY(0)';card.style.opacity='1'; },160);
     };
   }
