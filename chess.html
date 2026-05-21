@@ -13,41 +13,42 @@
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#070710;min-height:100vh;color:#E8E4FF;padding-bottom:calc(90px + env(safe-area-inset-bottom));overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(212,175,55,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
+body{font-family:'Nunito',system-ui,sans-serif;background:#F8F9FF;min-height:100vh;color:#1E1B4B;padding-bottom:calc(90px + env(safe-area-inset-bottom));overflow-x:hidden}
+body::before{display:none}
 
 /* Stars */
-.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.stars{display:none}
 .star{position:absolute;background:white;border-radius:50%;animation:twinkle 3s infinite alternate}
 @keyframes twinkle{from{opacity:.1}to{opacity:.8}}
 
 .page-wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 16px 20px;}
 
 /* Header */
-.hero{text-align:center;margin-bottom:28px}
-.hero-icon{font-size:60px;display:block;animation:float 3s ease-in-out infinite;margin-bottom:6px}
-.hero h1{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;background:linear-gradient(90deg,#D4AF37,#FFE87A,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
-.hero p{color:#a0aec0;font-size:15px;font-weight:700}
+.hero{display:none}
+.page-header{background:linear-gradient(180deg,#FFFBEB 0%,#F8F9FF 100%);padding:calc(16px + env(safe-area-inset-top)) 16px 16px;text-align:center;border-bottom:1px solid #FDE68A;margin-bottom:16px}
+.header-emoji{font-size:52px;animation:float 3s ease-in-out infinite;line-height:1;margin-bottom:8px}
+.header-title{font-size:24px;font-weight:900;color:#92400E;margin-bottom:4px}
+.header-sub{font-size:13px;font-weight:700;color:#D97706}
 
 /* Tab bar */
-.tabs{display:flex;gap:8px;margin-bottom:26px;background:rgba(255,255,255,.05);border-radius:18px;padding:5px}
-.tab-btn{flex:1;padding:11px 8px;border-radius:13px;border:none;background:transparent;color:#718096;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .25s;text-align:center}
-.tab-btn.active{background:rgba(212,175,55,0.2);color:#D4AF37;box-shadow:0 2px 12px rgba(212,175,55,0.2)}
+.tabs{display:flex;gap:8px;margin-bottom:26px;background:#F1F5F9;border-radius:18px;padding:5px}
+.tab-btn{flex:1;padding:11px 8px;border-radius:13px;border:none;background:transparent;color:#6B7280;font-family:'Nunito',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .25s;text-align:center}
+.tab-btn.active{background:#FFFBEB;color:#D97706;border-bottom:2px solid #D97706}
 
 /* ── PIECE SCHOOL ── */
 .pieces-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.piece-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.07);border-radius:22px;padding:22px;cursor:pointer;transition:all .3s}
-.piece-card.selected{border-color:rgba(212,175,55,.7);background:rgba(212,175,55,.08);box-shadow:0 0 30px rgba(212,175,55,.15)}
-.piece-card:hover{transform:translateY(-4px);border-color:rgba(212,175,55,0.3)}
+.piece-card{background:white;border:1.5px solid #F1F5F9;border-radius:22px;padding:22px;cursor:pointer;transition:all .3s;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.piece-card.selected{border-color:#FDE68A;background:#FFFBEB;box-shadow:0 4px 20px rgba(217,119,6,.15)}
+.piece-card:hover{transform:translateY(-4px);border-color:#FDE68A}
 .piece-symbol{font-size:54px;line-height:1;margin-bottom:10px;display:block}
-.piece-name{font-size:20px;font-weight:900;color:#FFD700;margin-bottom:5px}
-.piece-tagline{font-size:13px;color:#a0aec0;font-weight:700;margin-bottom:12px}
-.piece-moves{font-size:13px;color:#e2e8f0;line-height:1.6;margin-bottom:12px}
-.piece-value{display:inline-flex;align-items:center;gap:5px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.3);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:900;color:#FFD700}
+.piece-name{font-size:20px;font-weight:900;margin-bottom:5px}
+.piece-tagline{font-size:13px;color:#6B7280;font-weight:700;margin-bottom:12px}
+.piece-moves{font-size:13px;color:#1E1B4B;line-height:1.6;margin-bottom:12px}
+.piece-value{display:inline-flex;align-items:center;gap:5px;background:#FFFBEB;border:1px solid #FDE68A;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:900;color:#D97706}
 
 /* Demo board area */
-.demo-wrap{margin-top:26px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:22px;padding:20px}
-.demo-title{font-size:15px;font-weight:900;color:#D4AF37;margin-bottom:14px;text-align:center}
+.demo-wrap{margin-top:26px;background:white;border:1.5px solid #F1F5F9;border-radius:22px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.demo-title{font-size:15px;font-weight:900;color:#D97706;margin-bottom:14px;text-align:center}
 .demo-board-wrap{display:flex;justify-content:center}
 .demo-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:3px solid rgba(255,215,0,.5);border-radius:8px;overflow:hidden;width:min(320px, 90vw);height:min(320px, 90vw)}
 .sq{display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4vw,28px);cursor:pointer;transition:background .15s;position:relative;aspect-ratio:1}
@@ -63,42 +64,43 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .puzzle-wrap{display:none}
 .puzzle-wrap.active{display:block}
 .puzzle-progress{display:flex;gap:10px;justify-content:center;margin-bottom:22px}
-.p-dot{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#718096;transition:all .3s;cursor:pointer}
-.p-dot.done{background:rgba(78,205,196,.25);border-color:#4ECDC4;color:#4ECDC4}
-.p-dot.active{background:rgba(162,155,254,.25);border-color:#A29BFE;color:#A29BFE}
-.p-dot.wrong{background:rgba(255,107,107,.2);border-color:#FF6B6B;color:#FF6B6B}
+.p-dot{width:38px;height:38px;border-radius:50%;background:#F1F5F9;border:2px solid #E5E7EB;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#6B7280;transition:all .3s;cursor:pointer}
+.p-dot.done{background:rgba(78,205,196,.15);border-color:#4ECDC4;color:#0D9488}
+.p-dot.active{background:#FFFBEB;border-color:#D97706;color:#D97706}
+.p-dot.wrong{background:rgba(255,107,107,.1);border-color:#FF6B6B;color:#FF6B6B}
 
-.puzzle-card{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.07);border-radius:22px;padding:22px 20px}
-.puzzle-label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#D4AF37;margin-bottom:6px}
-.puzzle-q{font-size:19px;font-weight:900;line-height:1.4;margin-bottom:18px;color:#f7fafc}
+.puzzle-card{background:white;border:1.5px solid #F1F5F9;border-radius:22px;padding:22px 20px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.puzzle-label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#D97706;margin-bottom:6px}
+.puzzle-q{font-size:19px;font-weight:900;line-height:1.4;margin-bottom:18px;color:#1E1B4B}
 .puzzle-board-wrap{display:flex;justify-content:center;margin-bottom:20px}
-.puzzle-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:3px solid rgba(162,155,254,.5);border-radius:8px;overflow:hidden;width:min(320px,88vw);height:min(320px,88vw)}
+.puzzle-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:3px solid #FDE68A;border-radius:8px;overflow:hidden;width:min(320px,88vw);height:min(320px,88vw)}
 .puzzle-board .sq{font-size:clamp(18px,3.8vw,26px)}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.choice-btn{padding:13px 10px;border-radius:16px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#E8E4FF;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .25s;text-align:center;line-height:1.3}
-.choice-btn:hover:not(:disabled){transform:scale(1.03);border-color:rgba(212,175,55,.5);background:rgba(212,175,55,.1)}
-.choice-btn.correct{background:rgba(78,205,196,.25);border-color:#4ECDC4;color:#4ECDC4}
-.choice-btn.wrong{background:rgba(255,107,107,.2);border-color:#FF6B6B;color:#FF6B6B;animation:shake .3s}
+.choice-btn{padding:13px 10px;border-radius:16px;border:1.5px solid #E5E7EB;background:white;color:#1E1B4B;font-family:'Nunito',system-ui,sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .25s;text-align:center;line-height:1.3}
+.choice-btn:hover:not(:disabled){transform:scale(1.03);border-color:#D97706;background:#FFFBEB}
+.choice-btn.correct{background:rgba(78,205,196,.15);border-color:#4ECDC4;color:#0D9488}
+.choice-btn.wrong{background:rgba(255,107,107,.1);border-color:#FF6B6B;color:#FF6B6B;animation:shake .3s}
 .choice-btn:disabled{opacity:.6;cursor:default}
 .puzzle-feedback{text-align:center;font-size:15px;font-weight:800;padding:12px 16px;border-radius:14px;margin-bottom:14px;display:none}
-.puzzle-feedback.good{background:rgba(78,205,196,.15);border:1px solid rgba(78,205,196,.4);color:#4ECDC4}
-.puzzle-feedback.bad{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.3);color:#FF6B6B}
-.btn-next{background:linear-gradient(135deg,#D4AF37,#FFE87A);color:#070710;border:none;padding:13px 32px;border-radius:50px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:transform .2s;display:none}
+.puzzle-feedback.good{background:rgba(78,205,196,.1);border:1px solid #4ECDC4;color:#0D9488}
+.puzzle-feedback.bad{background:rgba(255,107,107,.08);border:1px solid #FF6B6B;color:#FF6B6B}
+.btn-next{background:#D97706;color:white;border:none;padding:13px 32px;border-radius:50px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Nunito',system-ui,sans-serif;transition:transform .2s;display:none}
 .btn-next:hover{transform:scale(1.05)}
 
 /* Puzzle complete */
-.puzzle-complete{display:none;text-align:center;padding:30px 20px;background:rgba(255,255,255,.05);border:2px solid rgba(78,205,196,.4);border-radius:22px}
-.puzzle-complete h2{font-size:32px;font-weight:900;background:linear-gradient(90deg,#4ECDC4,#FFD700,#A29BFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
-.puzzle-complete p{color:#a0aec0;font-size:16px;margin-bottom:20px}
+.puzzle-complete{display:none;text-align:center;padding:30px 20px;background:white;border:1.5px solid #FDE68A;border-radius:22px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.puzzle-complete h2{font-size:32px;font-weight:900;color:#D97706;margin-bottom:10px}
+.puzzle-complete p{color:#6B7280;font-size:16px;margin-bottom:20px}
 .score-stars{font-size:42px;margin-bottom:16px;display:block;letter-spacing:4px}
-.btn-reset{background:rgba(212,175,55,.15);border:2px solid rgba(212,175,55,.4);color:#D4AF37;padding:11px 28px;border-radius:50px;font-size:14px;font-weight:900;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s}
-.btn-reset:hover{background:rgba(212,175,55,.3)}
+.btn-reset{background:#FFFBEB;border:2px solid #FDE68A;color:#D97706;padding:11px 28px;border-radius:50px;font-size:14px;font-weight:900;cursor:pointer;font-family:'Nunito',system-ui,sans-serif;transition:all .2s}
+.btn-reset:hover{background:#FDE68A}
 
 /* Nav */
-.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,0.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:1000}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
-.nav-btn:hover,.nav-btn.active{color:#D4AF37}
-.nav-icon{font-size:22px;line-height:1}
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid #ECEDF2;z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active{color:#D97706}
+.nav-icon{font-size:22px;line-height:1;transition:transform .2s}
+.nav-btn.active .nav-icon{transform:scale(1.15)}
 .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
 
 /* Animations */
@@ -122,26 +124,28 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .sq.bp{color:#1a1020;text-shadow:0 0 3px rgba(255,255,255,.5),0 1px 3px rgba(255,255,255,.3)}
 
 
-/* ── SPACE MISSION NAV ── */
-.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
-.nav-btn{color:rgba(241,245,249,.4)!important}
-.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
-/* ── SPACE MISSION BODY ── */
-body{background:#06060F!important;color:#F1F5F9!important}
-body::before{display:block!important}
-.stars{display:block!important}
+/* ── TC-12 LIGHT DESIGN SYSTEM ── */
+*{-webkit-tap-highlight-color:transparent}
+html,body{background:#F8F9FF!important;color:#1E1B4B}
+body::before{display:none!important}
+@keyframes fade-up{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+[style*="backdrop-filter"],[class*="glass"]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+.section-label,.section-title{color:#A5B4FC!important;font-weight:900}
+input,textarea,select{background:white!important;border:1.5px solid #E5E7EB!important;border-radius:12px!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:#D97706!important;outline:none!important}
+.star-field,.stars,.starfield,.bg-overlay{display:none!important}
 
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
-<div class="stars" id="stars"></div>
+<div class="page-header">
+  <div class="header-emoji">♟️</div>
+  <div class="header-title">Chess</div>
+  <div class="header-sub">Learn · Puzzle · Play vs Cosmo</div>
+</div>
 <div class="page-wrap">
-
-  <div class="hero">
-    <span class="hero-icon">♟️</span>
-    <h1>Chess School</h1>
-    <p>Learn the pieces · Solve puzzles · Become a grandmaster</p>
-  </div>
 
   <!-- Tab bar -->
   <div class="tabs">
@@ -166,7 +170,7 @@ body::before{display:block!important}
     <div class="puzzle-progress" id="puzzleProgress"></div>
     <div id="puzzleArea"></div>
     <div style="text-align:center;margin:8px 0">
-      <button id="puzzleHintBtn" onclick="getPuzzleHint()" style="display:none;padding:10px 24px;border-radius:50px;border:2px solid rgba(212,175,55,.4);background:rgba(212,175,55,.12);color:#D4AF37;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:14px;font-weight:800;cursor:pointer">🤖 Get Hint from COSMO</button>
+      <button id="puzzleHintBtn" onclick="getPuzzleHint()" style="display:none;padding:10px 24px;border-radius:50px;border:1.5px solid #FDE68A;background:#FFFBEB;color:#D97706;font-family:'Nunito',system-ui,sans-serif;font-size:14px;font-weight:800;cursor:pointer">🤖 Get Hint from COSMO</button>
     </div>
     <div class="puzzle-complete" id="puzzleComplete">
       <span class="score-stars" id="scoreStars"></span>
@@ -181,18 +185,18 @@ body::before{display:block!important}
 
     <!-- Mode select -->
     <div style="display:flex;gap:8px;margin-bottom:14px">
-      <button class="tab-btn active" id="modeHumanBtn" onclick="setGameMode('human')" style="flex:1">👥 vs Human</button>
-      <button class="tab-btn" id="modeCosmoBtn" onclick="setGameMode('cosmo')" style="flex:1">🤖 vs Cosmo</button>
+      <button class="tab-btn active" id="modeHumanBtn" onclick="setGameMode('human')" style="flex:1;background:#F1F5F9">👥 vs Human</button>
+      <button class="tab-btn" id="modeCosmoBtn" onclick="setGameMode('cosmo')" style="flex:1;background:#F1F5F9">🤖 vs Cosmo</button>
     </div>
 
     <!-- Status row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:14px;margin-bottom:10px">
-      <span id="turnTxt" style="font-size:15px;font-weight:900;color:white">White to move ♔</span>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:white;border:1.5px solid #F1F5F9;border-radius:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)">
+      <span id="turnTxt" style="font-size:15px;font-weight:900;color:#1E1B4B">White to move ♔</span>
       <span id="checkBadge" style="display:none;background:#e53935;color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:900;letter-spacing:.5px;animation:cpulse .9s ease-in-out infinite">⚠️ CHECK!</span>
     </div>
 
     <!-- Captured by Black (shown above board) -->
-    <div id="capturedTop" style="min-height:26px;padding:3px 8px;font-size:20px;letter-spacing:-3px;text-align:center;color:rgba(255,255,255,.7)"></div>
+    <div id="capturedTop" style="min-height:26px;padding:3px 8px;font-size:20px;letter-spacing:-3px;text-align:center;color:#6B7280"></div>
 
     <!-- Board -->
     <div style="display:flex;justify-content:center;margin:8px 0">
@@ -200,30 +204,30 @@ body::before{display:block!important}
     </div>
 
     <!-- Captured by White (shown below board) -->
-    <div id="capturedBot" style="min-height:26px;padding:3px 8px;font-size:20px;letter-spacing:-3px;text-align:center;color:rgba(255,255,255,.7)"></div>
+    <div id="capturedBot" style="min-height:26px;padding:3px 8px;font-size:20px;letter-spacing:-3px;text-align:center;color:#6B7280"></div>
 
     <!-- Thinking indicator -->
-    <div id="thinkingRow" style="display:none;text-align:center;padding:10px;color:#D4AF37;font-size:15px;font-weight:800;animation:throb .8s ease-in-out infinite">🤖 Cosmo is thinking…</div>
+    <div id="thinkingRow" style="display:none;text-align:center;padding:10px;color:#D97706;font-size:15px;font-weight:800;animation:throb .8s ease-in-out infinite">🤖 Cosmo is thinking…</div>
 
     <!-- Buttons -->
     <div style="display:flex;gap:10px;margin-top:12px">
-      <button id="undoBtn" onclick="undoMove()" style="flex:1;padding:12px 8px;border-radius:14px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:white;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer">↩ Undo</button>
-      <button onclick="newGame()" style="flex:1;padding:12px 8px;border-radius:14px;border:2px solid rgba(212,175,55,.4);background:rgba(212,175,55,.15);color:#D4AF37;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer">↺ New Game</button>
+      <button id="undoBtn" onclick="undoMove()" style="flex:1;padding:12px 8px;border-radius:14px;border:1.5px solid #E5E7EB;background:white;color:#1E1B4B;font-family:'Nunito',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer">↩ Undo</button>
+      <button onclick="newGame()" style="flex:1;padding:12px 8px;border-radius:14px;border:none;background:#D97706;color:white;font-family:'Nunito',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer">↺ New Game</button>
     </div>
   </div>
 
 </div>
 
 <!-- COSMO Toast notification -->
-<div id="cosmoToast" style="position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:rgba(14,12,20,.97);border:1px solid rgba(212,175,55,.4);border-radius:20px;padding:10px 20px;font-size:14px;font-weight:800;color:#D4AF37;opacity:0;transition:all .35s;z-index:600;white-space:nowrap;pointer-events:none"></div>
+<div id="cosmoToast" style="position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:white;border:1.5px solid #FDE68A;border-radius:20px;padding:10px 20px;font-size:14px;font-weight:800;color:#D97706;opacity:0;transition:all .35s;z-index:600;white-space:nowrap;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.1)"></div>
 
 <!-- Game Over overlay -->
-<div id="goOverlay" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)">
-  <div style="background:rgba(7,7,16,.98);border:2px solid rgba(212,175,55,.3);border-radius:24px;padding:34px 24px;text-align:center;max-width:340px;width:100%;animation:popIn .4s ease-out">
+<div id="goOverlay" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.4);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border:1.5px solid #FDE68A;border-radius:24px;padding:34px 24px;text-align:center;max-width:340px;width:100%;animation:popIn .4s ease-out;box-shadow:0 8px 40px rgba(0,0,0,.15)">
     <div id="goEmoji" style="font-size:58px;margin-bottom:12px">🏆</div>
-    <div id="goTitle" style="font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;background:linear-gradient(90deg,#D4AF37,#FFE87A,#D4AF37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px">Checkmate!</div>
-    <div id="goMsg" style="color:#a0aec0;font-size:15px;font-weight:700;margin-bottom:22px;line-height:1.55"></div>
-    <button onclick="newGame()" style="padding:12px 32px;border-radius:50px;border:2px solid rgba(212,175,55,.4);background:rgba(212,175,55,.15);color:#D4AF37;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:15px;font-weight:800;cursor:pointer">Play Again</button>
+    <div id="goTitle" style="font-size:28px;font-weight:900;color:#92400E;margin-bottom:8px">Checkmate!</div>
+    <div id="goMsg" style="color:#6B7280;font-size:15px;font-weight:700;margin-bottom:22px;line-height:1.55"></div>
+    <button onclick="newGame()" style="padding:12px 32px;border-radius:50px;border:none;background:#D97706;color:white;font-family:'Nunito',system-ui,sans-serif;font-size:15px;font-weight:800;cursor:pointer">Play Again</button>
   </div>
 </div>
 
@@ -1111,9 +1115,9 @@ function initPlay(){
 initPlay();
 </script>
 <div id="chessHint" style="display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;z-index:500">
-  <div style="background:rgba(7,7,16,.97);border:1px solid rgba(212,175,55,.35);border-radius:20px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.5)">
+  <div style="background:white;border:1.5px solid #FDE68A;border-radius:20px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.12)">
     <span style="font-size:22px;flex-shrink:0">🤖</span>
-    <p id="chessHintText" style="color:#E8E4FF;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif"></p>
+    <p id="chessHintText" style="color:#1E1B4B;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:'Nunito',system-ui,sans-serif"></p>
   </div>
 </div>
 <script src="cosmo-hints.js"></script>

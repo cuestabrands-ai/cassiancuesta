@@ -12,105 +12,107 @@
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#0a0a1a;font-family:'Nunito',system-ui,sans-serif;color:white;overflow-x:hidden}
+html,body{height:100%;background:#F8F9FF;font-family:'Nunito',system-ui,sans-serif;color:#1E1B4B;overflow-x:hidden}
 body{display:flex;flex-direction:column;min-height:100dvh}
-.page-wrap{flex:1;padding:20px 16px 110px;max-width:700px;margin:0 auto;width:100%}
+.page-wrap{flex:1;padding:0 16px 110px;max-width:700px;margin:0 auto;width:100%}
 
-/* Header */
-.hero{text-align:center;margin-bottom:24px}
-.hero-emoji{font-size:56px;display:block;animation:float 3s ease-in-out infinite;line-height:1;margin-bottom:8px}
-.hero h1{font-size:30px;font-weight:900;background:linear-gradient(90deg,#FFD700,#FF8C00,#A29BFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
-.hero p{color:rgba(255,255,255,.55);font-size:14px;font-weight:700}
+/* PAGE HEADER */
+.page-header{background:linear-gradient(180deg,#F0FDFA 0%,#F8F9FF 100%);padding:calc(16px + env(safe-area-inset-top)) 16px 16px;text-align:center;border-bottom:1px solid #99F6E4;margin-bottom:16px}
+.header-emoji{font-size:52px;animation:float 3s ease-in-out infinite;line-height:1;margin-bottom:8px}
+.header-title{font-size:24px;font-weight:900;color:#134E4A;margin-bottom:4px}
+.header-sub{font-size:13px;font-weight:700;color:#0891B2}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
 /* Featured badge */
-.featured-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,140,0,.2));border:1.5px solid rgba(255,215,0,.5);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:900;color:#FFD700;margin-bottom:16px}
+.featured-badge{display:inline-flex;align-items:center;gap:6px;background:#F0FDFA;border:1.5px solid #99F6E4;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:900;color:#0891B2;margin-bottom:16px}
 
 /* Search */
 .search-wrap{margin-bottom:20px;position:relative}
-.search-input{width:100%;padding:14px 16px 14px 44px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:16px;color:white;font-size:16px;font-family:'Nunito',sans-serif;outline:none;transition:border-color .2s}
-.search-input:focus{border-color:rgba(255,215,0,.5)}
-.search-input::placeholder{color:rgba(255,255,255,.3)}
+.search-input{width:100%;padding:14px 16px 14px 44px;background:white!important;border:1.5px solid #E5E7EB!important;border-radius:16px!important;color:#1E1B4B!important;font-size:16px;font-family:'Nunito',sans-serif!important;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:#0891B2!important;outline:none!important}
+.search-input::placeholder{color:#9CA3AF}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;pointer-events:none}
 
 /* Country grid */
-.section-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px}
+.section-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#6B7280;margin-bottom:12px}
 .country-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:500px){.country-grid{grid-template-columns:repeat(3,1fr)}}
 
-.country-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);border-radius:20px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.country-card{background:white;border:1.5px solid #99F6E4;border-radius:20px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
 .country-card:active{transform:scale(0.96)}
-.country-card:hover{border-color:rgba(255,215,0,.4);background:rgba(255,255,255,.1);transform:translateY(-3px)}
-.country-card.featured{border-color:rgba(255,215,0,.6);background:rgba(255,215,0,.08)}
+.country-card:hover{border-color:#0891B2;transform:translateY(-3px)}
+.country-card.featured{background:#F0FDFA;border-color:#0891B2}
 .card-flag{font-size:44px;line-height:1;display:block;margin-bottom:8px}
-.card-name{font-size:15px;font-weight:900;color:white;margin-bottom:2px}
-.card-lang{font-size:11px;font-weight:700;color:rgba(255,255,255,.45)}
-.trip-badge{position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#1a1a00;font-size:9px;font-weight:900;padding:3px 7px;border-radius:10px;letter-spacing:.3px}
+.card-name{font-size:15px;font-weight:900;color:#1E1B4B;margin-bottom:2px}
+.card-lang{font-size:11px;font-weight:700;color:#6B7280}
+.trip-badge{position:absolute;top:8px;right:8px;background:#0891B2;color:white;font-size:9px;font-weight:900;padding:3px 7px;border-radius:10px;letter-spacing:.3px}
 
 /* Phrase view - full screen overlay */
-#phraseView{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a1a;z-index:200;flex-direction:column;overflow:hidden}
+#phraseView{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#F8F9FF;z-index:200;flex-direction:column;overflow:hidden}
 #phraseView.open{display:flex}
-.phrase-header{background:rgba(10,8,30,.97);backdrop-filter:blur(20px);padding:16px;padding-top:calc(16px + env(safe-area-inset-top));display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0}
-.back-btn{width:44px;height:44px;background:rgba(255,255,255,.1);border:none;border-radius:50%;color:white;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.phrase-header{background:white;padding:16px;padding-top:calc(16px + env(safe-area-inset-top));display:flex;align-items:center;gap:12px;border-bottom:1px solid #E5E7EB;flex-shrink:0}
+.back-btn{width:44px;height:44px;background:#F0FDFA;border:1.5px solid #99F6E4;border-radius:50%;color:#0891B2;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .phrase-country-info{flex:1}
 .phrase-flag{font-size:36px;line-height:1}
-.phrase-country-name{font-size:20px;font-weight:900;color:white;margin-top:2px}
-.phrase-lang-label{font-size:12px;color:rgba(255,255,255,.45);font-weight:700}
+.phrase-country-name{font-size:20px;font-weight:900;color:#1E1B4B;margin-top:2px}
+.phrase-lang-label{font-size:12px;color:#6B7280;font-weight:700}
 
 .phrase-scroll{flex:1;overflow-y:auto;padding:16px 16px calc(100px + env(safe-area-inset-bottom)) 16px}
-.phrase-intro{text-align:center;padding:12px 16px 20px;font-size:14px;color:rgba(255,255,255,.55);line-height:1.5;font-weight:700}
+.phrase-intro{text-align:center;padding:12px 16px 20px;font-size:14px;color:#6B7280;line-height:1.5;font-weight:700}
 
-.phrase-card{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.09);border-radius:20px;padding:18px;margin-bottom:12px;position:relative}
-.phrase-category{font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}
-.phrase-english{font-size:13px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:10px}
-.phrase-main{font-size:26px;font-weight:900;color:white;margin-bottom:6px;line-height:1.2}
-.phrase-pronunciation{font-size:13px;font-weight:700;color:#A29BFE;font-style:italic;margin-bottom:12px}
-.speak-btn{background:linear-gradient(135deg,#8b5cf6,#6d28d9);border:none;border-radius:50px;color:white;font-size:13px;font-weight:900;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .1s;font-family:'Nunito',sans-serif}
+.phrase-card{background:white;border:1.5px solid #99F6E4;border-radius:20px;padding:18px;margin-bottom:12px;position:relative;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.phrase-category{font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:#0891B2;margin-bottom:6px}
+.phrase-english{font-size:13px;font-weight:700;color:#6B7280;margin-bottom:10px}
+.phrase-main{font-size:26px;font-weight:900;color:#1E1B4B;margin-bottom:6px;line-height:1.2}
+.phrase-pronunciation{font-size:13px;font-weight:700;color:#0891B2;font-style:italic;margin-bottom:12px;font-weight:800}
+.speak-btn{background:#0891B2;border:none;border-radius:999px;color:white;font-size:13px;font-weight:900;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .1s;font-family:'Nunito',sans-serif}
 .speak-btn:active{transform:scale(0.94)}
-.phrase-tip{font-size:12px;color:rgba(255,255,255,.35);margin-top:10px;line-height:1.5;font-weight:700;padding-top:10px;border-top:1px solid rgba(255,255,255,.06)}
+.phrase-tip{font-size:12px;color:#6B7280;margin-top:10px;line-height:1.5;font-weight:700;padding-top:10px;border-top:1px solid #F1F5F9}
 
 /* Category headers in phrase view */
 .section-divider{text-align:center;margin:20px 0 12px;position:relative}
-.section-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,.08)}
-.section-divider span{background:#0a0a1a;padding:0 12px;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);position:relative}
+.section-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:#E5E7EB}
+.section-divider span{background:#F8F9FF;padding:0 12px;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:#6B7280;position:relative}
 
 /* Speak-all button */
-.speak-all-btn{width:100%;padding:16px;background:linear-gradient(135deg,#FFD700,#FF8C00);border:none;border-radius:16px;color:#1a1a00;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;transition:transform .1s;font-family:'Nunito',sans-serif}
+.speak-all-btn{width:100%;padding:16px;background:#0891B2;border:none;border-radius:999px;color:white;font-size:16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;transition:transform .1s;font-family:'Nunito',sans-serif}
 .speak-all-btn:active{transform:scale(0.97)}
 
 /* Bottom nav */
-.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,8,30,.97);backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.1);z-index:100}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:5px 10px;border-radius:12px}
-.nav-btn:hover,.nav-btn.active{color:#00d4ff}
-.nav-icon{font-size:22px;line-height:1}
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid #ECEDF2;z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active{color:#0891B2}
+.nav-icon{font-size:22px;line-height:1;transition:transform .2s}
+.nav-btn.active .nav-icon{transform:scale(1.15)}
 .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
 
 /* Manners tip banner */
-.tip-banner{background:rgba(162,155,254,.1);border:1.5px solid rgba(162,155,254,.25);border-radius:16px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px}
+.tip-banner{background:#F0FDFA;border:1.5px solid #99F6E4;border-radius:16px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:flex-start;gap:10px}
 .tip-emoji{font-size:24px;flex-shrink:0}
-.tip-text{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);line-height:1.5}
+.tip-text{font-size:13px;font-weight:700;color:#1E1B4B;line-height:1.5}
 
-
-/* ── SPACE MISSION NAV ── */
-.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
-.nav-btn{color:rgba(241,245,249,.4)!important}
-.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
-/* ── SPACE MISSION BODY ── */
-body{background:#06060F!important;color:#F1F5F9!important}
-body::before{display:block!important}
-.stars{display:block!important}
+/* TC-12 LIGHT DESIGN SYSTEM */
+*{-webkit-tap-highlight-color:transparent}
+html,body{background:#F8F9FF!important;color:#1E1B4B}
+body::before{display:none!important}
+@keyframes fade-up{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+[style*="backdrop-filter"],[class*="glass"]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+input,textarea,select{background:white!important;border:1.5px solid #E5E7EB!important;border-radius:12px!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:#0891B2!important;outline:none!important}
+.star-field,.stars,.starfield,.bg-overlay,.stars-bg{display:none!important}
 
 </style>
 </head>
 <script>window.scrollTo(0,0);if("scrollRestoration"in history)history.scrollRestoration="manual";</script><body>
 
-<div class="page-wrap" id="mainView">
-  <div class="hero">
-    <span class="hero-emoji">🌍</span>
-    <h1>World Explorer</h1>
-    <p>Learn good manners in every language!</p>
-  </div>
+<div class="page-header">
+  <div class="header-emoji">🌍</div>
+  <div class="header-title">World Explorer</div>
+  <div class="header-sub">9 languages · Countries · Cultures</div>
+</div>
 
+<div class="page-wrap" id="mainView">
   <div style="text-align:center;margin-bottom:16px">
     <span class="featured-badge">✈️ Going to Italy next week!</span>
   </div>
@@ -150,7 +152,7 @@ body::before{display:block!important}
 <nav class="app-nav">
   <a href="index.html" class="nav-btn"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
   <a href="numberblocks.html" class="nav-btn"><span class="nav-icon">🔢</span><span class="nav-label">Numbers</span></a>
-  <a href="world.html" class="nav-btn active"><span class="nav-icon">🌍</span><span class="nav-label">World</span></a>
+  <a href="games.html" class="nav-btn"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></a>
   <a href="chess.html" class="nav-btn"><span class="nav-icon">♟️</span><span class="nav-label">Chess</span></a>
   <a href="cosmo.html" class="nav-btn"><span class="nav-icon">🤖</span><span class="nav-label">Cosmo</span></a>
 </nav>
@@ -391,20 +393,6 @@ if ('speechSynthesis' in window) {
 
 // ── Init ──
 renderGrids(COUNTRIES);
-</script>
-<script>
-(function(){
-  let c=document.getElementById('stars');
-  if(!c){c=document.createElement('div');c.id='stars';c.className='stars';c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0';document.body.insertBefore(c,document.body.firstChild);}
-  const cols=['rgba(6,182,212,VAL)','rgba(168,85,247,VAL)','rgba(241,245,249,VAL)'];
-  for(let i=0;i<100;i++){
-    const s=document.createElement('div');s.className='star';
-    const sz=Math.random()*2+1;
-    const col=cols[Math.floor(Math.random()*cols.length)].replace('VAL',(Math.random()*.7+.3).toFixed(2));
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};animation-duration:${(2+Math.random()*3).toFixed(1)}s;animation-delay:${(Math.random()*4).toFixed(1)}s`;
-    c.appendChild(s);
-  }
-})();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js');</script>
 </body>

@@ -10,97 +10,99 @@
 <title>Satoshi's Math Mine — Cassian's Super App</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
-  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-  background:#070710;
-  min-height:100vh;color:#E8E4FF;
+  font-family:'Nunito',system-ui,sans-serif;
+  background:#F8F9FF;
+  min-height:100vh;color:#1E1B4B;
   padding-bottom:calc(88px + env(safe-area-inset-bottom));
   overflow-x:hidden;
 }
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(247,147,26,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
 
 /* Stars */
 .stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .star{position:absolute;border-radius:50%;background:white;animation:twinkle var(--d) ease-in-out infinite}
 @keyframes twinkle{0%,100%{opacity:.1}50%{opacity:.8}}
 
-.page-wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:22px 16px}
+.page-wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 16px 16px}
 
 /* ── Header ── */
-.hdr{text-align:center;margin-bottom:20px}
-.hdr h1{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;background:linear-gradient(135deg,#F7931A,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px;filter:drop-shadow(0 0 18px rgba(247,147,26,.4))}
-.hdr p{color:#8892b0;font-size:14px;font-weight:700}
+.page-header{background:linear-gradient(180deg,#FFFBEB 0%,#F8F9FF 100%);padding:calc(16px + env(safe-area-inset-top)) 16px 16px;text-align:center;border-bottom:1px solid #FDE68A;margin-bottom:16px}
+.header-emoji{font-size:52px;animation:float 3s ease-in-out infinite;line-height:1;margin-bottom:8px}
+.header-title{font-size:24px;font-weight:900;color:#92400E;margin-bottom:4px}
+.header-sub{font-size:13px;font-weight:700;color:#F59E0B}
 
 /* ── Wallet card ── */
 .wallet{
-  background:linear-gradient(135deg,rgba(247,147,26,.15),rgba(255,215,0,.08));
-  border:2px solid rgba(247,147,26,.4);border-radius:24px;
+  background:white;
+  border:1.5px solid #FDE68A;border-radius:24px;
   padding:22px 20px;margin-bottom:18px;
   display:flex;align-items:center;gap:18px;
-  backdrop-filter:blur(16px);
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
 }
 .btc-logo{font-size:48px;filter:drop-shadow(0 0 16px rgba(247,147,26,.6));flex-shrink:0}
 .wallet-info{flex:1}
-.wallet-info .label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:4px}
-.wallet-sats{font-size:36px;font-weight:900;color:#FFD700;line-height:1;margin-bottom:4px}
-.wallet-btc{font-size:13px;color:#8892b0;font-weight:700}
+.wallet-info .label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F59E0B;margin-bottom:4px}
+.wallet-sats{font-size:36px;font-weight:900;color:#F59E0B;line-height:1;margin-bottom:4px}
+.wallet-btc{font-size:13px;color:#6B7280;font-weight:700}
 .wallet-right{text-align:right;flex-shrink:0}
 .streak-num{font-size:28px;font-weight:900;color:#FF6B6B;display:block}
-.streak-lbl{font-size:11px;color:#8892b0;font-weight:700}
+.streak-lbl{font-size:11px;color:#6B7280;font-weight:700}
 
 /* ── Scarcity bar ── */
 .scarcity{
-  background:rgba(255,255,255,.055);border:1px solid rgba(247,147,26,.25);
+  background:white;border:1.5px solid #FDE68A;
   border-radius:18px;padding:16px 18px;margin-bottom:18px;
-  backdrop-filter:blur(16px);
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
 }
-.scarcity-title{font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.supply-track{background:rgba(255,255,255,.1);border-radius:6px;height:12px;overflow:hidden;margin-bottom:6px}
+.scarcity-title{font-size:12px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F59E0B;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.supply-track{background:rgba(0,0,0,.08);border-radius:6px;height:12px;overflow:hidden;margin-bottom:6px}
 .supply-fill{height:100%;background:linear-gradient(90deg,#F7931A,#FFD700);border-radius:6px;transition:width 1s ease}
-.supply-labels{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#8892b0}
-.supply-note{font-size:12px;color:#c3cfe2;margin-top:8px;font-weight:700;line-height:1.5}
+.supply-labels{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:#6B7280}
+.supply-note{font-size:12px;color:#1E1B4B;margin-top:8px;font-weight:700;line-height:1.5}
 
 /* ── Tabs ── */
-.tabs{display:flex;gap:8px;margin-bottom:18px;background:rgba(255,255,255,.06);border-radius:16px;padding:5px}
-.tab{flex:1;padding:10px 8px;border-radius:12px;border:none;background:transparent;color:#718096;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:all .2s;touch-action:manipulation}
-.tab.active{background:rgba(247,147,26,.2);color:#F7931A}
+.tabs{display:flex;gap:8px;margin-bottom:18px;background:rgba(0,0,0,.04);border-radius:16px;padding:5px}
+.tab{flex:1;padding:10px 8px;border-radius:12px;border:none;background:transparent;color:#6B7280;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',system-ui,sans-serif;transition:all .2s;touch-action:manipulation}
+.tab.active{background:rgba(245,158,11,.15);color:#F59E0B}
 
 /* ── Mining (math) section ── */
 .mine-section{display:none}
 .mine-section.active{display:block}
 
 .question-card{
-  background:rgba(255,255,255,.05);border:2px solid rgba(247,147,26,.3);
+  background:white;border:1.5px solid #FDE68A;
   border-radius:24px;padding:28px 20px;margin-bottom:16px;
-  backdrop-filter:blur(16px);text-align:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.05);text-align:center;
 }
-.question-label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F7931A;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
-.question-text{font-size:30px;font-weight:900;margin-bottom:22px;line-height:1.3;color:white}
-.reward-label{font-size:14px;font-weight:800;color:#8892b0;margin-bottom:16px}
-.reward-amount{color:#FFD700;font-size:18px;font-weight:900}
+.question-label{font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#F59E0B;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.question-text{font-size:30px;font-weight:900;margin-bottom:22px;line-height:1.3;color:#1E1B4B}
+.reward-label{font-size:14px;font-weight:800;color:#6B7280;margin-bottom:16px}
+.reward-amount{color:#F59E0B;font-size:18px;font-weight:900}
 
 /* Answer input */
 .answer-row{display:flex;gap:10px;justify-content:center;margin-bottom:14px}
 .ans-input{
-  width:160px;background:rgba(255,255,255,.1);border:2px solid rgba(247,147,26,.4);
-  border-radius:14px;padding:12px 16px;font-size:28px;font-weight:900;color:#E8E4FF;
-  text-align:center;font-family:'Plus Jakarta Sans',system-ui,sans-serif;outline:none;transition:border-color .25s;
+  width:160px;background:white!important;border:1.5px solid #E5E7EB!important;
+  border-radius:12px!important;padding:12px 16px;font-size:28px;font-weight:900;color:#1E1B4B!important;
+  text-align:center;font-family:'Nunito',system-ui,sans-serif!important;outline:none;transition:border-color .25s;
 }
-.ans-input:focus{border-color:#F7931A;box-shadow:0 0 0 4px rgba(247,147,26,.18)}
+.ans-input:focus{border-color:#F59E0B!important;outline:none!important;box-shadow:0 0 0 4px rgba(245,158,11,.18)}
 .btn-mine{
   background:linear-gradient(135deg,#F7931A,#FFD700);color:#070710;border:none;
   padding:12px 28px;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;
-  font-family:'Plus Jakarta Sans',system-ui,sans-serif;transition:transform .15s,box-shadow .15s;
+  font-family:'Nunito',system-ui,sans-serif;transition:transform .15s,box-shadow .15s;
   box-shadow:0 4px 18px rgba(247,147,26,.45);touch-action:manipulation;
 }
 .btn-mine:hover{transform:scale(1.06)}
 .btn-mine:active{transform:scale(.96)}
-.btn-skip{background:rgba(255,255,255,.08);color:#8892b0;border:1px solid rgba(255,255,255,.15);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',system-ui,sans-serif;touch-action:manipulation}
-.btn-skip:hover{background:rgba(255,255,255,.14)}
+.btn-skip{background:white;color:#6B7280;border:1.5px solid #E5E7EB;padding:12px 18px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',system-ui,sans-serif;touch-action:manipulation}
+.btn-skip:hover{background:#F8F9FF;border-color:#D1D5DB}
 
 /* Feedback */
 .feedback{
@@ -111,10 +113,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .feedback.wrong{background:rgba(255,107,107,.15);border:2px solid rgba(255,107,107,.3);color:#FF6B6B}
 
 /* Hint */
-.hint-box{background:rgba(162,155,254,.09);border-left:3px solid #A29BFE;border-radius:0 12px 12px 0;padding:10px 14px;font-size:13px;color:#c3cfe2;margin-bottom:14px;line-height:1.55;display:none}
+.hint-box{background:rgba(245,158,11,.06);border-left:3px solid #F59E0B;border-radius:0 12px 12px 0;padding:10px 14px;font-size:13px;color:#1E1B4B;margin-bottom:14px;line-height:1.55;display:none}
 
-.cosmo-why-btn{margin-top:10px;padding:8px 18px;border-radius:50px;border:2px solid rgba(247,147,26,.4);background:rgba(247,147,26,.1);color:#F7931A;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
-.cosmo-why-btn:hover{background:rgba(247,147,26,.22)}
+.cosmo-why-btn{margin-top:10px;padding:8px 18px;border-radius:50px;border:2px solid rgba(245,158,11,.4);background:rgba(245,158,11,.1);color:#F59E0B;font-family:'Nunito',system-ui,sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.cosmo-why-btn:hover{background:rgba(245,158,11,.22)}
 
 /* Difficulty badges */
 .diff-row{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
@@ -126,43 +128,44 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* Progress bar */
 .mine-progress{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.mine-progress-bar{flex:1;background:rgba(255,255,255,.1);border-radius:6px;height:8px;overflow:hidden}
+.mine-progress-bar{flex:1;background:rgba(0,0,0,.08);border-radius:6px;height:8px;overflow:hidden}
 .mine-progress-fill{height:100%;background:linear-gradient(90deg,#F7931A,#FFD700);border-radius:6px;transition:width .4s ease}
-.mine-progress-label{font-size:12px;font-weight:800;color:#8892b0;white-space:nowrap}
+.mine-progress-label{font-size:12px;font-weight:800;color:#6B7280;white-space:nowrap}
 
 /* ── Learn section ── */
 .learn-card{
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+  background:white;border:1.5px solid #F1F5F9;
   border-radius:22px;padding:22px 18px;margin-bottom:14px;
-  backdrop-filter:blur(16px);
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
 }
-.learn-card h3{font-size:18px;font-weight:900;color:#F7931A;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.learn-card p{font-size:14px;color:#c3cfe2;line-height:1.65;margin-bottom:10px}
+.learn-card h3{font-size:18px;font-weight:900;color:#F59E0B;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.learn-card p{font-size:14px;color:#1E1B4B;line-height:1.65;margin-bottom:10px}
 .learn-card p:last-child{margin-bottom:0}
-.learn-card strong{color:#FFD700}
+.learn-card strong{color:#92400E}
 .fact-highlight{
-  background:rgba(247,147,26,.1);border-radius:12px;padding:12px 16px;
-  font-size:16px;font-weight:800;color:#FFD700;text-align:center;margin:10px 0;
+  background:rgba(245,158,11,.1);border-radius:12px;padding:12px 16px;
+  font-size:16px;font-weight:800;color:#92400E;text-align:center;margin:10px 0;
 }
 
 /* ── Treasury (savings) section ── */
-.treasury-header{font-size:16px;font-weight:900;color:#4ECDC4;margin-bottom:14px;text-align:center}
+.treasury-header{font-size:16px;font-weight:900;color:#92400E;margin-bottom:14px;text-align:center}
 .treasury-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
-.t-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;text-align:center}
+.t-card{background:white;border:1.5px solid #F1F5F9;border-radius:18px;padding:16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.05)}
 .t-card .t-icon{font-size:28px;display:block;margin-bottom:6px}
-.t-card .t-val{font-size:20px;font-weight:900;color:#FFD700;display:block;margin-bottom:3px}
-.t-card .t-lbl{font-size:11px;color:#8892b0;font-weight:700}
+.t-card .t-val{font-size:20px;font-weight:900;color:#F59E0B;display:block;margin-bottom:3px}
+.t-card .t-lbl{font-size:11px;color:#6B7280;font-weight:700}
 .savings-lesson{
-  background:rgba(78,205,196,.09);border-left:3px solid #4ECDC4;
-  border-radius:0 16px 16px 0;padding:14px 18px;font-size:14px;color:#c3cfe2;line-height:1.65;
+  background:rgba(245,158,11,.06);border-left:3px solid #F59E0B;
+  border-radius:0 16px 16px 0;padding:14px 18px;font-size:14px;color:#1E1B4B;line-height:1.65;
 }
-.savings-lesson strong{color:#4ECDC4}
+.savings-lesson strong{color:#92400E}
 
 /* ── Nav ── */
-.app-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(7,7,16,0.97);backdrop-filter:blur(24px);display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.08);z-index:1000}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#4a4a6a;transition:all .2s;padding:6px 10px;border-radius:12px;touch-action:manipulation;min-width:52px}
-.nav-btn:hover,.nav-btn.active{color:#F7931A}
-.nav-icon{font-size:22px;line-height:1}
+.app-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;align-items:center;padding:8px 4px;padding-bottom:calc(10px + env(safe-area-inset-bottom));border-top:1px solid #ECEDF2;z-index:1000}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#9CA3AF;transition:all .2s;padding:5px 10px;border-radius:12px}
+.nav-btn.active{color:#F59E0B}
+.nav-icon{font-size:22px;line-height:1;transition:transform .2s}
+.nav-btn.active .nav-icon{transform:scale(1.15)}
 .nav-label{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
 
 /* ── Animations ── */
@@ -172,14 +175,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes shimmer{0%{left:-70%}100%{left:120%}}
 
 
-/* ── SPACE MISSION NAV ── */
-.app-nav{background:rgba(4,4,12,.92)!important;backdrop-filter:blur(28px)!important;border-top:1px solid rgba(255,255,255,.07)!important;box-shadow:none!important}
-.nav-btn{color:rgba(241,245,249,.4)!important}
-.nav-btn.active,.nav-btn:hover{color:#06B6D4!important}
-/* ── SPACE MISSION BODY ── */
-body{background:#06060F!important;color:#F1F5F9!important}
-body::before{display:block!important}
-.stars{display:block!important}
+/* ── TC-12 LIGHT DESIGN SYSTEM ── */
+*{-webkit-tap-highlight-color:transparent}
+html,body{background:#F8F9FF!important;color:#1E1B4B}
+body::before{display:none!important}
+@keyframes fade-up{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+[style*="backdrop-filter"],[class*="glass"]{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+input,textarea,select{background:white!important;border:1.5px solid #E5E7EB!important;border-radius:12px!important;color:#1E1B4B!important;font-family:'Nunito',system-ui,sans-serif!important}
+input:focus,textarea:focus,select:focus{border-color:#F59E0B!important;outline:none!important}
+.star-field,.stars,.starfield,.bg-overlay,.stars-bg{display:none!important}
 
 </style>
 </head>
@@ -188,9 +194,10 @@ body::before{display:block!important}
 <div class="stars-bg" id="starsBg"></div>
 
 <div class="page-wrap">
-  <div class="hdr">
-    <h1>₿ Satoshi's Math Mine</h1>
-    <p>Solve math → earn satoshis → learn the hardest money in the world</p>
+  <div class="page-header">
+    <div class="header-emoji">₿</div>
+    <div class="header-title">Bitcoin Mine</div>
+    <div class="header-sub">Earn Satoshis · Learn Economics</div>
   </div>
 
   <!-- Wallet -->
@@ -347,7 +354,7 @@ body::before{display:block!important}
       <p><strong>Why save satoshis?</strong></p>
       <p>Every satoshi you earn stays in your wallet. Unlike normal money that loses value over time (inflation), <strong>Bitcoin holds its value</strong> — or gets more valuable as fewer are created.</p>
       <p>The Austrian economists called this <strong>"time preference"</strong> — people who can wait and save instead of spending everything right now end up wealthier. It's not magic, it's math! 🧮</p>
-      <p style="margin-top:8px">Your <span id="t-sats2" style="color:#FFD700;font-weight:900">0</span> satoshis = <span id="t-pct" style="color:#F7931A;font-weight:900">0.000000%</span> of 21 million BTC! Even tiny amounts add up! ₿</p>
+      <p style="margin-top:8px">Your <span id="t-sats2" style="color:#F59E0B;font-weight:900">0</span> satoshis = <span id="t-pct" style="color:#92400E;font-weight:900">0.000000%</span> of 21 million BTC! Even tiny amounts add up! ₿</p>
     </div>
   </div>
 </div>
@@ -652,9 +659,9 @@ if(diffBtn){
 }
 </script>
 <div id="btcHint" style="display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:380px;z-index:500">
-  <div style="background:rgba(7,7,16,.97);border:1px solid rgba(247,147,26,.35);border-radius:20px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.5)">
+  <div style="background:white;border:1.5px solid #FDE68A;border-radius:20px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;box-shadow:0 8px 32px rgba(0,0,0,.1)">
     <span style="font-size:22px;flex-shrink:0">🤖</span>
-    <p id="btcHintText" style="color:#E8E4FF;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif"></p>
+    <p id="btcHintText" style="color:#1E1B4B;font-size:14px;font-weight:700;line-height:1.5;margin:0;font-family:'Nunito',system-ui,sans-serif"></p>
   </div>
 </div>
 <script src="cosmo-hints.js"></script>
